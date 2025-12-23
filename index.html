@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>동아리 소개 페이지</title>
+    <style>
+        /* 여기서부터 디자인(CSS) 설정입니다 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; line-height: 1.6; color: #333; }
+        
+        /* 헤더(메뉴) */
+        header { background-color: #2c3e50; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { font-size: 1.5rem; font-weight: bold; }
+        nav a { color: #ecf0f1; text-decoration: none; margin-left: 15px; font-size: 0.9rem; }
+
+        /* 메인 배너 */
+        .hero { background-color: #3498db; color: white; text-align: center; padding: 4rem 1rem; }
+        .hero h2 { font-size: 2.5rem; margin-bottom: 10px; }
+        .hero p { font-size: 1.2rem; opacity: 0.9; }
+
+        /* 공통 섹션 스타일 */
+        section { padding: 3rem 2rem; max-width: 1000px; margin: 0 auto; }
+        h3 { font-size: 1.8rem; color: #2c3e50; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+
+        /* 활동 소개 카드 스타일 */
+        .activities { display: flex; gap: 20px; flex-wrap: wrap; }
+        .card { flex: 1; background: #f9f9f9; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); min-width: 250px; }
+        .card h4 { color: #2980b9; margin-bottom: 10px; font-size: 1.2rem; }
+
+        /* 하단 푸터 */
+        footer { background-color: #333; color: white; text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.8rem; }
+
+        /* 모바일 최적화 */
+        @media (max-width: 600px) {
+            .hero h2 { font-size: 1.8rem; }
+            .activities { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>[동아리 이름]</h1>
+        <nav>
+            <a href="#">동아리 소개</a>
+            <a href="#">주요 활동</a>
+            <a href="#">지원하기</a>
+        </nav>
+    </header>
+
+    <div class="hero">
+        <h2>함께 성장하는 즐거움</h2>
+        <p>열정 있는 대학생들을 위한 최고의 커뮤니티, [동아리 이름]입니다.</p>
+    </div>
+
+    <section>
+        <h3>About Us</h3>
+        <p>
+            우리 동아리는 202X년에 설립되어, 서로의 지식을 공유하고 함께 성장하는 것을 목표로 합니다.
+            전공에 상관없이 열정만 있다면 누구든 환영합니다. 이곳에서 당신의 가능성을 펼쳐보세요.
+        </p>
+    </section>
+
+    <section>
+        <h3>Our Activities</h3>
+        <div class="activities">
+            <div class="card">
+                <h4>📚 정기 스터디</h4>
+                <p>매주 1회, 관심 분야별로 그룹을 나누어 심도 있는 스터디를 진행합니다.</p>
+            </div>
+            <div class="card">
+                <h4>🤝 프로젝트</h4>
+                <p>배운 내용을 바탕으로 팀 프로젝트를 진행하며 실전 경험을 쌓습니다.</p>
+            </div>
+            <div class="card">
+                <h4>🎉 네트워킹</h4>
+                <p>선후배 간의 교류회, MT, 홈커밍데이 등 즐거운 친목 활동을 합니다.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>문의: contact@example.com | 위치: 학생회관 301호</p>
+        <p>&copy; 2025 [동아리 이름]. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
