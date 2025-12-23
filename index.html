@@ -3,20 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>동아리 소개 페이지</title>
+    <title>PAINS - 고려대학교 스포츠 통계분석 동아리</title>
     <style>
-        /* 여기서부터 디자인(CSS) 설정입니다 */
+        /* 기본 설정 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; line-height: 1.6; color: #333; }
         
         /* 헤더(메뉴) */
-        header { background-color: #2c3e50; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        header { background-color: #cf8b8b; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         header h1 { font-size: 1.5rem; font-weight: bold; }
-        nav a { color: #ecf0f1; text-decoration: none; margin-left: 15px; font-size: 0.9rem; }
+        
+        /* 네비게이션 링크 스타일 */
+        nav { display: flex; align-items: center; }
+        nav a { color: #ecf0f1; text-decoration: none; margin-left: 15px; font-size: 0.9rem; transition: color 0.3s; }
+        nav a:hover { color: #fff; font-weight: bold; }
 
-        /* 메인 배너 */
-        .hero { background-color: #3498db; color: white; text-align: center; padding: 4rem 1rem; }
-        .hero h2 { font-size: 2.5rem; margin-bottom: 10px; }
+        /* 지원하기 버튼 스타일 */
+        .apply-btn {
+            background-color: white;
+            color: #ab3333 !important;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .apply-btn:hover { background-color: #f0f0f0; transform: scale(1.05); }
+
+        /* 메인 배너 영역 */
+        .hero { background-color: #ab3333; color: white; text-align: center; padding: 4rem 1rem; }
+        
+        /* 메인 이미지 스타일 (그림자 제거됨) */
+        .hero-image {
+            max-width: 80%;
+            width: 400px;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 12px; /* 모서리 둥근 효과는 유지 (원치 않으면 이 줄도 삭제) */
+        }
+
         .hero p { font-size: 1.2rem; opacity: 0.9; }
 
         /* 공통 섹션 스타일 */
@@ -26,39 +50,39 @@
         /* 활동 소개 카드 스타일 */
         .activities { display: flex; gap: 20px; flex-wrap: wrap; }
         .card { flex: 1; background: #f9f9f9; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); min-width: 250px; }
-        .card h4 { color: #2980b9; margin-bottom: 10px; font-size: 1.2rem; }
+        .card h4 { color: #ab3333; margin-bottom: 10px; font-size: 1.2rem; }
 
         /* 하단 푸터 */
         footer { background-color: #333; color: white; text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.8rem; }
 
         /* 모바일 최적화 */
         @media (max-width: 600px) {
-            .hero h2 { font-size: 1.8rem; }
+            .hero { padding: 3rem 1rem; }
             .activities { flex-direction: column; }
+            header { flex-direction: column; gap: 10px; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>[동아리 이름]</h1>
+        <h1>Providing Academic INsights for Sports.</h1>
         <nav>
-            <a href="#">동아리 소개</a>
-            <a href="#">주요 활동</a>
-            <a href="#">지원하기</a>
+            <a href="https://www.notion.so/painsports/PAINS-a9294ba2a44b4ea6a53f0d5ae069749e" target="_blank" class="apply-btn">Notion</a>
+            <a href="https://www.notion.so/painsports/PAINS-a9294ba2a44b4ea6a53f0d5ae069749e" target="_blank" class="apply-btn">Apply</a>
         </nav>
     </header>
 
     <div class="hero">
-        <h2>함께 성장하는 즐거움</h2>
-        <p>열정 있는 대학생들을 위한 최고의 커뮤니티, [동아리 이름]입니다.</p>
+        <img src="PAINS_logo.png" alt="PAINS 메인 로고" class="hero-image">
+        <p>고려대학교 교내 유일 스포츠 통계분석 동아리 PAINS</p>
     </div>
 
     <section>
         <h3>About Us</h3>
         <p>
-            우리 동아리는 202X년에 설립되어, 서로의 지식을 공유하고 함께 성장하는 것을 목표로 합니다.
-            전공에 상관없이 열정만 있다면 누구든 환영합니다. 이곳에서 당신의 가능성을 펼쳐보세요.
+            2020년 설립되어 2026년 전반기 11기로 활동하는 PAINS는 스포츠 통계를 사랑하는 사람들이 모이는 곳입니다.
+            전공에 상관없이 통계 지식과 스포츠에 대한 열정만 있다면 누구든 환영합니다!
         </p>
     </section>
 
@@ -67,22 +91,22 @@
         <div class="activities">
             <div class="card">
                 <h4>📚 정기 스터디</h4>
-                <p>매주 1회, 관심 분야별로 그룹을 나누어 심도 있는 스터디를 진행합니다.</p>
+                <p>지원자들을 대상으로 관심 분야별 심도 있는 스터디를 진행합니다.</p>
             </div>
             <div class="card">
                 <h4>🤝 프로젝트</h4>
-                <p>배운 내용을 바탕으로 팀 프로젝트를 진행하며 실전 경험을 쌓습니다.</p>
+                <p>배운 내용을 바탕으로 학기 중, 방학 중에 한 번씩 정기 팀 프로젝트를 진행하며 실전 경험을 쌓습니다.</p>
             </div>
             <div class="card">
-                <h4>🎉 네트워킹</h4>
-                <p>선후배 간의 교류회, MT, 홈커밍데이 등 즐거운 친목 활동을 합니다.</p>
+                <h4>🎉 친목 활동</h4>
+                <p>선후배 및 부원 간 교류 활동. MT, 송년회 등 다양한 친목 활동이 개최됩니다.</p>
             </div>
         </div>
     </section>
 
     <footer>
-        <p>문의: contact@example.com | 위치: 학생회관 301호</p>
-        <p>&copy; 2025 [동아리 이름]. All rights reserved.</p>
+        <p>문의: painsports1905@gmail.com | 위치: 한투스퀘어</p>
+        <p>&copy; 2025 PAINS. All rights reserved.</p>
     </footer>
 
 </body>
