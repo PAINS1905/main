@@ -13,21 +13,22 @@
         header { background-color: #cf8b8b; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         header h1 { font-size: 1.5rem; font-weight: bold; }
         
-        /* 네비게이션 링크 스타일 */
+        /* 네비게이션 링크 스타일 (모든 버튼 공통 적용) */
         nav { display: flex; align-items: center; }
-        nav a { color: #ecf0f1; text-decoration: none; margin-left: 15px; font-size: 0.9rem; transition: color 0.3s; }
-        nav a:hover { color: #fff; font-weight: bold; }
-
-        /* 지원하기 버튼 스타일 */
-        .apply-btn {
-            background-color: white;
-            color: #ab3333 !important;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            transition: all 0.3s ease;
+        nav a { 
+            color: #ecf0f1; 
+            text-decoration: none; 
+            margin-left: 15px; 
+            font-size: 0.9rem; 
+            transition: color 0.3s; 
         }
-        .apply-btn:hover { background-color: #f0f0f0; transform: scale(1.05); }
+        /* 마우스 올렸을 때 효과 */
+        nav a:hover { 
+            color: #fff; 
+            font-weight: bold; 
+        }
+
+        /* (.apply-btn 스타일은 더 이상 필요 없어서 삭제했습니다) */
 
         /* 메인 배너 영역 */
         .hero { background-color: #ab3333; color: white; text-align: center; padding: 4rem 1rem; }
@@ -68,9 +69,9 @@
     <header>
         <h1>Providing Academic INsights for Sports.</h1>
         <nav>
-            <a href="members.html">Members</a> 
+            <a href="members.html">Members</a>
             <a href="https://www.notion.so/painsports/PAINS-a9294ba2a44b4ea6a53f0d5ae069749e" target="_blank">Notion</a>
-            <a href="https://www.notion.so/painsports/PAINS-a9294ba2a44b4ea6a53f0d5ae069749e" target="_blank" class="apply-btn">Apply</a>
+            <a href="https://www.notion.so/painsports/PAINS-a9294ba2a44b4ea6a53f0d5ae069749e" target="_blank">Apply</a>
         </nav>
     </header>
 
@@ -106,7 +107,7 @@
     </section>
 
     <footer>
-        <p>문의: painsports1905@gmail.com | 위치: 한투스퀘어</p>
+        <p>문의: painsports1905@gmail.com | 위치: 어디지?</p>
         <p>&copy; 2025 PAINS. All rights reserved.</p>
     </footer>
 
