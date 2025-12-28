@@ -11,44 +11,55 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; line-height: 1.6; color: #333; background-color: #fdfdfd; }
         
-        /* 헤더 스타일 (index.html과 동일) */
         header { background-color: #cf8b8b; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         header h1 { font-size: 1.5rem; font-weight: bold; }
-        
         nav { display: flex; align-items: center; }
         nav a { color: #ecf0f1; text-decoration: none; margin-left: 15px; font-size: 0.9rem; transition: color 0.3s; }
         nav a:hover { color: #fff; font-weight: bold; }
-        
-        .apply-btn {
-            background-color: white; color: #ab3333 !important; padding: 8px 16px; border-radius: 20px; font-weight: bold; transition: all 0.3s ease;
-        }
+        .apply-btn { background-color: white; color: #ab3333 !important; padding: 8px 16px; border-radius: 20px; font-weight: bold; transition: all 0.3s ease; }
         .apply-btn:hover { background-color: #f0f0f0; transform: scale(1.05); }
 
         section { padding: 3rem 1rem; max-width: 1200px; margin: 0 auto; }
         h2 { font-size: 2rem; color: #ab3333; margin-bottom: 40px; text-align: center;}
-        
         footer { background-color: #333; color: white; text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.8rem; }
 
         /* ==================== */
         /* 조직도 스타일      */
         /* ==================== */
         
-        /* 카드 디자인 공통 */
+        /* [핵심 1] 가로 스크롤 컨테이너 */
+        /* 화면이 좁아져도 조직도가 깨지지 않도록 감싸는 역할 */
+        .org-chart-wrapper {
+            overflow-x: auto; /* 내용이 넘치면 가로 스크롤 생성 */
+            padding: 20px 0;
+            text-align: center; /* 전체 중앙 정렬 */
+        }
+
+        /* 트리 전체 컨테이너 */
+        .tree-container {
+            display: inline-block; /* 중앙 정렬을 위해 inline-block 설정 */
+            position: relative;
+            padding-top: 20px;
+            min-width: 600px; /* [중요] 조직도가 깨지지 않는 최소 너비 확보 */
+        }
+
+        /* 카드 공통 디자인 */
         .org-card {
             background: white;
-            border: 2px solid #ab3333; /* 고려대 색상 테두리 */
+            border: 2px solid #ab3333;
             border-radius: 12px;
             padding: 15px;
             text-align: center;
-            width: 160px; /* 카드 너비 고정 */
+            width: 160px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             position: relative;
-            z-index: 2; /* 선보다 위에 표시 */
+            z-index: 2;
+            background-clip: padding-box; /* 선이 카드 뒤로 가게 */
         }
         
         .org-img {
             width: 80px; height: 80px;
-            background-color: #eee; /* 사진 없을 때 회색 배경 */
+            background-color: #eee;
             border-radius: 50%;
             margin: 0 auto 10px;
             background-size: cover;
@@ -59,101 +70,99 @@
         .org-name { font-size: 1.1rem; font-weight: bold; margin-bottom: 4px; }
         .org-major { font-size: 0.8rem; color: #666; }
 
-        /* 트리 구조 레이아웃 */
-        .tree-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            padding-top: 20px;
-        }
-
         /* 레벨별 배치 */
         .level-1, .level-2, .level-3 {
             display: flex;
             justify-content: center;
             position: relative;
         }
+        .level-1 { margin-bottom: 50px; } /* 간격 조정 */
+        .level-2 { margin-bottom: 50px; }
+        .level-3 { gap: 40px; }
 
-        .level-1 { margin-bottom: 40px; width: 100%; } /* 회장 & 총무 */
-        .level-2 { margin-bottom: 40px; } /* 부회장 */
-        .level-3 { gap: 40px; } /* 부장들 */
-
-        /* 연결선 (Connector) 그리기 */
-        .vertical-line {
-            width: 2px;
-            background-color: #ccc;
+        /* [핵심 2] 연결선 다시 그리기 */
+        /* 선의 두께와 색상 */
+        .line {
             position: absolute;
+            background-color: #ccc;
             z-index: 1;
         }
 
-        /* 1. 회장 -> 부회장 연결선 */
-        .line-1-2 {
-            height: 40px;
-            top: 100%; /* 카드 바로 밑에서 시작 */
+        /* 1. 회장 -> 부회장 (세로선) */
+        .line-v-1 {
+            width: 2px;
+            height: 50px; /* 레벨 간격만큼 */
+            top: 100%; /* 카드 바로 밑 */
             left: 50%;
             transform: translateX(-50%);
         }
 
-        /* 2. 부회장 -> 3부장 연결선 (T자형) */
-        .line-2-3-vertical {
-            height: 20px;
+        /* 2. 부회장 하단 T자형 연결고리 */
+        /* 부회장 카드를 감싸는 래퍼를 기준점으로 삼음 */
+        .vice-president-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* 2-1. 부회장 밑으로 내려오는 짧은 세로선 */
+        .line-v-2-short {
+            width: 2px;
+            height: 25px;
             top: 100%;
             left: 50%;
             transform: translateX(-50%);
         }
-        .line-2-3-horizontal {
+        /* 2-2. 가로 긴 선 */
+        .line-h-long {
             height: 2px;
-            background-color: #ccc;
-            width: 440px; /* 3부장 너비에 맞게 조절 */
-            position: absolute;
-            top: calc(100% + 20px); /* 세로선 끝나는 지점 */
+            width: 400px; /* 하단 3개 카드 너비+간격 고려해서 조정 (160*3 + 40*2의 중심들 사이 거리) */
+            top: calc(100% + 25px); /* 짧은 세로선 끝나는 지점 */
+            left: 50%;
+            transform: translateX(-50%);
         }
-        /* 가로선에서 각 부장 머리 위로 내려오는 짧은 선들 */
-        .line-branch {
+        /* 2-3. 각 부장 머리 위로 내려오는 세로선 3개 */
+        .line-v-3-branches {
             width: 2px;
-            height: 20px;
-            background-color: #ccc;
-            position: absolute;
-            top: calc(100% + 20px);
+            height: 25px;
+            top: calc(100% + 25px); /* 가로선 위치에서 시작 */
         }
-        .branch-left { left: calc(50% - 220px); } /* 좌측 부장 위치 */
-        .branch-center { left: 50%; } /* 중앙 부장 위치 */
-        .branch-right { right: calc(50% - 220px); } /* 우측 부장 위치 */
+        /* 위치 계산: (카드너비 160 / 2) + 간격 40 = 120px 간격 */
+        .branch-left { left: calc(50% - 200px); } /* 가로선 너비의 절반 */
+        .branch-center { left: 50%; transform: translateX(-50%); }
+        .branch-right { right: calc(50% - 200px); }
 
-
-        /* 총무 (Special Position) */
-        /* PC 화면에서는 회장 오른쪽 옆에 띄워둠 */
+        /* 총무 위치 (PC) */
         .general-affairs-wrapper {
             position: absolute;
-            left: 60%; /* 중앙보다 약간 오른쪽 */
+            left: calc(50% + 100px); /* 회장 카드 중심에서 오른쪽으로 100px 이동 */
             top: 0;
         }
-        /* 총무 카드만 색상을 다르게 줄 수도 있음 (선택사항) */
-        .card-staff { border-color: #555; }
-        .card-staff .org-role { color: #555; }
+        .card-staff { border-color: #7f8c8d; }
+        .card-staff .org-role { color: #7f8c8d; }
 
 
         /* ==================== */
         /* 모바일 최적화      */
         /* ==================== */
-        /* 화면이 좁을 땐 트리를 깨고 그냥 세로로 나열 */
         @media (max-width: 768px) {
-            .tree-container { display: block; }
-            .level-1, .level-2, .level-3 { 
-                flex-direction: column; 
-                align-items: center; 
-                margin-bottom: 20px;
+            /* 화면이 좁아지면 총무 위치만 회장 아래로 자연스럽게 배치 */
+            /* 나머지는 스크롤로 유지됨 */
+            .level-1 {
+                flex-direction: column;
+                align-items: center;
                 gap: 20px;
+                margin-bottom: 30px;
             }
-            /* 모바일에서 선 숨기기 */
-            .vertical-line, .line-2-3-horizontal, .line-branch { display: none; }
-            
-            /* 총무 위치 리셋 (그냥 회장 밑에 표시) */
             .general-affairs-wrapper {
                 position: static; /* 절대 위치 해제 */
-                margin-top: 20px;
+                margin-left: 0;
             }
+            /* 회장 밑 선 길이 조정 */
+            .line-v-1 { display: none; } /* 총무가 사이에 끼므로 회장-부회장 선 잠시 숨김 */
+            
+            /* 모바일에서는 총무와 부회장 사이 간격 확보 */
+            .level-2 { margin-top: 30px; }
         }
     </style>
 </head>
@@ -170,63 +179,68 @@
     <section>
         <h2>2025 운영진 조직도</h2>
 
-        <div class="tree-container">
-            
-            <div class="level-1">
-                <div class="org-card">
-                    <div class="org-img" style="background-image: url('president.jpg');"></div> 
-                    <div class="org-role">회장</div>
-                    <div class="org-name">김고려</div>
-                    <div class="org-major">통계학과</div>
-                    <div class="vertical-line line-1-2"></div>
-                </div>
+        <div class="org-chart-wrapper">
+            <div class="tree-container">
+                
+                <div class="level-1">
+                    <div style="position: relative;">
+                        <div class="org-card">
+                            <div class="org-img" style="background-image: url('president.jpg');"></div> 
+                            <div class="org-role">회장</div>
+                            <div class="org-name">김고려</div>
+                            <div class="org-major">통계학과</div>
+                        </div>
+                        <div class="line line-v-1"></div>
+                    </div>
 
-                <div class="general-affairs-wrapper">
-                    <div class="org-card card-staff">
-                        <div class="org-img"></div>
-                        <div class="org-role">총무</div>
-                        <div class="org-name">최총무</div>
-                        <div class="org-major">수학과</div>
+                    <div class="general-affairs-wrapper">
+                        <div class="org-card card-staff">
+                            <div class="org-img"></div>
+                            <div class="org-role">총무</div>
+                            <div class="org-name">최총무</div>
+                            <div class="org-major">수학과</div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="level-2">
-                <div class="org-card">
-                    <div class="org-img"></div>
-                    <div class="org-role">부회장</div>
-                    <div class="org-name">이연세</div>
-                    <div class="org-major">경제학과</div>
-                    
-                    <div class="vertical-line line-2-3-vertical"></div>
-                    <div class="line-2-3-horizontal"></div> <div class="line-branch branch-left"></div> <div class="line-branch branch-center"></div> <div class="line-branch branch-right"></div> </div>
-            </div>
-
-            <div class="level-3">
-                <div class="org-card">
-                    <div class="org-img"></div>
-                    <div class="org-role">기획부장</div>
-                    <div class="org-name">박기획</div>
-                    <div class="org-major">경영학과</div>
+                <div class="level-2">
+                    <div class="vice-president-wrapper">
+                        <div class="org-card">
+                            <div class="org-img"></div>
+                            <div class="org-role">부회장</div>
+                            <div class="org-name">이연세</div>
+                            <div class="org-major">경제학과</div>
+                        </div>
+                        <div class="line line-v-2-short"></div>
+                        <div class="line line-h-long"></div>
+                        <div class="line line-v-3-branches branch-left"></div>
+                        <div class="line line-v-3-branches branch-center"></div>
+                        <div class="line line-v-3-branches branch-right"></div>
+                    </div>
                 </div>
 
-                <div class="org-card">
-                    <div class="org-img"></div>
-                    <div class="org-role">홍보부장</div>
-                    <div class="org-name">정홍보</div>
-                    <div class="org-major">미디어학부</div>
+                <div class="level-3">
+                    <div class="org-card">
+                        <div class="org-img"></div>
+                        <div class="org-role">기획부장</div>
+                        <div class="org-name">박기획</div>
+                        <div class="org-major">경영학과</div>
+                    </div>
+                    <div class="org-card">
+                        <div class="org-img"></div>
+                        <div class="org-role">홍보부장</div>
+                        <div class="org-name">정홍보</div>
+                        <div class="org-major">미디어학부</div>
+                    </div>
+                    <div class="org-card">
+                        <div class="org-img"></div>
+                        <div class="org-role">교육부장</div>
+                        <div class="org-name">강교육</div>
+                        <div class="org-major">체육교육과</div>
+                    </div>
                 </div>
 
-                <div class="org-card">
-                    <div class="org-img"></div>
-                    <div class="org-role">교육부장</div>
-                    <div class="org-name">강교육</div>
-                    <div class="org-major">체육교육과</div>
-                </div>
-            </div>
-
-        </div>
-    </section>
+            </div> </div> </section>
 
     <footer>
         <p>&copy; 2025 PAINS. All rights reserved.</p>
