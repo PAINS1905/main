@@ -5,47 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PAINS - 부원 소개</title>
     <style>
-        /* ==================== */
-        /* 기본 스타일       */
-        /* ==================== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; line-height: 1.6; color: #333; background-color: #fdfdfd; }
+        /* ============================ */
+        /* [1] 폰트 파일 불러오기 설정 */
+        /* ============================ */
         
+        /* 제목용 폰트 */
+        @font-face {
+            font-family: 'KBO_Dia';
+            src: url('KBO_medium.otf');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* 본문용 폰트 */
+        @font-face {
+            font-family: 'SCDream';
+            src: url('SCDream5.otf');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* ============================ */
+        /* [2] 기본 스타일 및 폰트 적용 */
+        /* ============================ */
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            /* 기본적으로 모든 글씨는 SCDream5 사용 */
+            font-family: 'SCDream', sans-serif; 
+            line-height: 1.6; 
+            color: #333; 
+            background-color: #fdfdfd; 
+        }
+        
+        /* [요청사항] 특정 제목만 KBO Dia Gothic 사용 */
+        /* header h1: "PAINS Members" */
+        /* section h2: "2025 운영진 조직도" */
+        header h1, section h2 {
+            font-family: 'KBO_Dia', sans-serif;
+        }
+
+        /* ============================ */
+        /* [3] 레이아웃 스타일         */
+        /* ============================ */
+
+        /* 헤더 스타일 */
         header { background-color: #cf8b8b; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         header h1 { font-size: 1.5rem; font-weight: bold; }
         
+        /* 네비게이션 스타일 (index.html과 통일) */
         nav { display: flex; align-items: center; }
-        nav a { color: #ecf0f1; text-decoration: none; margin-left: 15px; font-size: 0.9rem; transition: color 0.3s; }
+        nav a { 
+            color: #ecf0f1; 
+            text-decoration: none; 
+            margin-left: 15px; 
+            font-size: 0.9rem; 
+            transition: color 0.3s; 
+        }
         nav a:hover { color: #fff; font-weight: bold; }
-        
-        .apply-btn { background-color: white; color: #ab3333 !important; padding: 8px 16px; border-radius: 20px; font-weight: bold; transition: all 0.3s ease; }
-        .apply-btn:hover { background-color: #f0f0f0; transform: scale(1.05); }
 
+        /* 섹션 및 푸터 */
         section { padding: 3rem 1rem; max-width: 1200px; margin: 0 auto; }
         h2 { font-size: 2rem; color: #ab3333; margin-bottom: 40px; text-align: center;}
-        
         footer { background-color: #333; color: white; text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.8rem; }
 
         /* ==================== */
-        /* 조직도 스타일      */
+        /* [4] 조직도 스타일   */
         /* ==================== */
         
-        /* 1. 가로 스크롤 컨테이너 */
+        /* 가로 스크롤 컨테이너 */
         .org-chart-wrapper {
-            overflow-x: auto; /* 좁으면 스크롤 생성 */
+            overflow-x: auto;
             padding: 20px 0;
             text-align: center;
-            /* 모바일 터치 스크롤 부드럽게 */
             -webkit-overflow-scrolling: touch; 
         }
 
-        /* 2. 트리 전체 컨테이너 */
+        /* 트리 전체 컨테이너 (최소 너비 고정) */
         .tree-container {
             display: inline-block;
             position: relative;
             padding-top: 20px;
-            /* [중요] 최소 너비를 고정해서 모바일에서도 찌그러지지 않게 함 */
-            min-width: 700px; 
+            min-width: 700px; /* 모바일에서도 모양 유지 */
         }
 
         /* 카드 디자인 */
@@ -70,11 +112,12 @@
             background-position: center;
         }
         
+        /* 조직도 내부 텍스트 폰트 (상속받아 SCDream 적용됨) */
         .org-role { color: #ab3333; font-weight: bold; font-size: 0.9rem; margin-bottom: 4px; }
         .org-name { font-size: 1.1rem; font-weight: bold; margin-bottom: 4px; }
         .org-major { font-size: 0.8rem; color: #666; }
 
-        /* 레벨 배치 (모바일에서도 가로 정렬 유지) */
+        /* 레벨 배치 */
         .level-1, .level-2, .level-3 {
             display: flex;
             justify-content: center;
@@ -91,49 +134,30 @@
             z-index: 1;
         }
 
-        /* 회장 -> 부회장 세로선 */
-        .line-v-1 {
-            width: 2px;
-            height: 50px; /* 레벨 간격만큼 */
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        /* 부회장 하단 래퍼 및 선들 */
-        .vice-president-wrapper {
-            position: relative;
-            display: flex;
-            justify-content: center;
-        }
-        .line-v-2-short {
-            width: 2px; height: 25px; top: 100%; left: 50%; transform: translateX(-50%);
-        }
-        .line-h-long {
-            height: 2px; width: 400px; /* 3부장 간격에 맞춰 조절 */
-            top: calc(100% + 25px); left: 50%; transform: translateX(-50%);
-        }
-        .line-v-3-branches {
-            width: 2px; height: 25px; top: calc(100% + 25px);
-        }
+        /* 선 위치 세부 조정 */
+        .line-v-1 { width: 2px; height: 50px; top: 100%; left: 50%; transform: translateX(-50%); }
+        
+        .vice-president-wrapper { position: relative; display: flex; justify-content: center; }
+        .line-v-2-short { width: 2px; height: 25px; top: 100%; left: 50%; transform: translateX(-50%); }
+        .line-h-long { height: 2px; width: 400px; top: calc(100% + 25px); left: 50%; transform: translateX(-50%); }
+        .line-v-3-branches { width: 2px; height: 25px; top: calc(100% + 25px); }
         .branch-left { left: calc(50% - 200px); }
         .branch-center { left: 50%; transform: translateX(-50%); }
         .branch-right { right: calc(50% - 200px); }
 
-        /* 총무 위치 (항상 회장 오른쪽에 고정) */
+        /* 총무 위치 */
         .general-affairs-wrapper {
             position: absolute;
-            /* 회장 카드 중심에서 오른쪽으로 140px 떨어진 곳 */
             left: calc(50% + 140px); 
             top: 0;
         }
         .card-staff { border-color: #7f8c8d; }
         .card-staff .org-role { color: #7f8c8d; }
 
-        /* 모바일용 미디어 쿼리는 레이아웃을 깨지 않기 위해 제거하거나 최소화 */
+        /* 모바일 헤더 정렬 */
         @media (max-width: 600px) {
-            header { flex-direction: column; gap: 10px; } /* 헤더만 세로로 */
-            section { padding: 2rem 0; } /* 좌우 여백 제거해서 스크롤 확보 */
+            header { flex-direction: column; gap: 10px; }
+            section { padding: 2rem 0; }
         }
     </style>
 </head>
@@ -142,8 +166,8 @@
     <header>
         <h1>PAINS Members</h1>
         <nav>
-            <a href="index.html">Home</a>
-            <a href="members.html" style="font-weight: bold;">Members</a>
+            <a href="index.html">홈으로</a>
+            <a href="members.html" style="font-weight: bold;">부원 소개</a>
         </nav>
     </header>
 
@@ -158,8 +182,8 @@
                         <div class="org-card">
                             <div class="org-img" style="background-image: url('president.jpg');"></div> 
                             <div class="org-role">회장</div>
-                            <div class="org-name">신다정</div>
-                            <div class="org-major">영어영문학과 24</div>
+                            <div class="org-name">김고려</div>
+                            <div class="org-major">통계학과</div>
                         </div>
                         <div class="line line-v-1"></div>
                     </div>
@@ -168,8 +192,8 @@
                         <div class="org-card card-staff">
                             <div class="org-img"></div>
                             <div class="org-role">총무</div>
-                            <div class="org-name">최나훈</div>
-                            <div class="org-major">컴퓨터학과 24</div>
+                            <div class="org-name">최총무</div>
+                            <div class="org-major">수학과</div>
                         </div>
                     </div>
                 </div>
@@ -179,8 +203,8 @@
                         <div class="org-card">
                             <div class="org-img"></div>
                             <div class="org-role">부회장</div>
-                            <div class="org-name">이시영</div>
-                            <div class="org-major">훈련소</div>
+                            <div class="org-name">이연세</div>
+                            <div class="org-major">경제학과</div>
                         </div>
                         <div class="line line-v-2-short"></div>
                         <div class="line line-h-long"></div>
@@ -194,24 +218,26 @@
                     <div class="org-card">
                         <div class="org-img"></div>
                         <div class="org-role">기획부장</div>
-                        <div class="org-name">전영재</div>
-                        <div class="org-major">언어학과 24</div>
+                        <div class="org-name">박기획</div>
+                        <div class="org-major">경영학과</div>
                     </div>
                     <div class="org-card">
                         <div class="org-img"></div>
                         <div class="org-role">홍보부장</div>
-                        <div class="org-name">하승민</div>
-                        <div class="org-major">데이터과학과 23</div>
+                        <div class="org-name">정홍보</div>
+                        <div class="org-major">미디어학부</div>
                     </div>
                     <div class="org-card">
                         <div class="org-img"></div>
                         <div class="org-role">교육부장</div>
-                        <div class="org-name">진민재</div>
-                        <div class="org-major">데이터과학과 24</div>
+                        <div class="org-name">강교육</div>
+                        <div class="org-major">체육교육과</div>
                     </div>
                 </div>
 
-            </div> </div> </section>
+            </div>
+        </div>
+    </section>
 
     <footer>
         <p>&copy; 2025 PAINS. All rights reserved.</p>
@@ -219,4 +245,3 @@
 
 </body>
 </html>
-
