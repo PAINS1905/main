@@ -5,15 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PAINS - 고려대학교 스포츠 통계분석 동아리</title>
     <style>
-        /* 기본 설정 */
+        /* ============================ */
+        /* [1] 폰트 파일 불러오기 설정 */
+        /* ============================ */
+        
+        /* 제목용 폰트 (KBO Dia Gothic) */
+        @font-face {
+            font-family: 'KBO_Dia';
+            src: url('KBO Dia Gothic_medium.otf'); /* 파일명 정확해야 함 */
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* 본문용 폰트 (SCDream5) */
+        @font-face {
+            font-family: 'SCDream';
+            src: url('SCDream5.otf'); /* 파일명 정확해야 함 */
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* ============================ */
+        /* [2] 폰트 적용하기           */
+        /* ============================ */
+
+        /* 기본적으로 모든 글씨는 SCDream5 사용 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; line-height: 1.6; color: #333; }
+        body { 
+            font-family: 'SCDream', sans-serif; 
+            line-height: 1.6; 
+            color: #333; 
+        }
+        
+        /* 제목 부분만 KBO Dia Gothic 사용 */
+        /* h1: "Providing Academic INsights for Sports" */
+        /* h3: "About Us", "Our Activities" */
+        h1, h3 {
+            font-family: 'KBO_Dia', sans-serif;
+        }
+
+
+        /* ============================ */
+        /* [3] 나머지 디자인 스타일    */
+        /* ============================ */
         
         /* 헤더(메뉴) */
         header { background-color: #cf8b8b; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         header h1 { font-size: 1.5rem; font-weight: bold; }
         
-        /* 네비게이션 링크 스타일 (모든 버튼 공통 적용) */
+        /* 네비게이션 링크 스타일 */
         nav { display: flex; align-items: center; }
         nav a { 
             color: #ecf0f1; 
@@ -21,14 +61,9 @@
             margin-left: 15px; 
             font-size: 0.9rem; 
             transition: color 0.3s; 
+            /* 메뉴 글씨도 깔끔하게 본문체(SCDream) 유지 */
         }
-        /* 마우스 올렸을 때 효과 */
-        nav a:hover { 
-            color: #fff; 
-            font-weight: bold; 
-        }
-
-        /* (.apply-btn 스타일은 더 이상 필요 없어서 삭제했습니다) */
+        nav a:hover { color: #fff; font-weight: bold; }
 
         /* 메인 배너 영역 */
         .hero { background-color: #ab3333; color: white; text-align: center; padding: 4rem 1rem; }
@@ -41,7 +76,6 @@
             margin-bottom: 20px;
             border-radius: 12px;
         }
-
         .hero p { font-size: 1.2rem; opacity: 0.9; }
 
         /* 공통 섹션 스타일 */
@@ -51,7 +85,10 @@
         /* 활동 소개 카드 스타일 */
         .activities { display: flex; gap: 20px; flex-wrap: wrap; }
         .card { flex: 1; background: #f9f9f9; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); min-width: 250px; }
-        .card h4 { color: #ab3333; margin-bottom: 10px; font-size: 1.2rem; }
+        
+        /* 카드 제목(정기 스터디 등)은 본문체 중 강조된 느낌이 좋으므로 SCDream 유지하되 굵게 */
+        /* 만약 이것도 KBO 폰트로 하고 싶으면 h4도 위쪽 h1, h3 옆에 추가하면 됨 */
+        .card h4 { color: #ab3333; margin-bottom: 10px; font-size: 1.2rem; font-weight: bold; }
 
         /* 하단 푸터 */
         footer { background-color: #333; color: white; text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.8rem; }
@@ -107,7 +144,7 @@
     </section>
 
     <footer>
-        <p>문의: painsports1905@gmail.com | 위치: 어디지?</p>
+        <p>문의: painsports1905@gmail.com | 위치: 한투스퀘어</p>
         <p>&copy; 2025 PAINS. All rights reserved.</p>
     </footer>
 
