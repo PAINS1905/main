@@ -38,8 +38,6 @@
         }
         
         /* 제목 부분만 KBO Dia Gothic 사용 */
-        /* h1: "Providing Academic INsights for Sports" */
-        /* h3: "About Us", "Our Activities" */
         h1, h3 {
             font-family: 'KBO_Dia', sans-serif;
         }
@@ -61,7 +59,6 @@
             margin-left: 15px; 
             font-size: 0.9rem; 
             transition: color 0.3s; 
-            /* 메뉴 글씨도 깔끔하게 본문체(SCDream) 유지 */
         }
         nav a:hover { color: #fff; font-weight: bold; }
 
@@ -86,12 +83,48 @@
         .activities { display: flex; gap: 20px; flex-wrap: wrap; }
         .card { flex: 1; background: #f9f9f9; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); min-width: 250px; }
         
-        /* 카드 제목(정기 스터디 등)은 본문체 중 강조된 느낌이 좋으므로 SCDream 유지하되 굵게 */
-        /* 만약 이것도 KBO 폰트로 하고 싶으면 h4도 위쪽 h1, h3 옆에 추가하면 됨 */
+        /* 카드 제목 스타일 */
         .card h4 { color: #ab3333; margin-bottom: 10px; font-size: 1.2rem; font-weight: bold; }
 
-        /* 하단 푸터 */
-        footer { background-color: #333; color: white; text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.8rem; }
+        /* ============================ */
+        /* [수정됨] 하단 푸터 스타일   */
+        /* ============================ */
+        footer { background-color: #333; color: white; text-align: center; padding: 3rem 2rem 2rem; margin-top: 2rem; font-size: 0.8rem; }
+
+        /* 푸터 아이콘 버튼 컨테이너 */
+        .footer-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* 버튼 사이 간격 */
+            margin-bottom: 25px; /* 저작권 문구와의 간격 */
+        }
+
+        /* 정사각형 버튼 스타일 */
+        .icon-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;  /* 너비 */
+            height: 50px; /* 높이 (정사각형) */
+            background-color: rgba(255,255,255,0.1); /* 약간 투명한 흰색 배경 */
+            border-radius: 12px; /* 모서리 둥글게 */
+            transition: all 0.3s ease;
+        }
+
+        /* 마우스 올렸을 때 효과 */
+        .icon-btn:hover {
+            background-color: #ab3333; /* 배경색이 빨강으로 변경 */
+            transform: translateY(-3px); /* 살짝 위로 떠오름 */
+        }
+
+        /* 버튼 안의 이미지 스타일 */
+        .icon-btn img {
+            width: 24px; /* 아이콘 크기 */
+            height: 24px;
+            object-fit: contain;
+            /* [팁] 만약 검은색 아이콘을 흰색으로 바꾸고 싶으면 아래 줄 주석 해제하세요 */
+            /* filter: invert(1) brightness(100%); */
+        }
 
         /* 모바일 최적화 */
         @media (max-width: 600px) {
@@ -117,12 +150,15 @@
         <p>고려대학교 교내 유일 스포츠 통계분석 동아리 PAINS</p>
     </div>
 
-	<section>
+    <section>
         <h3>President's Message</h3>
         <p>
-            안녕하십니까, 고려대학교 스포츠 통계분석 동아리 PAINS의 회장 신다정입니다.<br><br>
-            이러쿵저러쿵<br><br>
-            이러쿵저러쿵
+            안녕하십니까, 고려대학교 스포츠 통계분석 동아리 PAINS의 회장 김고려입니다.<br><br>
+            스포츠는 이제 단순한 직관과 경험을 넘어, 데이터와 과학의 영역으로 나아가고 있습니다.
+            PAINS는 이러한 흐름 속에서 '데이터'라는 새로운 언어로 스포츠를 해석하고, 
+            경기장 밖에서 또 다른 승리를 만들어가는 사람들의 모임입니다.<br><br>
+            스포츠를 사랑하고 배움에 대한 열정이 있는 여러분과 함께, 
+            새로운 인사이트를 발견하고 성장해 나가기를 진심으로 고대합니다.
         </p>
     </section>
 
@@ -153,16 +189,22 @@
     </section>
 
     <footer>
-		<p>e-mail: painsports1905@gmail.com</p>
-		<p>Instagram: @ku_pains</p>
+        <div class="footer-icons">
+            <a href="mailto:painsports1905@gmail.com" class="icon-btn" title="Instagram">
+                <img src="instagram.png" alt="Instagram">
+            </a>
+            
+            <a href="https://www.instagram.com/ku_pains" target="_blank" class="icon-btn" title="Notion">
+                <img src="notion.png" alt="Notion">
+            </a>
+            
+            <a href="https://www.notion.so/painsports/PAINS-a9294ba2a44b4ea6a53f0d5ae069749e" target="_blank" class="icon-btn" title="Blog">
+                <img src="naverblog.png" alt="NaverBlog">
+            </a>
+        </div>
+
         <p>&copy; 2025 PAINS. All rights reserved.</p>
     </footer>
 
 </body>
 </html>
-
-
-
-
-
-
