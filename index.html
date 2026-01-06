@@ -209,55 +209,76 @@
 
     <script>
         // ============================================
-        // 1. 여기에 행사 리스트를 입력하세요 (YYYY-MM-DD)
+        // [중요] 아까 복사한 '웹에 게시' 링크를 따옴표 안에 넣으세요!
+        // 주소 끝이 ...output=csv 로 끝나야 합니다.
         // ============================================
-        const eventList = [
-            {
-                name: "PAINS X YSAL 합동 세미나",
-                date: "2026-01-05",
-                time: "18:00 - 20:30 KST",
-                location: "연세대학교 제4공학관 D403",
-                type: "비정기활동"
-            },
-            {
-                name: "PAINS 10기 방학 중 세미나 1",
-                date: "2026-02-05",
-                time: "18:00 - 20:30 KST",
-                location: "TBD",
-                type: "정기활동"
-            },
-            {
-                name: "PAINS 10기 방학 중 세미나 2",
-                date: "2026-02-06",
-                time: "18:00 - 20:30 KST",
-                location: "TBD",
-                type: "정기활동"
+        const GOOGLESHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBnuUvyE2CDV-hG26xCVdnt88JhQgtusdEndJwTzaI62TXPdWTNldVvua9RLkXj1s34qiM0CEcNvbr/pub?gid=305458048&single=true&output=csv";
+
+        // ============================================
+        // 1. 구글 시트 데이터 가져오기 (CSV 파싱)
+        // ============================================
+        async function fetchAndRenderSchedule() {
+            try {
+                const response = await fetch(GOOGLESHEET_URL);
+                const data = await response.text();
+                
+                // CSV 텍스트를 줄 단위로 쪼개기
+                const rows = data.split("\n").map(row => row.trim()).filter(row => row.length > 0);
+                
+                // 첫 번째 줄(제목 행)은 버리고, 두 번째 줄부터 데이터로 변환
+                // 엑셀 순서: A(name), B(date), C(time), D(location), E(type) 라고 가정
+                const eventList = rows.slice(1).map(row => {
+                    // 콤마(,)로 칸 나누기 (따옴표 안에 콤마가 있는 경우 등 복잡한 경우는 제외하고 단순 처리)
+                    const cols = row.split(",");
+                    
+                    // 혹시 데이터가 비어있을 수 있으니 안전장치
+                    if (cols.length < 5) return null;
+
+                    return {
+                        name: cols[0].trim(),     // A열
+                        date: cols[1].trim(),     // B열 (YYYY-MM-DD)
+                        time: cols[2].trim(),     // C열
+                        location: cols[3].trim(), // D열
+                        type: cols[4].trim()      // E열
+                    };
+                }).filter(event => event !== null); // 빈 줄 제거
+
+                // 데이터 준비 완료! 이제 화면 그리기 함수 호출
+                updateSchedule(eventList);
+
+            } catch (error) {
+                console.error("일정을 불러오는 데 실패했습니다:", error);
+                // 에러 시 화면에 표시
+                document.getElementById('name-left').innerText = "일정 로딩 실패";
+                document.getElementById('name-right').innerText = "일정 로딩 실패";
             }
-        ];
+        }
 
         // ============================================
-        // 2. 자동 계산 로직
+        // 2. 날짜 포맷 변환 함수
         // ============================================
-
-        // 날짜를 "YYYY. MM. DD. (요일)" 형식으로 변환하는 함수
         function getFormattedDate(dateStr) {
             const days = ['일', '월', '화', '수', '목', '금', '토'];
+            // YYYY-MM-DD 형식 확인
+            if (!dateStr || !dateStr.includes('-')) return dateStr;
+            
             const [y, m, d] = dateStr.split('-').map(Number);
             const date = new Date(y, m - 1, d); 
             const dayName = days[date.getDay()];
             return `${y}. ${String(m).padStart(2,'0')}. ${String(d).padStart(2,'0')}. (${dayName})`;
         }
 
-        function updateSchedule() {
+        // ============================================
+        // 3. 화면 업데이트 로직 (데이터를 인자로 받음)
+        // ============================================
+        function updateSchedule(eventList) {
             // (1) 한국 시간(KST) 기준 오늘 날짜 구하기
             const now = new Date();
             const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
             const kstOffset = 9 * 60 * 60 * 1000;
             const kstDate = new Date(utc + kstOffset);
             
-            // 시/분/초를 0으로 초기화한 오늘 날짜 객체 (D-Day 계산용)
             const todayDateObj = new Date(kstDate.getFullYear(), kstDate.getMonth(), kstDate.getDate());
-            // 비교용 문자열 YYYY-MM-DD
             const todayStr = kstDate.toISOString().split('T')[0];
 
             // (2) 일정 분류
@@ -266,6 +287,9 @@
             let futureEvents = [];
 
             eventList.forEach(event => {
+                // 날짜 형식이 올바른지 확인 (YYYY-MM-DD)
+                if(!event.date || event.date.length !== 10) return;
+
                 if (event.date === todayStr) {
                     todayEvent = event;
                 } else if (event.date < todayStr) {
@@ -279,7 +303,7 @@
             pastEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
             futureEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-            // (3) 왼쪽 카드 결정
+            // (3) 왼쪽 카드 렌더링
             const leftCard = document.getElementById('card-left');
             const leftTitle = document.getElementById('title-left');
             
@@ -297,39 +321,36 @@
                 }
             }
 
-            // (4) 오른쪽 카드 결정 (D-N 표시 포함)
+            // (4) 오른쪽 카드 렌더링
             const rightCard = document.getElementById('card-right');
-            // 오른쪽 카드 제목은 항상 "Upcoming Event"로 고정 (JS에서 수정 안 함)
-            
-            const dDayEl = document.getElementById('d-day-right'); // D-N 표시할 곳
-
+            const dDayEl = document.getElementById('d-day-right');
             rightCard.classList.remove('d-day-border');
 
             if (futureEvents.length > 0) {
                 const nextEvent = futureEvents[0];
                 
-                // D-N 계산
                 const [ny, nm, nd] = nextEvent.date.split('-').map(Number);
                 const nextEventDateObj = new Date(ny, nm - 1, nd);
                 const diffTime = nextEventDateObj - todayDateObj;
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                 
-                // D-N 표시
                 dDayEl.innerText = `D-${diffDays}`;
                 renderCard('right', nextEvent);
             } else {
-                dDayEl.innerText = ""; // 일정이 없으면 D-N도 지움
+                dDayEl.innerText = "";
                 renderEmpty('right');
             }
         }
 
-        // 카드 내용 채우기 함수
+        // 카드 내용 채우기 도우미 함수
         function renderCard(side, event) {
             const badgeEl = document.getElementById(`badge-${side}`);
-            badgeEl.innerText = event.type || "기타";
+            const type = event.type || "기타";
+            badgeEl.innerText = type;
+            
             badgeEl.className = 'badge';
-            if (event.type === '정기활동') badgeEl.classList.add('regular');
-            else if (event.type === '비정기활동') badgeEl.classList.add('irregular');
+            if (type.includes('정기')) badgeEl.classList.add('regular');
+            else if (type.includes('비정기')) badgeEl.classList.add('irregular');
             else badgeEl.classList.add('etc');
 
             document.getElementById(`name-${side}`).innerText = event.name || "TBD";
@@ -342,13 +363,15 @@
             document.getElementById(`badge-${side}`).className = 'badge etc';
             document.getElementById(`badge-${side}`).innerText = 'TBD';
             document.getElementById(`name-${side}`).innerText = '일정 없음';
-            document.getElementById(`date-${side}`).innerText = 'TBD';
-            document.getElementById(`time-${side}`).innerText = 'TBD';
-            document.getElementById(`loc-${side}`).innerText = 'TBD';
+            document.getElementById(`date-${side}`).innerText = '-';
+            document.getElementById(`time-${side}`).innerText = '-';
+            document.getElementById(`loc-${side}`).innerText = '-';
         }
 
-        updateSchedule();
+        // 실행!
+        fetchAndRenderSchedule();
     </script>
 
 </body>
 </html>
+
