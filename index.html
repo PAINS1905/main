@@ -349,16 +349,22 @@
             badgeEl.innerText = type;
             
             badgeEl.className = 'badge';
-            if (type.includes('정기')) badgeEl.classList.add('regular');
-            else if (type.includes('비정기')) badgeEl.classList.add('irregular');
-            else badgeEl.classList.add('etc');
+            
+            if (type.includes('비정기')) {
+                badgeEl.classList.add('irregular'); // 주황색
+            } 
+            else if (type.includes('정기')) {
+                badgeEl.classList.add('regular');   // 초록색
+            } 
+            else {
+                badgeEl.classList.add('etc');       // 회색
+            }
 
             document.getElementById(`name-${side}`).innerText = event.name || "TBD";
             document.getElementById(`date-${side}`).innerText = getFormattedDate(event.date);
             document.getElementById(`time-${side}`).innerText = event.time || "TBD";
             document.getElementById(`loc-${side}`).innerText = event.location || "TBD";
         }
-
         function renderEmpty(side) {
             document.getElementById(`badge-${side}`).className = 'badge etc';
             document.getElementById(`badge-${side}`).innerText = 'TBD';
@@ -374,4 +380,5 @@
 
 </body>
 </html>
+
 
