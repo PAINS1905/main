@@ -42,18 +42,18 @@
 
         /* 카드 공통 스타일 */
         .activities { display: flex; gap: 20px; flex-wrap: wrap; }
-        .card { flex: 1; background: #f9f9f9; padding: 25px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); min-width: 280px; position: relative; border: 2px solid transparent; /* 기본 테두리 투명 */ }
+        .card { flex: 1; background: #f9f9f9; padding: 25px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); min-width: 280px; position: relative; border: 2px solid transparent; }
         .card h4 { color: #ab3333; margin-bottom: 15px; font-size: 1.2rem; font-weight: bold; }
 
         /* [일정 전용 스타일] */
         .schedule-content { text-align: left; margin-top: 10px; }
         .event-name { font-size: 1.3rem; font-weight: bold; margin-bottom: 8px; display: block; word-break: keep-all; }
         
-        /* D-DAY 강조 스타일 (자바스크립트로 추가됨) */
+        /* D-DAY 강조 스타일 */
         .d-day-border {
-            border: 3px solid #ab3333 !important; /* 진한 빨간색 테두리 */
-            background-color: #fff5f5 !important; /* 배경도 살짝 붉게 */
-            animation: pulse 2s infinite; /* 살짝 깜빡이는 효과 */
+            border: 3px solid #ab3333 !important;
+            background-color: #fff5f5 !important;
+            animation: pulse 2s infinite;
         }
         
         @keyframes pulse {
@@ -127,7 +127,7 @@
             </div>
 
             <div class="card" id="card-right">
-                <h4 id="title-right">⏩ Upcoming Event</h4>
+                <h4 id="title-right">⏩ Upcoming</h4>
                 <div class="schedule-content">
                     <span id="badge-right" class="badge etc">TBD</span>
                     <span id="name-right" class="event-name">예정된 다음 일정이 없습니다.</span>
@@ -184,26 +184,26 @@
 
     <script>
         // ============================================
-        // 1. 여기에 행사 리스트를 입력하세요 (YYYY-MM-DD 형식 준수)
+        // 1. 여기에 행사 리스트를 입력하세요 (YYYY-MM-DD)
         // ============================================
         const eventList = [
             {
                 name: "PAINS X YSAL 합동 세미나",
-                date: "2026-01-05", // 월
+                date: "2026-01-05",
                 time: "18:00 - 20:30 KST",
                 location: "연세대학교 제4공학관 D403",
                 type: "비정기활동"
             },
             {
                 name: "PAINS 10기 방학 중 세미나 1",
-                date: "2026-02-05", // 목
+                date: "2026-02-05",
                 time: "18:00 - 20:30 KST",
                 location: "TBD",
                 type: "정기활동"
             },
             {
                 name: "PAINS 10기 방학 중 세미나 2",
-                date: "2026-02-06", // 금
+                date: "2026-02-06",
                 time: "18:00 - 20:30 KST",
                 location: "TBD",
                 type: "정기활동"
@@ -211,8 +211,20 @@
         ];
 
         // ============================================
-        // 2. 자동 계산 로직 (수정 불필요)
+        // 2. 자동 계산 로직
         // ============================================
+
+        // 날짜를 "YYYY. MM. DD. (요일)" 형식으로 변환하는 함수
+        function getFormattedDate(dateStr) {
+            const days = ['일', '월', '화', '수', '목', '금', '토'];
+            // YYYY-MM-DD를 정확히 분리하여 Date 객체 생성 (timezone 이슈 방지)
+            const [y, m, d] = dateStr.split('-').map(Number);
+            const date = new Date(y, m - 1, d); 
+            const dayName = days[date.getDay()];
+            
+            return `${y}. ${String(m).padStart(2,'0')}. ${String(d).padStart(2,'0')}. (${dayName})`;
+        }
+
         function updateSchedule() {
             // (1) 한국 시간(KST) 기준 오늘 날짜 구하기
             const now = new Date();
@@ -220,10 +232,12 @@
             const kstOffset = 9 * 60 * 60 * 1000;
             const kstDate = new Date(utc + kstOffset);
             
-            // YYYY-MM-DD 형식의 문자열로 변환 (시간 제거)
+            // 시/분/초를 0으로 초기화한 오늘 날짜 객체 (D-Day 계산용)
+            const todayDateObj = new Date(kstDate.getFullYear(), kstDate.getMonth(), kstDate.getDate());
+            // 비교용 문자열 YYYY-MM-DD
             const todayStr = kstDate.toISOString().split('T')[0];
 
-            // (2) 일정 분류 (오늘 / 과거 / 미래)
+            // (2) 일정 분류
             let todayEvent = null;
             let pastEvents = [];
             let futureEvents = [];
@@ -238,60 +252,67 @@
                 }
             });
 
-            // 과거 일정은 최신순 정렬 (내림차순)
+            // 정렬
             pastEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
-            // 미래 일정은 가까운순 정렬 (오름차순)
             futureEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-            // (3) 왼쪽 카드 결정 (D-DAY가 우선, 없으면 지난 일정)
+            // (3) 왼쪽 카드 결정
             const leftCard = document.getElementById('card-left');
             const leftTitle = document.getElementById('title-left');
             
             if (todayEvent) {
-                // [CASE 1] 오늘 행사가 있는 경우 -> D-DAY 표시
                 leftTitle.innerText = "🔥D-DAY";
-                leftCard.classList.add('d-day-border'); // 빨간 테두리 추가
+                leftCard.classList.add('d-day-border');
                 renderCard('left', todayEvent);
             } else {
-                // [CASE 2] 오늘 행사가 없는 경우 -> 가장 최근 지난 일정 표시
                 leftTitle.innerText = "⏪ Previous Event";
-                leftCard.classList.remove('d-day-border'); // 테두리 제거
-                
+                leftCard.classList.remove('d-day-border');
                 if (pastEvents.length > 0) {
                     renderCard('left', pastEvents[0]);
                 } else {
-                    renderEmpty('left'); // 지난 일정도 없으면 TBD
+                    renderEmpty('left');
                 }
             }
 
-            // (4) 오른쪽 카드 결정 (다음 일정)
+            // (4) 오른쪽 카드 결정 (D-N 계산 포함)
             const rightCard = document.getElementById('card-right');
-            rightCard.classList.remove('d-day-border'); // 오른쪽은 항상 테두리 없음
+            const rightTitle = document.getElementById('title-right');
+            rightCard.classList.remove('d-day-border');
 
             if (futureEvents.length > 0) {
-                renderCard('right', futureEvents[0]);
+                const nextEvent = futureEvents[0];
+                
+                // D-N 계산
+                const [ny, nm, nd] = nextEvent.date.split('-').map(Number);
+                const nextEventDateObj = new Date(ny, nm - 1, nd);
+                const diffTime = nextEventDateObj - todayDateObj;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                // 제목을 D-N으로 변경
+                rightTitle.innerText = `D-${diffDays}`;
+                renderCard('right', nextEvent);
             } else {
-                renderEmpty('right'); // 예정된 일정이 없으면 TBD
+                rightTitle.innerText = "Upcoming";
+                renderEmpty('right');
             }
         }
 
         // 카드 내용 채우기 함수
         function renderCard(side, event) {
-            // 배지 색상 결정
             const badgeEl = document.getElementById(`badge-${side}`);
             badgeEl.innerText = event.type || "기타";
-            badgeEl.className = 'badge'; // 초기화
+            badgeEl.className = 'badge';
             if (event.type === '정기활동') badgeEl.classList.add('regular');
             else if (event.type === '비정기활동') badgeEl.classList.add('irregular');
             else badgeEl.classList.add('etc');
 
             document.getElementById(`name-${side}`).innerText = event.name || "TBD";
-            document.getElementById(`date-${side}`).innerText = event.date || "TBD";
+            // 여기서 요일 변환 함수 적용
+            document.getElementById(`date-${side}`).innerText = getFormattedDate(event.date);
             document.getElementById(`time-${side}`).innerText = event.time || "TBD";
             document.getElementById(`loc-${side}`).innerText = event.location || "TBD";
         }
 
-        // 빈 카드(TBD) 채우기 함수
         function renderEmpty(side) {
             document.getElementById(`badge-${side}`).className = 'badge etc';
             document.getElementById(`badge-${side}`).innerText = 'TBD';
@@ -301,10 +322,8 @@
             document.getElementById(`loc-${side}`).innerText = 'TBD';
         }
 
-        // 페이지 로드 시 실행
         updateSchedule();
     </script>
 
 </body>
 </html>
-
