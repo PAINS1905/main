@@ -43,13 +43,31 @@
         /* 카드 공통 스타일 */
         .activities { display: flex; gap: 20px; flex-wrap: wrap; }
         .card { flex: 1; background: #f9f9f9; padding: 25px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); min-width: 280px; position: relative; border: 2px solid transparent; }
-        .card h4 { color: #ab3333; margin-bottom: 15px; font-size: 1.2rem; font-weight: bold; }
+        
+        /* [수정됨] 카드 헤더 (제목과 D-DAY를 양옆으로 배치) */
+        .card-header {
+            display: flex;
+            justify-content: space-between; /* 양 끝 정렬 */
+            align-items: center; /* 수직 중앙 정렬 */
+            margin-bottom: 15px; /* 아래 내용과의 간격 */
+        }
+        
+        /* 기존 h4 스타일 유지하되 마진 제거 (헤더 컨테이너가 마진 담당) */
+        .card h4 { color: #ab3333; font-size: 1.2rem; font-weight: bold; margin: 0; }
+
+        /* [추가됨] D-DAY 텍스트 스타일 */
+        .d-day-text {
+            font-family: 'KBO_Dia', sans-serif; /* 제목과 같은 폰트 */
+            color: #000; /* 검은색 */
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
 
         /* [일정 전용 스타일] */
         .schedule-content { text-align: left; margin-top: 10px; }
         .event-name { font-size: 1.3rem; font-weight: bold; margin-bottom: 8px; display: block; word-break: keep-all; }
         
-        /* D-DAY 강조 스타일 */
+        /* D-DAY 강조 테두리 스타일 */
         .d-day-border {
             border: 3px solid #ab3333 !important;
             background-color: #fff5f5 !important;
@@ -114,7 +132,10 @@
         <h3>Schedule</h3>
         <div class="activities">
             <div class="card" id="card-left">
-                <h4 id="title-left">Loading...</h4>
+                <div class="card-header">
+                    <h4 id="title-left">Loading...</h4>
+                    </div>
+                
                 <div class="schedule-content">
                     <span id="badge-left" class="badge etc">TBD</span>
                     <span id="name-left" class="event-name">일정 정보를 불러오는 중입니다...</span>
@@ -127,7 +148,11 @@
             </div>
 
             <div class="card" id="card-right">
-                <h4 id="title-right">⏩ Upcoming</h4>
+                <div class="card-header">
+                    <h4 id="title-right">⏩ Upcoming Event</h4>
+                    <span id="d-day-right" class="d-day-text"></span>
+                </div>
+
                 <div class="schedule-content">
                     <span id="badge-right" class="badge etc">TBD</span>
                     <span id="name-right" class="event-name">예정된 다음 일정이 없습니다.</span>
@@ -217,11 +242,9 @@
         // 날짜를 "YYYY. MM. DD. (요일)" 형식으로 변환하는 함수
         function getFormattedDate(dateStr) {
             const days = ['일', '월', '화', '수', '목', '금', '토'];
-            // YYYY-MM-DD를 정확히 분리하여 Date 객체 생성 (timezone 이슈 방지)
             const [y, m, d] = dateStr.split('-').map(Number);
             const date = new Date(y, m - 1, d); 
             const dayName = days[date.getDay()];
-            
             return `${y}. ${String(m).padStart(2,'0')}. ${String(d).padStart(2,'0')}. (${dayName})`;
         }
 
@@ -274,9 +297,12 @@
                 }
             }
 
-            // (4) 오른쪽 카드 결정 (D-N 계산 포함)
+            // (4) 오른쪽 카드 결정 (D-N 표시 포함)
             const rightCard = document.getElementById('card-right');
-            const rightTitle = document.getElementById('title-right');
+            // 오른쪽 카드 제목은 항상 "Upcoming Event"로 고정 (JS에서 수정 안 함)
+            
+            const dDayEl = document.getElementById('d-day-right'); // D-N 표시할 곳
+
             rightCard.classList.remove('d-day-border');
 
             if (futureEvents.length > 0) {
@@ -288,11 +314,11 @@
                 const diffTime = nextEventDateObj - todayDateObj;
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                 
-                // 제목을 D-N으로 변경
-                rightTitle.innerText = `D-${diffDays}`;
+                // D-N 표시
+                dDayEl.innerText = `D-${diffDays}`;
                 renderCard('right', nextEvent);
             } else {
-                rightTitle.innerText = "Upcoming";
+                dDayEl.innerText = ""; // 일정이 없으면 D-N도 지움
                 renderEmpty('right');
             }
         }
@@ -307,7 +333,6 @@
             else badgeEl.classList.add('etc');
 
             document.getElementById(`name-${side}`).innerText = event.name || "TBD";
-            // 여기서 요일 변환 함수 적용
             document.getElementById(`date-${side}`).innerText = getFormattedDate(event.date);
             document.getElementById(`time-${side}`).innerText = event.time || "TBD";
             document.getElementById(`loc-${side}`).innerText = event.location || "TBD";
