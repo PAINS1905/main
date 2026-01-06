@@ -8,153 +8,100 @@
         /* ============================ */
         /* [1] 폰트 파일 불러오기 설정 */
         /* ============================ */
-        
-        /* 제목용 폰트 */
         @font-face {
             font-family: 'KBO_Dia';
             src: url('KBO_medium.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
+            font-weight: normal; font-style: normal;
         }
-
-        /* 본문용 폰트 */
         @font-face {
             font-family: 'SCDream';
             src: url('SCDream5.otf');
-            font-weight: normal;
-            font-style: normal;
+            font-weight: normal; font-style: normal;
         }
 
         /* ============================ */
         /* [2] 기본 스타일 및 폰트 적용 */
         /* ============================ */
-        
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
-            /* 기본적으로 모든 글씨는 SCDream5 사용 */
             font-family: 'SCDream', sans-serif; 
             line-height: 1.6; 
             color: #333; 
             background-color: #fdfdfd; 
         }
         
-        /* [요청사항] 특정 제목만 KBO Dia Gothic 사용 */
-        /* header h1: "PAINS Members" */
-        /* section h2: "2025 운영진 조직도" */
         header h1, section h2 {
             font-family: 'KBO_Dia', sans-serif;
         }
 
         /* ============================ */
-        /* [3] 레이아웃 스타일         */
+        /* [3] 레이아웃 스타일          */
         /* ============================ */
-
-        /* 헤더 스타일 */
         header { background-color: #cf8b8b; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         header h1 { font-size: 1.5rem; font-weight: bold; }
         
-        /* 네비게이션 스타일 (index.html과 통일) */
         nav { display: flex; align-items: center; }
-        nav a { 
-            color: #ecf0f1; 
-            text-decoration: none; 
-            margin-left: 15px; 
-            font-size: 0.9rem; 
-            transition: color 0.3s; 
-        }
+        nav a { color: #ecf0f1; text-decoration: none; margin-left: 15px; font-size: 0.9rem; transition: color 0.3s; }
         nav a:hover { color: #fff; font-weight: bold; }
 
-        /* 섹션 및 푸터 */
         section { padding: 3rem 1rem; max-width: 1200px; margin: 0 auto; }
         h2 { font-size: 2rem; color: #ab3333; margin-bottom: 40px; text-align: center;}
         footer { background-color: #333; color: white; text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.8rem; }
 
         /* ==================== */
-        /* [4] 조직도 스타일   */
+        /* [4] 조직도 스타일    */
         /* ==================== */
-        
-        /* 가로 스크롤 컨테이너 */
         .org-chart-wrapper {
-            overflow-x: auto;
-            padding: 20px 0;
-            text-align: center;
-            -webkit-overflow-scrolling: touch; 
+            overflow-x: auto; padding: 20px 0; text-align: center; -webkit-overflow-scrolling: touch; 
         }
-
-        /* 트리 전체 컨테이너 (최소 너비 고정) */
         .tree-container {
-            display: inline-block;
-            position: relative;
-            padding-top: 20px;
-            min-width: 700px; /* 모바일에서도 모양 유지 */
+            display: inline-block; position: relative; padding-top: 20px; min-width: 700px; 
         }
 
         /* 카드 디자인 */
         .org-card {
-            background: white;
-            border: 2px solid #ab3333;
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            width: 160px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 2;
+            background: white; border: 2px solid #ab3333; border-radius: 12px; padding: 15px;
+            text-align: center; width: 160px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative; z-index: 2; margin: 0 auto; /* 중앙 정렬 보정 */
         }
         
         .org-img {
-            width: 80px; height: 80px;
-            background-color: #eee;
-            border-radius: 50%;
-            margin: 0 auto 10px;
-            background-size: cover;
-            background-position: center;
+            width: 80px; height: 80px; background-color: #eee; border-radius: 50%;
+            margin: 0 auto 10px; background-size: cover; background-position: center;
         }
         
-        /* 조직도 내부 텍스트 폰트 (상속받아 SCDream 적용됨) */
         .org-role { color: #ab3333; font-weight: bold; font-size: 0.9rem; margin-bottom: 4px; }
         .org-name { font-size: 1.1rem; font-weight: bold; margin-bottom: 4px; }
-        .org-major { font-size: 0.8rem; color: #666; }
+        .org-major { font-size: 0.8rem; color: #666; word-break: keep-all; }
 
         /* 레벨 배치 */
         .level-1, .level-2, .level-3 {
-            display: flex;
-            justify-content: center;
-            position: relative;
+            display: flex; justify-content: center; position: relative;
         }
         .level-1 { margin-bottom: 50px; }
         .level-2 { margin-bottom: 50px; }
         .level-3 { gap: 40px; }
 
         /* 연결선 스타일 */
-        .line {
-            position: absolute;
-            background-color: #ccc;
-            z-index: 1;
-        }
-
-        /* 선 위치 세부 조정 */
+        .line { position: absolute; background-color: #ccc; z-index: 1; }
         .line-v-1 { width: 2px; height: 50px; top: 100%; left: 50%; transform: translateX(-50%); }
         
         .vice-president-wrapper { position: relative; display: flex; justify-content: center; }
         .line-v-2-short { width: 2px; height: 25px; top: 100%; left: 50%; transform: translateX(-50%); }
         .line-h-long { height: 2px; width: 400px; top: calc(100% + 25px); left: 50%; transform: translateX(-50%); }
+        
+        /* 3갈래 줄기 (3명일 때 최적화) */
         .line-v-3-branches { width: 2px; height: 25px; top: calc(100% + 25px); }
         .branch-left { left: calc(50% - 200px); }
         .branch-center { left: 50%; transform: translateX(-50%); }
         .branch-right { right: calc(50% - 200px); }
 
-        /* 총무 위치 */
-        .general-affairs-wrapper {
-            position: absolute;
-            left: calc(50% + 140px); 
-            top: 0;
-        }
+        /* 총무 위치 (절대 위치) */
+        .general-affairs-wrapper { position: absolute; left: calc(50% + 140px); top: 0; }
         .card-staff { border-color: #7f8c8d; }
         .card-staff .org-role { color: #7f8c8d; }
 
-        /* 모바일 헤더 정렬 */
         @media (max-width: 600px) {
             header { flex-direction: column; gap: 10px; }
             section { padding: 2rem 0; }
@@ -178,32 +125,32 @@
                 
                 <div class="level-1">
                     <div style="position: relative;">
-                        <div class="org-card">
-                            <div class="org-img" style="background-image: url('president.jpg');"></div> 
+                        <div class="org-card" id="card-president">
+                            <div class="org-img"></div> 
                             <div class="org-role">회장</div>
-                            <div class="org-name">신다정</div>
-                            <div class="org-major">영어영문학과 24</div>
+                            <div class="org-name">Loading...</div>
+                            <div class="org-major">-</div>
                         </div>
                         <div class="line line-v-1"></div>
                     </div>
 
                     <div class="general-affairs-wrapper">
-                        <div class="org-card card-staff">
+                        <div class="org-card card-staff" id="card-staff">
                             <div class="org-img"></div>
                             <div class="org-role">총무</div>
-                            <div class="org-name">최나훈</div>
-                            <div class="org-major">컴퓨터학과 24</div>
+                            <div class="org-name">Loading...</div>
+                            <div class="org-major">-</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="level-2">
                     <div class="vice-president-wrapper">
-                        <div class="org-card">
+                        <div class="org-card" id="card-vice">
                             <div class="org-img"></div>
                             <div class="org-role">부회장</div>
-                            <div class="org-name">이시영</div>
-                            <div class="org-major">훈련소</div>
+                            <div class="org-name">Loading...</div>
+                            <div class="org-major">-</div>
                         </div>
                         <div class="line line-v-2-short"></div>
                         <div class="line line-h-long"></div>
@@ -213,25 +160,8 @@
                     </div>
                 </div>
 
-                <div class="level-3">
-                    <div class="org-card">
-                        <div class="org-img"></div>
-                        <div class="org-role">기획부장</div>
-                        <div class="org-name">전영재</div>
-                        <div class="org-major">언어학과 24</div>
-                    </div>
-                    <div class="org-card">
-                        <div class="org-img"></div>
-                        <div class="org-role">홍보부장</div>
-                        <div class="org-name">하승민</div>
-                        <div class="org-major">데이터과학과 23</div>
-                    </div>
-                    <div class="org-card">
-                        <div class="org-img"></div>
-                        <div class="org-role">교육부장</div>
-                        <div class="org-name">진민재</div>
-                        <div class="org-major">데이터과학과 24</div>
-                    </div>
+                <div class="level-3" id="container-managers">
+                    <div class="org-name">데이터를 불러오는 중...</div>
                 </div>
 
             </div>
@@ -242,10 +172,89 @@
         <p>&copy; 2026 PAINS. All rights reserved.</p>
     </footer>
 
+    <script>
+        // 제공해주신 CSV 링크
+        const MEMBERS_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBnuUvyE2CDV-hG26xCVdnt88JhQgtusdEndJwTzaI62TXPdWTNldVvua9RLkXj1s34qiM0CEcNvbr/pub?gid=346060998&single=true&output=csv";
+
+        async function fetchAndRenderMembers() {
+            try {
+                const response = await fetch(MEMBERS_SHEET_URL);
+                const data = await response.text();
+                
+                // CSV 파싱
+                const rows = data.split("\n").map(row => row.trim()).filter(row => row.length > 0);
+                
+                // 첫 줄(헤더) 제거 후 객체로 변환
+                const members = rows.slice(1).map(row => {
+                    const cols = row.split(",");
+                    if (cols.length < 4) return null;
+                    return {
+                        level: cols[0].trim(),   // A열
+                        role: cols[1].trim(),    // B열
+                        name: cols[2].trim(),    // C열
+                        major: cols[3].trim(),   // D열
+                        image: cols[4] ? cols[4].trim() : "" // E열 (이미지 없으면 빈칸)
+                    };
+                }).filter(m => m !== null);
+
+                renderOrgChart(members);
+
+            } catch (error) {
+                console.error("데이터 로딩 실패:", error);
+                document.getElementById('container-managers').innerHTML = "<div>데이터를 불러오지 못했습니다.</div>";
+            }
+        }
+
+        function renderOrgChart(members) {
+            // 1. 주요 직책 채우기 (회장, 총무, 부회장)
+            // find 함수를 써서 '직책(Role)' 이름으로 찾습니다.
+            const president = members.find(m => m.role === '회장');
+            const staff = members.find(m => m.role === '총무');
+            const vice = members.find(m => m.role === '부회장');
+
+            // 카드 업데이트 함수 호출
+            if (president) updateCard('card-president', president);
+            if (staff) updateCard('card-staff', staff);
+            if (vice) updateCard('card-vice', vice);
+
+            // 2. 부장단 (Level 3) 채우기
+            const managers = members.filter(m => m.level === '3');
+            const managerContainer = document.getElementById('container-managers');
+            managerContainer.innerHTML = ""; // 기존 내용(로딩중) 지우기
+
+            managers.forEach(mgr => {
+                const cardHTML = `
+                    <div class="org-card">
+                        <div class="org-img" style="${mgr.image ? `background-image: url('${mgr.image}');` : ''}"></div>
+                        <div class="org-role">${mgr.role}</div>
+                        <div class="org-name">${mgr.name}</div>
+                        <div class="org-major">${mgr.major}</div>
+                    </div>
+                `;
+                managerContainer.insertAdjacentHTML('beforeend', cardHTML);
+            });
+        }
+
+        // 개별 카드 내용을 바꾸는 도우미 함수
+        function updateCard(elementId, data) {
+            const card = document.getElementById(elementId);
+            if(!card) return;
+
+            // 이미지 처리
+            const imgDiv = card.querySelector('.org-img');
+            if (data.image) {
+                imgDiv.style.backgroundImage = `url('${data.image}')`;
+            }
+
+            // 텍스트 처리
+            card.querySelector('.org-role').innerText = data.role;
+            card.querySelector('.org-name').innerText = data.name;
+            card.querySelector('.org-major').innerText = data.major;
+        }
+
+        // 실행
+        fetchAndRenderMembers();
+    </script>
+
 </body>
 </html>
-
-
-
-
-
