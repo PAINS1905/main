@@ -3,220 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAINS - 부원 소개</title>
+    <title>PAINS - 출석 조회</title>
     <style>
-        /* ==================== */
-        /* 기본 스타일       */
-        /* ==================== */
+        /* [폰트 설정] */
+        @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); }
+        @font-face { font-family: 'SCDream'; src: url('SCDream5.otf'); }
+
+        /* [기본 스타일] */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; line-height: 1.6; color: #333; background-color: #fdfdfd; }
+        body { font-family: 'SCDream', sans-serif; background-color: #fdfdfd; color: #333; line-height: 1.6; }
         
+        /* [헤더] */
         header { background-color: #cf8b8b; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        header h1 { font-size: 1.5rem; font-weight: bold; }
-        
-        nav { display: flex; align-items: center; }
+        header h1 { font-family: 'KBO_Dia', sans-serif; font-size: 1.5rem; }
         nav a { color: #ecf0f1; text-decoration: none; margin-left: 15px; font-size: 0.9rem; transition: color 0.3s; }
         nav a:hover { color: #fff; font-weight: bold; }
+
+        /* [메인 컨테이너] */
+        .container { max-width: 500px; margin: 5rem auto; padding: 0 1rem; text-align: center; }
         
-        .apply-btn { background-color: white; color: #ab3333 !important; padding: 8px 16px; border-radius: 20px; font-weight: bold; transition: all 0.3s ease; }
-        .apply-btn:hover { background-color: #f0f0f0; transform: scale(1.05); }
-
-        section { padding: 3rem 1rem; max-width: 1200px; margin: 0 auto; }
-        h2 { font-size: 2rem; color: #ab3333; margin-bottom: 40px; text-align: center;}
+        /* [조회 카드] */
+        .search-card {
+            background: white; border-radius: 12px; padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eee;
+        }
+        .search-card h2 { font-family: 'KBO_Dia', sans-serif; color: #ab3333; margin-bottom: 1.5rem; font-size: 1.8rem; }
         
-        footer { background-color: #333; color: white; text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.8rem; }
+        /* [입력폼] */
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; color: #555; }
+        .input-group input {
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;
+            font-size: 1rem; font-family: 'SCDream', sans-serif;
+        }
+        .input-group input:focus { outline: none; border-color: #ab3333; }
 
-        /* ==================== */
-        /* 조직도 스타일      */
-        /* ==================== */
-        
-        /* 1. 가로 스크롤 컨테이너 */
-        .org-chart-wrapper {
-            overflow-x: auto; /* 좁으면 스크롤 생성 */
-            padding: 20px 0;
-            text-align: center;
-            /* 모바일 터치 스크롤 부드럽게 */
-            -webkit-overflow-scrolling: touch; 
+        /* [버튼] */
+        .btn-submit {
+            width: 100%; padding: 12px; background-color: #ab3333; color: white; border: none;
+            border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 10px;
         }
+        .btn-submit:hover { background-color: #8f2a2a; }
+        .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; }
 
-        /* 2. 트리 전체 컨테이너 */
-        .tree-container {
-            display: inline-block;
-            position: relative;
-            padding-top: 20px;
-            /* [중요] 최소 너비를 고정해서 모바일에서도 찌그러지지 않게 함 */
-            min-width: 700px; 
-        }
+        /* [결과창] */
+        #result-area { margin-top: 2rem; display: none; /* 처음에 숨김 */ padding-top: 2rem; border-top: 2px dashed #eee; }
+        .result-box { background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+        .result-label { font-size: 0.9rem; color: #666; margin-bottom: 5px; }
+        .result-value { font-size: 1.5rem; font-weight: bold; color: #333; }
+        .highlight { color: #ab3333; }
 
-        /* 카드 디자인 */
-        .org-card {
-            background: white;
-            border: 2px solid #ab3333;
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            width: 160px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 2;
-        }
-        
-        .org-img {
-            width: 80px; height: 80px;
-            background-color: #eee;
-            border-radius: 50%;
-            margin: 0 auto 10px;
-            background-size: cover;
-            background-position: center;
-        }
-        
-        .org-role { color: #ab3333; font-weight: bold; font-size: 0.9rem; margin-bottom: 4px; }
-        .org-name { font-size: 1.1rem; font-weight: bold; margin-bottom: 4px; }
-        .org-major { font-size: 0.8rem; color: #666; }
+        /* [로딩 애니메이션] */
+        .loader { display: none; margin: 20px auto; border: 4px solid #f3f3f3; border-top: 4px solid #ab3333; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* 레벨 배치 (모바일에서도 가로 정렬 유지) */
-        .level-1, .level-2, .level-3 {
-            display: flex;
-            justify-content: center;
-            position: relative;
-        }
-        .level-1 { margin-bottom: 50px; }
-        .level-2 { margin-bottom: 50px; }
-        .level-3 { gap: 40px; }
-
-        /* 연결선 스타일 */
-        .line {
-            position: absolute;
-            background-color: #ccc;
-            z-index: 1;
-        }
-
-        /* 회장 -> 부회장 세로선 */
-        .line-v-1 {
-            width: 2px;
-            height: 50px; /* 레벨 간격만큼 */
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        /* 부회장 하단 래퍼 및 선들 */
-        .vice-president-wrapper {
-            position: relative;
-            display: flex;
-            justify-content: center;
-        }
-        .line-v-2-short {
-            width: 2px; height: 25px; top: 100%; left: 50%; transform: translateX(-50%);
-        }
-        .line-h-long {
-            height: 2px; width: 400px; /* 3부장 간격에 맞춰 조절 */
-            top: calc(100% + 25px); left: 50%; transform: translateX(-50%);
-        }
-        .line-v-3-branches {
-            width: 2px; height: 25px; top: calc(100% + 25px);
-        }
-        .branch-left { left: calc(50% - 200px); }
-        .branch-center { left: 50%; transform: translateX(-50%); }
-        .branch-right { right: calc(50% - 200px); }
-
-        /* 총무 위치 (항상 회장 오른쪽에 고정) */
-        .general-affairs-wrapper {
-            position: absolute;
-            /* 회장 카드 중심에서 오른쪽으로 140px 떨어진 곳 */
-            left: calc(50% + 140px); 
-            top: 0;
-        }
-        .card-staff { border-color: #7f8c8d; }
-        .card-staff .org-role { color: #7f8c8d; }
-
-        /* 모바일용 미디어 쿼리는 레이아웃을 깨지 않기 위해 제거하거나 최소화 */
-        @media (max-width: 600px) {
-            header { flex-direction: column; gap: 10px; } /* 헤더만 세로로 */
-            section { padding: 2rem 0; } /* 좌우 여백 제거해서 스크롤 확보 */
-        }
+        @media (max-width: 600px) { .container { margin-top: 2rem; } }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>PAINS Members</h1>
+        <h1>PAINS Check</h1>
         <nav>
             <a href="index.html">Home</a>
-            <a href="members.html" style="font-weight: bold;">Members</a>
         </nav>
     </header>
 
-    <section>
-        <h2>2025 운영진 조직도</h2>
+    <div class="container">
+        <div class="search-card">
+            <h2>📊 출석 현황 조회</h2>
+            <p style="margin-bottom: 20px; color: #666; font-size: 0.9rem;">
+                등록된 학번과 이름을 입력해주세요.
+            </p>
 
-        <div class="org-chart-wrapper">
-            <div class="tree-container">
+            <div class="input-group">
+                <label for="input-id">학번 (ID)</label>
+                <input type="text" id="input-id" placeholder="예: 2024123456">
+            </div>
+            <div class="input-group">
+                <label for="input-name">이름 (Name)</label>
+                <input type="text" id="input-name" placeholder="예: 홍길동">
+            </div>
+
+            <button class="btn-submit" onclick="searchAttendance()" id="btn-search">조회하기</button>
+            <div class="loader" id="loader"></div>
+
+            <div id="result-area">
+                <div class="result-box">
+                    <div class="result-label">나의 출석률</div>
+                    <div class="result-value highlight" id="res-rate">-</div>
+                </div>
+                <div class="result-box">
+                    <div class="result-label">결석 횟수</div>
+                    <div class="result-value" id="res-absent">-</div>
+                </div>
+                <p style="font-size: 0.8rem; color: #999; margin-top: 15px;">
+                    * 정보가 다를 경우 운영진에게 문의해주세요.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // [중요] 아까 복사한 '웹 앱 URL'을 따옴표 안에 넣으세요!
+        // ============================================
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSqMzQgRq7Sg8Zbh3FpuiP3LLxyZ2F8dQuIwALue5SmNFmW6tXz7wy92DYdMgmmIqLmw/exec";
+
+        async function searchAttendance() {
+            const id = document.getElementById('input-id').value.trim();
+            const name = document.getElementById('input-name').value.trim();
+            
+            // 유효성 검사
+            if (!id || !name) {
+                alert("학번과 이름을 모두 입력해주세요.");
+                return;
+            }
+
+            // UI 상태 변경 (로딩 중)
+            const btn = document.getElementById('btn-search');
+            const loader = document.getElementById('loader');
+            const resultArea = document.getElementById('result-area');
+            
+            btn.disabled = true; // 버튼 비활성화
+            btn.innerText = "조회 중...";
+            loader.style.display = "block";
+            resultArea.style.display = "none"; // 기존 결과 숨김
+
+            try {
+                // 구글 스크립트에 요청 보내기 (GET 방식)
+                // 주소 뒤에 ?id=학번&name=이름 을 붙여서 보냄
+                const targetUrl = `${SCRIPT_URL}?id=${id}&name=${name}`;
                 
-                <div class="level-1">
-                    <div style="position: relative;">
-                        <div class="org-card">
-                            <div class="org-img" style="background-image: url('president.jpg');"></div> 
-                            <div class="org-role">회장</div>
-                            <div class="org-name">신다정</div>
-                            <div class="org-major">영어영문학과 24</div>
-                        </div>
-                        <div class="line line-v-1"></div>
-                    </div>
+                const response = await fetch(targetUrl);
+                const data = await response.json(); // JSON 응답 받기
 
-                    <div class="general-affairs-wrapper">
-                        <div class="org-card card-staff">
-                            <div class="org-img"></div>
-                            <div class="org-role">총무</div>
-                            <div class="org-name">최나훈</div>
-                            <div class="org-major">컴퓨터학과 24</div>
-                        </div>
-                    </div>
-                </div>
+                if (data.result === "success") {
+                    // 성공 시 결과 표시
+                    document.getElementById('res-rate').innerText = data.rate; // 출석률
+                    document.getElementById('res-absent').innerText = data.absent + "회"; // 결석횟수
+                    resultArea.style.display = "block";
+                } else {
+                    // 실패 시 (정보 없음 등)
+                    alert("일치하는 정보를 찾을 수 없습니다.\n학번과 이름을 다시 확인해주세요.");
+                }
 
-                <div class="level-2">
-                    <div class="vice-president-wrapper">
-                        <div class="org-card">
-                            <div class="org-img"></div>
-                            <div class="org-role">부회장</div>
-                            <div class="org-name">이시영</div>
-                            <div class="org-major">훈련소</div>
-                        </div>
-                        <div class="line line-v-2-short"></div>
-                        <div class="line line-h-long"></div>
-                        <div class="line line-v-3-branches branch-left"></div>
-                        <div class="line line-v-3-branches branch-center"></div>
-                        <div class="line line-v-3-branches branch-right"></div>
-                    </div>
-                </div>
-
-                <div class="level-3">
-                    <div class="org-card">
-                        <div class="org-img"></div>
-                        <div class="org-role">기획부장</div>
-                        <div class="org-name">전영재</div>
-                        <div class="org-major">언어학과 24</div>
-                    </div>
-                    <div class="org-card">
-                        <div class="org-img"></div>
-                        <div class="org-role">홍보부장</div>
-                        <div class="org-name">하승민</div>
-                        <div class="org-major">데이터과학과 23</div>
-                    </div>
-                    <div class="org-card">
-                        <div class="org-img"></div>
-                        <div class="org-role">교육부장</div>
-                        <div class="org-name">진민재</div>
-                        <div class="org-major">데이터과학과 24</div>
-                    </div>
-                </div>
-
-            </div> </div> </section>
-
-    <footer>
-        <p>&copy; 2025 PAINS. All rights reserved.</p>
-    </footer>
+            } catch (error) {
+                console.error("에러 발생:", error);
+                alert("조회 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+            } finally {
+                // UI 상태 복구
+                btn.disabled = false;
+                btn.innerText = "조회하기";
+                loader.style.display = "none";
+            }
+        }
+    </script>
 
 </body>
 </html>
-
