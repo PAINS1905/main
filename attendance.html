@@ -46,18 +46,20 @@
         .btn-submit:hover { background-color: #8f2a2a; }
         .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; }
 
-        /* [결과창 레이아웃 수정] */
+        /* [결과창 레이아웃] */
         #result-area { margin-top: 2rem; display: none; padding-top: 2rem; border-top: 2px dashed #eee; }
         
-        /* 결과 박스 그리드 배치 (2열) */
+        /* 2열 그리드 (출석률, 결석정보 등 공통 사용) */
         .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .result-full { margin-bottom: 10px; } /* 한 줄 꽉 차는 박스 */
+        
+        /* 한 줄 꽉 차는 박스 */
+        .result-full { margin-bottom: 10px; }
 
         .result-box { background-color: #f9f9f9; padding: 15px; border-radius: 8px; }
         .result-label { font-size: 0.8rem; color: #666; margin-bottom: 5px; }
         .result-value { font-size: 1.2rem; font-weight: bold; color: #333; }
         
-        .highlight { color: #ab3333; font-size: 1.5rem; } /* 출석률 강조 */
+        .highlight { color: #ab3333; font-size: 1.3rem; } /* 출석률 강조 */
         .status-highlight { color: #2980b9; } /* 회원자격 강조 */
 
         /* [로딩 애니메이션] */
@@ -97,9 +99,15 @@
 
             <div id="result-area">
                 
-                <div class="result-box result-full">
-                    <div class="result-label">나의 출석률</div>
-                    <div class="result-value highlight" id="res-rate">-</div>
+                <div class="result-grid">
+                    <div class="result-box">
+                        <div class="result-label">실질 출석률</div>
+                        <div class="result-value highlight" id="res-rate-real">-</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-label">실제 출석률</div>
+                        <div class="result-value highlight" id="res-rate-calc">-</div>
+                    </div>
                 </div>
 
                 <div class="result-grid">
@@ -119,6 +127,7 @@
                 </div>
 
                 <p style="font-size: 0.8rem; color: #999; margin-top: 15px;">
+                    * '실제 출석률'은 (7 - 무단결석) / 7 기준으로 계산됩니다.<br>
                     * 정보가 다를 경우 운영진에게 문의해주세요.
                 </p>
             </div>
@@ -130,14 +139,12 @@
         // ============================================
         // [중요] 앱스 스크립트 배포 주소를 여기에 넣으세요!
         // ============================================
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDEHOyq-B9BDprRYbnRXp7iobW8WDykzESrRbwvOZqB4tJHGLeYbiVgMtqvoVIC9TcbA/exec";
+        const SCRIPT_URL = "여기에_앱스_스크립트_주소를_넣으세요";
 
         async function searchAttendance() {
-            // [추가된 부분] 버튼 누르는 순간 입력창에서 커서를 빼버림 (한글 중복 방지)
+            // [한글 중복 입력 방지]
             document.getElementById('input-id').blur();
             document.getElementById('input-name').blur();
-
-            // 0.1초 딜레이를 줘서 입력이 확정될 시간을 벎 (안전장치)
             await new Promise(r => setTimeout(r, 100));
 
             const id = document.getElementById('input-id').value.trim();
@@ -148,7 +155,7 @@
                 return;
             }
 
-            // ... (아래는 기존 코드와 동일) ...
+            // UI 로딩 상태
             const btn = document.getElementById('btn-search');
             const loader = document.getElementById('loader');
             const resultArea = document.getElementById('result-area');
@@ -165,17 +172,30 @@
                 const data = await response.json();
 
                 if (data.result === "success") {
-                    let rateText = data.rate;
-                    let rateNum = parseFloat(data.rate);
-                    if (!isNaN(rateNum)) {
-                        if (rateNum <= 1) {
-                             rateText = (rateNum * 100).toFixed(2) + "%";
-                        } else {
-                             rateText = rateNum.toFixed(2) + "%";
-                        }
+                    
+                    // 1. [실질 출석률] 계산 (엑셀 데이터 그대로)
+                    let realRateText = "-";
+                    let realRateNum = parseFloat(data.rate);
+                    if (!isNaN(realRateNum)) {
+                        // 1 이하(0.xx)면 100 곱하기
+                        if (realRateNum <= 1) realRateNum *= 100;
+                        realRateText = realRateNum.toFixed(2) + "%";
                     }
 
-                    document.getElementById('res-rate').innerText = rateText;
+                    // 2. [실제 출석률] 계산 ( (7 - 무단결석) / 7 )
+                    let calcRateText = "-";
+                    let unexcusedCount = parseFloat(data.unexcused); // 무단결석 횟수
+                    
+                    if (!isNaN(unexcusedCount)) {
+                        // 공식: (7 - 무단결석) / 7 * 100
+                        let calcRateNum = ((7 - unexcusedCount) / 7) * 100;
+                        calcRateText = calcRateNum.toFixed(2) + "%";
+                    }
+
+                    // 화면 표시
+                    document.getElementById('res-rate-real').innerText = realRateText; // 왼쪽: 실질
+                    document.getElementById('res-rate-calc').innerText = calcRateText; // 오른쪽: 실제
+                    
                     document.getElementById('res-general').innerText = data.general + "회";
                     document.getElementById('res-unexcused').innerText = data.unexcused + "회";
                     document.getElementById('res-status').innerText = data.status;
@@ -198,6 +218,3 @@
 
 </body>
 </html>
-
-
-
