@@ -130,7 +130,7 @@
         // ============================================
         // [중요] 앱스 스크립트 배포 주소를 여기에 넣으세요!
         // ============================================
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDEHOyq-B9BDprRYbnRXp7iobW8WDykzESrRbwvOZqB4tJHGLeYbiVgMtqvoVIC9TcbA/exec";
+        const SCRIPT_URL = "여기에_앱스_스크립트_주소를_넣으세요";
 
         async function searchAttendance() {
             const id = document.getElementById('input-id').value.trim();
@@ -152,15 +152,31 @@
             resultArea.style.display = "none";
 
             try {
-                // 파라미터 전송
                 const targetUrl = `${SCRIPT_URL}?id=${id}&name=${name}`;
                 
                 const response = await fetch(targetUrl);
                 const data = await response.json();
 
                 if (data.result === "success") {
-                    // 성공 시 데이터 채우기 (C, D, E, F열 순서)
-                    document.getElementById('res-rate').innerText = data.rate;         // 출석률
+                    // [수정됨] 출석률 퍼센트 포맷팅 로직 추가
+                    let rateText = data.rate; // 기본값
+                    
+                    // 데이터가 숫자 형태라면 (0.714...) -> % 변환
+                    // 100을 곱하고 소수점 2자리(toFixed(2))까지 끊음
+                    let rateNum = parseFloat(data.rate);
+                    if (!isNaN(rateNum)) {
+                        // 엑셀에서 100%가 1로 저장되므로 1보다 작거나 같으면 백분율 계산
+                        // (혹시 엑셀에 이미 71.4 처럼 적혀있을 수도 있으니 1 이하시에만 100 곱하기)
+                        if (rateNum <= 1) {
+                             rateText = (rateNum * 100).toFixed(2) + "%";
+                        } else {
+                             // 이미 71.4 처럼 적혀있다면 그냥 %만 붙임
+                             rateText = rateNum.toFixed(2) + "%";
+                        }
+                    }
+
+                    // 화면에 표시
+                    document.getElementById('res-rate').innerText = rateText;         // 포맷팅된 출석률
                     document.getElementById('res-general').innerText = data.general + "회";   // 일반결석
                     document.getElementById('res-unexcused').innerText = data.unexcused + "회"; // 무단결석
                     document.getElementById('res-status').innerText = data.status;     // 회원자격
@@ -183,3 +199,4 @@
 
 </body>
 </html>
+
