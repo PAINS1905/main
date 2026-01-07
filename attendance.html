@@ -133,6 +133,13 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDEHOyq-B9BDprRYbnRXp7iobW8WDykzESrRbwvOZqB4tJHGLeYbiVgMtqvoVIC9TcbA/exec";
 
         async function searchAttendance() {
+            // [추가된 부분] 버튼 누르는 순간 입력창에서 커서를 빼버림 (한글 중복 방지)
+            document.getElementById('input-id').blur();
+            document.getElementById('input-name').blur();
+
+            // 0.1초 딜레이를 줘서 입력이 확정될 시간을 벎 (안전장치)
+            await new Promise(r => setTimeout(r, 100));
+
             const id = document.getElementById('input-id').value.trim();
             const name = document.getElementById('input-name').value.trim();
             
@@ -141,7 +148,7 @@
                 return;
             }
 
-            // UI 로딩 상태
+            // ... (아래는 기존 코드와 동일) ...
             const btn = document.getElementById('btn-search');
             const loader = document.getElementById('loader');
             const resultArea = document.getElementById('result-area');
@@ -158,28 +165,20 @@
                 const data = await response.json();
 
                 if (data.result === "success") {
-                    // [수정됨] 출석률 퍼센트 포맷팅 로직 추가
-                    let rateText = data.rate; // 기본값
-                    
-                    // 데이터가 숫자 형태라면 (0.714...) -> % 변환
-                    // 100을 곱하고 소수점 2자리(toFixed(2))까지 끊음
+                    let rateText = data.rate;
                     let rateNum = parseFloat(data.rate);
                     if (!isNaN(rateNum)) {
-                        // 엑셀에서 100%가 1로 저장되므로 1보다 작거나 같으면 백분율 계산
-                        // (혹시 엑셀에 이미 71.4 처럼 적혀있을 수도 있으니 1 이하시에만 100 곱하기)
                         if (rateNum <= 1) {
                              rateText = (rateNum * 100).toFixed(2) + "%";
                         } else {
-                             // 이미 71.4 처럼 적혀있다면 그냥 %만 붙임
                              rateText = rateNum.toFixed(2) + "%";
                         }
                     }
 
-                    // 화면에 표시
-                    document.getElementById('res-rate').innerText = rateText;         // 포맷팅된 출석률
-                    document.getElementById('res-general').innerText = data.general + "회";   // 일반결석
-                    document.getElementById('res-unexcused').innerText = data.unexcused + "회"; // 무단결석
-                    document.getElementById('res-status').innerText = data.status;     // 회원자격
+                    document.getElementById('res-rate').innerText = rateText;
+                    document.getElementById('res-general').innerText = data.general + "회";
+                    document.getElementById('res-unexcused').innerText = data.unexcused + "회";
+                    document.getElementById('res-status').innerText = data.status;
                     
                     resultArea.style.display = "block";
                 } else {
@@ -199,5 +198,6 @@
 
 </body>
 </html>
+
 
 
