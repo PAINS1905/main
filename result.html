@@ -3,220 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAINS - 부원 소개</title>
+    <title>PAINS - 합격자 발표 조회</title>
     <style>
-        /* ==================== */
-        /* 기본 스타일       */
-        /* ==================== */
+        /* [폰트 설정] */
+        @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); }
+        @font-face { font-family: 'SCDream'; src: url('SCDream5.otf'); }
+
+        /* [기본 스타일] */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; line-height: 1.6; color: #333; background-color: #fdfdfd; }
+        body { font-family: 'SCDream', sans-serif; background-color: #fdfdfd; color: #333; line-height: 1.6; }
         
+        /* [헤더] */
         header { background-color: #cf8b8b; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        header h1 { font-size: 1.5rem; font-weight: bold; }
-        
-        nav { display: flex; align-items: center; }
+        header h1 { font-family: 'KBO_Dia', sans-serif; font-size: 1.5rem; }
         nav a { color: #ecf0f1; text-decoration: none; margin-left: 15px; font-size: 0.9rem; transition: color 0.3s; }
         nav a:hover { color: #fff; font-weight: bold; }
-        
-        .apply-btn { background-color: white; color: #ab3333 !important; padding: 8px 16px; border-radius: 20px; font-weight: bold; transition: all 0.3s ease; }
-        .apply-btn:hover { background-color: #f0f0f0; transform: scale(1.05); }
 
-        section { padding: 3rem 1rem; max-width: 1200px; margin: 0 auto; }
-        h2 { font-size: 2rem; color: #ab3333; margin-bottom: 40px; text-align: center;}
+        /* [메인 컨테이너] */
+        .container { max-width: 500px; margin: 5rem auto; padding: 0 1rem; text-align: center; }
         
-        footer { background-color: #333; color: white; text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.8rem; }
-
-        /* ==================== */
-        /* 조직도 스타일      */
-        /* ==================== */
-        
-        /* 1. 가로 스크롤 컨테이너 */
-        .org-chart-wrapper {
-            overflow-x: auto; /* 좁으면 스크롤 생성 */
-            padding: 20px 0;
-            text-align: center;
-            /* 모바일 터치 스크롤 부드럽게 */
-            -webkit-overflow-scrolling: touch; 
+        /* [조회 카드] */
+        .search-card {
+            background: white; border-radius: 12px; padding: 2.5rem 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eee;
         }
+        .search-card h2 { font-family: 'KBO_Dia', sans-serif; color: #ab3333; margin-bottom: 0.5rem; font-size: 1.8rem; }
+        .sub-title { color: #666; font-size: 0.9rem; margin-bottom: 30px; }
 
-        /* 2. 트리 전체 컨테이너 */
-        .tree-container {
-            display: inline-block;
-            position: relative;
-            padding-top: 20px;
-            /* [중요] 최소 너비를 고정해서 모바일에서도 찌그러지지 않게 함 */
-            min-width: 700px; 
+        /* [입력폼] */
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; color: #555; }
+        .input-group input {
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;
+            font-size: 1rem; font-family: 'SCDream', sans-serif;
         }
+        .input-group input:focus { outline: none; border-color: #ab3333; }
 
-        /* 카드 디자인 */
-        .org-card {
-            background: white;
-            border: 2px solid #ab3333;
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            width: 160px;
+        /* [버튼] */
+        .btn-submit {
+            width: 100%; padding: 12px; background-color: #ab3333; color: white; border: none;
+            border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 10px;
+        }
+        .btn-submit:hover { background-color: #8f2a2a; }
+        
+        /* [결과창] */
+        #result-area { margin-top: 30px; display: none; padding-top: 30px; border-top: 2px dashed #eee; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 결과 텍스트 스타일 */
+        .result-msg { font-size: 1.1rem; margin-bottom: 15px; }
+        .status-badge { 
+            display: inline-block; padding: 8px 20px; border-radius: 30px; 
+            font-size: 1.5rem; font-weight: bold; color: white; margin-bottom: 20px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 2;
         }
-        
-        .org-img {
-            width: 80px; height: 80px;
-            background-color: #eee;
-            border-radius: 50%;
-            margin: 0 auto 10px;
-            background-size: cover;
-            background-position: center;
-        }
-        
-        .org-role { color: #ab3333; font-weight: bold; font-size: 0.9rem; margin-bottom: 4px; }
-        .org-name { font-size: 1.1rem; font-weight: bold; margin-bottom: 4px; }
-        .org-major { font-size: 0.8rem; color: #666; }
+        .status-pass { background-color: #27ae60; } /* 합격 - 초록 */
+        .status-fail { background-color: #e74c3c; } /* 불합격 - 빨강 */
 
-        /* 레벨 배치 (모바일에서도 가로 정렬 유지) */
-        .level-1, .level-2, .level-3 {
-            display: flex;
-            justify-content: center;
-            position: relative;
+        /* 면접 정보 박스 */
+        .interview-box {
+            background-color: #f8f9fa; border-radius: 10px; padding: 20px;
+            text-align: left; border-left: 5px solid #ab3333; margin-top: 20px;
+            display: none; /* 기본 숨김 */
         }
-        .level-1 { margin-bottom: 50px; }
-        .level-2 { margin-bottom: 50px; }
-        .level-3 { gap: 40px; }
+        .interview-box h4 { margin-bottom: 10px; color: #333; font-weight: bold; }
+        .interview-info li { list-style: none; margin-bottom: 5px; color: #555; }
+        .interview-info strong { color: #333; margin-right: 5px; }
 
-        /* 연결선 스타일 */
-        .line {
-            position: absolute;
-            background-color: #ccc;
-            z-index: 1;
-        }
+        /* 로딩 */
+        .loader { display: none; margin: 20px auto; border: 4px solid #f3f3f3; border-top: 4px solid #ab3333; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* 회장 -> 부회장 세로선 */
-        .line-v-1 {
-            width: 2px;
-            height: 50px; /* 레벨 간격만큼 */
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        /* 부회장 하단 래퍼 및 선들 */
-        .vice-president-wrapper {
-            position: relative;
-            display: flex;
-            justify-content: center;
-        }
-        .line-v-2-short {
-            width: 2px; height: 25px; top: 100%; left: 50%; transform: translateX(-50%);
-        }
-        .line-h-long {
-            height: 2px; width: 400px; /* 3부장 간격에 맞춰 조절 */
-            top: calc(100% + 25px); left: 50%; transform: translateX(-50%);
-        }
-        .line-v-3-branches {
-            width: 2px; height: 25px; top: calc(100% + 25px);
-        }
-        .branch-left { left: calc(50% - 200px); }
-        .branch-center { left: 50%; transform: translateX(-50%); }
-        .branch-right { right: calc(50% - 200px); }
-
-        /* 총무 위치 (항상 회장 오른쪽에 고정) */
-        .general-affairs-wrapper {
-            position: absolute;
-            /* 회장 카드 중심에서 오른쪽으로 140px 떨어진 곳 */
-            left: calc(50% + 140px); 
-            top: 0;
-        }
-        .card-staff { border-color: #7f8c8d; }
-        .card-staff .org-role { color: #7f8c8d; }
-
-        /* 모바일용 미디어 쿼리는 레이아웃을 깨지 않기 위해 제거하거나 최소화 */
-        @media (max-width: 600px) {
-            header { flex-direction: column; gap: 10px; } /* 헤더만 세로로 */
-            section { padding: 2rem 0; } /* 좌우 여백 제거해서 스크롤 확보 */
-        }
+        @media (max-width: 600px) { .container { margin-top: 2rem; } }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>PAINS Members</h1>
+        <h1>PAINS Result</h1>
         <nav>
             <a href="index.html">Home</a>
-            <a href="members.html" style="font-weight: bold;">Members</a>
         </nav>
     </header>
 
-    <section>
-        <h2>2025 운영진 조직도</h2>
+    <div class="container">
+        <div class="search-card">
+            <h2>📢 결과 발표 조회</h2>
+            <p class="sub-title">지원 시 제출한 학번과 이름을 입력해주세요.</p>
 
-        <div class="org-chart-wrapper">
-            <div class="tree-container">
+            <div class="input-group">
+                <label for="input-id">학번 (ID)</label>
+                <input type="text" id="input-id" placeholder="예: 2024123456">
+            </div>
+            <div class="input-group">
+                <label for="input-name">이름 (Name)</label>
+                <input type="text" id="input-name" placeholder="예: 홍길동">
+            </div>
+
+            <button class="btn-submit" onclick="checkResult()" id="btn-search">결과 확인하기</button>
+            <div class="loader" id="loader"></div>
+
+            <div id="result-area">
+                <p class="result-msg"><span id="user-name-display" style="font-weight:bold;"></span>님의 결과입니다.</p>
                 
-                <div class="level-1">
-                    <div style="position: relative;">
-                        <div class="org-card">
-                            <div class="org-img" style="background-image: url('president.jpg');"></div> 
-                            <div class="org-role">회장</div>
-                            <div class="org-name">신다정</div>
-                            <div class="org-major">영어영문학과 24</div>
-                        </div>
-                        <div class="line line-v-1"></div>
-                    </div>
+                <div id="status-badge" class="status-badge">결과 로딩중</div>
+                
+                <p id="result-desc" style="color: #666; font-size: 0.95rem; word-break: keep-all;">
+                    </p>
 
-                    <div class="general-affairs-wrapper">
-                        <div class="org-card card-staff">
-                            <div class="org-img"></div>
-                            <div class="org-role">총무</div>
-                            <div class="org-name">최나훈</div>
-                            <div class="org-major">컴퓨터학과 24</div>
-                        </div>
-                    </div>
+                <div class="interview-box" id="interview-box">
+                    <h4>📅 면접 전형 안내</h4>
+                    <ul class="interview-info">
+                        <li><strong>일자:</strong> <span id="int-date">-</span></li>
+                        <li><strong>시간:</strong> <span id="int-time">-</span></li>
+                        <li><strong>장소:</strong> 현대자동차경영관 (대기실 별도 안내)</li>
+                    </ul>
+                    <p style="font-size: 0.8rem; color: #888; margin-top: 10px;">* 면접 시간 10분 전까지 도착해주시기 바랍니다.</p>
                 </div>
+            </div>
 
-                <div class="level-2">
-                    <div class="vice-president-wrapper">
-                        <div class="org-card">
-                            <div class="org-img"></div>
-                            <div class="org-role">부회장</div>
-                            <div class="org-name">이시영</div>
-                            <div class="org-major">훈련소</div>
-                        </div>
-                        <div class="line line-v-2-short"></div>
-                        <div class="line line-h-long"></div>
-                        <div class="line line-v-3-branches branch-left"></div>
-                        <div class="line line-v-3-branches branch-center"></div>
-                        <div class="line line-v-3-branches branch-right"></div>
-                    </div>
-                </div>
+        </div>
+    </div>
 
-                <div class="level-3">
-                    <div class="org-card">
-                        <div class="org-img"></div>
-                        <div class="org-role">기획부장</div>
-                        <div class="org-name">전영재</div>
-                        <div class="org-major">언어학과 24</div>
-                    </div>
-                    <div class="org-card">
-                        <div class="org-img"></div>
-                        <div class="org-role">홍보부장</div>
-                        <div class="org-name">하승민</div>
-                        <div class="org-major">데이터과학과 23</div>
-                    </div>
-                    <div class="org-card">
-                        <div class="org-img"></div>
-                        <div class="org-role">교육부장</div>
-                        <div class="org-name">진민재</div>
-                        <div class="org-major">데이터과학과 24</div>
-                    </div>
-                </div>
+    <script>
+        // ============================================
+        // [중요] 새로 배포한 앱스 스크립트 주소를 넣으세요!
+        // ============================================
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygfK0YRpvOPgsA92sdwoCb59p_fu21KIIOJ_sLprQQKRgn5_SXriKG7r4JU2GAg-2wyA/exec";
 
-            </div> </div> </section>
+        async function checkResult() {
+            // 한글 중복 입력 방지
+            document.getElementById('input-id').blur();
+            document.getElementById('input-name').blur();
+            await new Promise(r => setTimeout(r, 100));
 
-    <footer>
-        <p>&copy; 2025 PAINS. All rights reserved.</p>
-    </footer>
+            const id = document.getElementById('input-id').value.trim();
+            const name = document.getElementById('input-name').value.trim();
+            
+            if (!id || !name) {
+                alert("학번과 이름을 모두 입력해주세요.");
+                return;
+            }
+
+            // UI 로딩 상태
+            const btn = document.getElementById('btn-search');
+            const loader = document.getElementById('loader');
+            const resultArea = document.getElementById('result-area');
+            
+            btn.disabled = true;
+            btn.innerText = "조회 중...";
+            loader.style.display = "block";
+            resultArea.style.display = "none";
+
+            try {
+                const targetUrl = `${SCRIPT_URL}?id=${id}&name=${name}`;
+                const response = await fetch(targetUrl);
+                const data = await response.json();
+
+                // 1. 정보가 없는 경우 (명단에 없음)
+                if (data.result === "fail") {
+                    alert("일치하는 지원 정보를 찾을 수 없습니다.\n학번과 이름을 다시 확인해주세요.");
+                    return;
+                }
+
+                // 2. 정보가 있는 경우 -> 시간 체크 시작
+                // 엑셀에서 가져온 날짜(F)와 시간(G) : "2026-01-31", "14:00"
+                const releaseDateStr = data.releaseDate;
+                const releaseTimeStr = data.releaseTime;
+
+                // 날짜 객체 생성 (ISO 형식으로 결합: YYYY-MM-DDTHH:MM:00)
+                const releaseDateTime = new Date(`${releaseDateStr}T${releaseTimeStr}:00`);
+                const now = new Date();
+
+                // 2-1. 아직 발표 시간이 안 된 경우
+                if (now < releaseDateTime) {
+                    // 보기 좋게 날짜 포맷팅
+                    alert(`아직 결과 발표 기간이 아닙니다.\n발표 일시: ${releaseDateStr} ${releaseTimeStr}`);
+                    return; // 결과창 안 보여주고 종료
+                }
+
+                // 3. 발표 시간이 지난 경우 -> 결과 표시!
+                document.getElementById('user-name-display').innerText = name;
+                const badge = document.getElementById('status-badge');
+                const desc = document.getElementById('result-desc');
+                const interviewBox = document.getElementById('interview-box');
+
+                if (data.status === "합격") {
+                    badge.innerText = "합 격";
+                    badge.className = "status-badge status-pass"; // 초록색
+                    desc.innerText = "축하드립니다! 1차 서류 전형에 합격하셨습니다.\n아래 면접 일정을 확인해주시기 바랍니다.";
+                    
+                    // 면접 정보가 엑셀에 있다면 표시
+                    if (data.interviewDate && data.interviewTime) {
+                        document.getElementById('int-date').innerText = data.interviewDate;
+                        document.getElementById('int-time').innerText = data.interviewTime;
+                        interviewBox.style.display = "block"; // 박스 보이기
+                    } else {
+                        interviewBox.style.display = "none";
+                    }
+
+                } else {
+                    badge.innerText = "불합격";
+                    badge.className = "status-badge status-fail"; // 빨간색
+                    desc.innerHTML = "지원해주셔서 감사합니다.<br>아쉽게도 이번 모집에는 함께하지 못하게 되었습니다.<br>추후 더 좋은 기회로 뵙기를 고대하겠습니다.";
+                    interviewBox.style.display = "none"; // 면접 박스 숨김
+                }
+
+                resultArea.style.display = "block";
+
+            } catch (error) {
+                console.error("에러 발생:", error);
+                alert("조회 중 오류가 발생했습니다.");
+            } finally {
+                // UI 복구
+                btn.disabled = false;
+                btn.innerText = "결과 확인하기";
+                loader.style.display = "none";
+            }
+        }
+    </script>
 
 </body>
 </html>
-
