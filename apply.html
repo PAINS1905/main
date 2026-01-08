@@ -178,9 +178,9 @@
             data: {
                 labels: ['여자', '남자'],
                 datasets: [{
-                    data: [17.9, 82.1], 
+                    // [수정됨] 여자 9명(20%), 남자 36명(80%)
+                    data: [20, 80], 
                     backgroundColor: [
-                        // [수정] 더 선명해진 핑크/블루
                         '#FF6B81', // 여자 (Vivid Pink)
                         '#4D96FF'  // 남자 (Vivid Blue)
                     ],
@@ -197,9 +197,9 @@
                     legend: {
                         position: 'right',
                         labels: {
-                            // [수정] 글자색을 더 진하고 선명한 회색으로 변경
-                            color: '#333333', 
-                            boxWidth: 12, padding: 10,
+                            color: '#333333', // 진한 회색 레이블
+                            boxWidth: 12, 
+                            padding: 10,
                             font: { family: "'SCDream', sans-serif", size: 11 }
                         }
                     },
@@ -321,6 +321,7 @@
 
 </body>
 </html>
+
 
 
 
