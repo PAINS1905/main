@@ -132,10 +132,10 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygfK0YRpvOPgsA92sdwoCb59p_fu21KIIOJ_sLprQQKRgn5_SXriKG7r4JU2GAg-2wyA/exec";
 
         async function checkResult() {
-            // [수정됨] 한글 중복 입력 방지 (시간을 100ms -> 200ms로 늘려 안정성 확보)
+            // 한글 중복 입력 방지 (200ms)
             document.getElementById('input-id').blur();
             document.getElementById('input-name').blur();
-            await new Promise(r => setTimeout(r, 150));
+            await new Promise(r => setTimeout(r, 200));
 
             const id = document.getElementById('input-id').value.trim();
             const name = document.getElementById('input-name').value.trim();
@@ -166,20 +166,15 @@
                     return;
                 }
 
-                // 2. 정보가 있는 경우 -> 시간 체크 시작
-                const releaseDateStr = data.releaseDate;
-                const releaseTimeStr = data.releaseTime;
-
-                const releaseDateTime = new Date(`${releaseDateStr}T${releaseTimeStr}:00`);
-                const now = new Date();
-
-                // 2-1. 아직 발표 시간이 안 된 경우
-                if (now < releaseDateTime) {
-                    alert(`아직 결과 발표 기간이 아닙니다.\n발표 일시: ${releaseDateStr} ${releaseTimeStr}`);
-                    return; 
+                // 2. [보안 강화] 시간이 아직 안 된 경우 (서버에서 'locked'를 보냄)
+                if (data.result === "locked") {
+                    // 서버가 보내준 발표 예정 시간을 표시
+                    alert(`아직 결과 발표 기간이 아닙니다.\n발표 일시: ${data.releaseDate} ${data.releaseTime}`);
+                    return;
                 }
 
-                // 3. 발표 시간이 지난 경우 -> 결과 표시!
+                // 3. 성공 (result === "success")
+                // 서버가 데이터를 줬다는 건, 이미 시간이 지났다는 뜻임.
                 document.getElementById('user-name-display').innerText = name;
                 const badge = document.getElementById('status-badge');
                 const desc = document.getElementById('result-desc');
@@ -193,7 +188,7 @@
                     if (data.interviewDate && data.interviewTime) {
                         document.getElementById('int-date').innerText = data.interviewDate;
                         document.getElementById('int-time').innerText = data.interviewTime;
-                        interviewBox.style.display = "block"; 
+                        interviewBox.style.display = "block"; // 박스 보이기
                     } else {
                         interviewBox.style.display = "none";
                     }
@@ -202,7 +197,7 @@
                     badge.innerText = "불합격";
                     badge.className = "status-badge status-fail"; // 빨간색
                     desc.innerHTML = "지원해주셔서 감사합니다.<br>아쉽게도 이번 모집에는 함께하지 못하게 되었습니다.<br>추후 더 좋은 기회로 뵙기를 고대하겠습니다.";
-                    interviewBox.style.display = "none"; 
+                    interviewBox.style.display = "none"; // 면접 박스 숨김
                 }
 
                 resultArea.style.display = "block";
@@ -221,5 +216,3 @@
 
 </body>
 </html>
-
-
