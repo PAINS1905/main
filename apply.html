@@ -168,10 +168,48 @@
     </footer>
 
     <script>
-        // 2. 도넛 차트 (부원 학과 분포 - 자동 기타 처리) 설정
+        // ============================
+        // 1. 레이더 차트 (Preferred Skills)
+        // ============================
+        const ctxSkills = document.getElementById('skillsChart').getContext('2d');
+        new Chart(ctxSkills, {
+            type: 'radar', 
+            data: {
+                labels: ['스포츠 관심도', ['R/Python', '활용 능력'], '통계적 사고', '협업/커뮤니케이션', ['시각화 툴', '(Tableau 등)']],
+                datasets: [{
+                    label: 'PAINS 인재상 지수',
+                    data: [90, 75, 80, 85, 70], 
+                    fill: true,
+                    backgroundColor: 'rgba(171, 51, 51, 0.2)', 
+                    borderColor: 'rgb(171, 51, 51)',         
+                    pointBackgroundColor: 'rgb(171, 51, 51)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(171, 51, 51)'
+                }]
+            },
+            options: {
+                scales: {
+                    r: { 
+                        angleLines: { display: true },
+                        suggestedMin: 0,
+                        suggestedMax: 100,
+                        ticks: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                },
+                maintainAspectRatio: false
+            }
+        });
+
+        // ============================
+        // 2. 도넛 차트 (부원 학과 분포)
+        // ============================
         const ctxMajor = document.getElementById('majorChart').getContext('2d');
 
-        // [1] 원본 데이터 및 설정
+        // [1] 원본 데이터 입력
         const rawLabels = [
             '데이터과학과', '통계학과', '언어학과', '경영학과', 
             '중어중문학과', '경제학과', '컴퓨터학과', '영어영문학과', 
@@ -180,53 +218,37 @@
         ];
         const rawData = [5, 5, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
         
-        // [수정됨] 밝은 파스텔톤 색상 팔레트 (총 16색)
+        // [2] 밝은 파스텔톤 색상 팔레트
         const rawColors = [
-            '#FFB3BA', // 파스텔 핑크
-            '#FFDFBA', // 파스텔 피치
-            '#FFFFBA', // 파스텔 옐로우
-            '#BAFFC9', // 파스텔 민트
-            '#BAE1FF', // 파스텔 스카이블루
-            '#CBAACB', // 파스텔 라벤더
-            '#FFCCE5', // 라이트 로즈
-            '#CCE5FF', // 베이비 블루
-            '#E5CCFF', // 라이트 퍼플
-            '#FFD1DC', // 버블검 핑크
-            '#FFFFAA', // 페일 옐로우
-            '#98FB98', // 페일 그린
-            '#AFEEEE', // 페일 터쿼이즈
-            '#DCD0FF', // 미스티 퍼플
-            '#FFDAC1', // 소프트 오렌지
-            '#F4C2C2'  // 베이비 핑크
+            '#FFB3BA', '#FFDFBA', '#FFFFBA', '#BAFFC9', 
+            '#BAE1FF', '#CBAACB', '#FFCCE5', '#CCE5FF', 
+            '#E5CCFF', '#FFD1DC', '#FFFFAA', '#98FB98', 
+            '#AFEEEE', '#DCD0FF', '#FFDAC1', '#F4C2C2'
         ];
 
-        // [2] 데이터 가공 로직 (1명인 항목은 '기타'로 합치기)
+        // [3] 데이터 자동 가공 (1명은 '기타'로)
         let finalLabels = [];
         let finalData = [];
         let finalColors = [];
-        let etcSum = 0; // 기타 합계
+        let etcSum = 0;
 
         for (let i = 0; i < rawData.length; i++) {
             if (rawData[i] > 1) {
-                // 1명보다 많으면 그대로 표시
                 finalLabels.push(rawLabels[i]);
                 finalData.push(rawData[i]);
                 finalColors.push(rawColors[i]);
             } else {
-                // 1명이면 '기타'로 합산
                 etcSum += rawData[i];
             }
         }
 
-        // 기타 항목이 있으면 배열 마지막에 추가
         if (etcSum > 0) {
             finalLabels.push('기타');
             finalData.push(etcSum);
-            // [수정됨] 기타 색상도 밝은 파스텔톤으로 변경 (파스텔 보라)
-            finalColors.push('#E0BBE4'); 
+            finalColors.push('#E0BBE4'); // 기타: 밝은 파스텔 보라
         }
 
-        // [3] 차트 생성
+        // [4] 차트 그리기
         new Chart(ctxMajor, {
             type: 'doughnut', 
             data: {
@@ -242,90 +264,13 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                layout: {
-                    padding: 10
-                },
+                layout: { padding: 10 },
                 plugins: {
                     legend: {
                         position: 'right', 
                         labels: {
-                            boxWidth: 12, 
-                            padding: 10,
-                            font: {
-                                family: "'SCDream', sans-serif",
-                                size: 11 
-                            }
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.label || '';
-                                let value = context.parsed;
-                                let total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                let percentage = ((value / total) * 100).toFixed(1) + "%";
-                                return `${label}: ${value}명 (${percentage})`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        // [2] 데이터 가공 로직 (1명인 항목은 '기타'로 합치기)
-        let finalLabels = [];
-        let finalData = [];
-        let finalColors = [];
-        let etcSum = 0; // 기타 합계
-
-        for (let i = 0; i < rawData.length; i++) {
-            if (rawData[i] > 1) {
-                // 1명보다 많으면 그대로 표시
-                finalLabels.push(rawLabels[i]);
-                finalData.push(rawData[i]);
-                finalColors.push(rawColors[i]);
-            } else {
-                // 1명이면 '기타'로 합산
-                etcSum += rawData[i];
-            }
-        }
-
-        // 기타 항목이 있으면 배열 마지막에 추가
-        if (etcSum > 0) {
-            finalLabels.push('기타');
-            finalData.push(etcSum);
-            finalColors.push('#95a5a6'); // 기타 색상 (회색)
-        }
-
-        // [3] 차트 생성
-        new Chart(ctxMajor, {
-            type: 'doughnut', 
-            data: {
-                labels: finalLabels, // 가공된 라벨 사용
-                datasets: [{
-                    data: finalData, // 가공된 데이터 사용
-                    backgroundColor: finalColors, // 가공된 색상 사용
-                    borderWidth: 2,
-                    borderColor: '#ffffff', 
-                    hoverOffset: 10 
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                layout: {
-                    padding: 10
-                },
-                plugins: {
-                    legend: {
-                        position: 'right', 
-                        labels: {
-                            boxWidth: 12, 
-                            padding: 10,
-                            font: {
-                                family: "'SCDream', sans-serif",
-                                size: 11 
-                            }
+                            boxWidth: 12, padding: 10,
+                            font: { family: "'SCDream', sans-serif", size: 11 }
                         }
                     },
                     tooltip: {
@@ -346,6 +291,7 @@
 
 </body>
 </html>
+
 
 
 
