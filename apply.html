@@ -107,16 +107,27 @@
         /* [수정됨] 모바일 대응 스타일 */
         @media (max-width: 768px) {
             section {
-                padding: 3rem 1rem; /* 좌우 패딩을 2rem -> 1rem으로 줄임 */
+                padding: 3rem 1rem;
             }
             .chart-box.half-width {
                 flex: 0 0 100%;
-                min-width: 0; /* 중요: 고정 최소 너비(300px) 제거 */
+                min-width: 0;
+                
+                /* 1. 박스 전체 높이는 범례가 들어갈 만큼 적당히 (너무 크지 않게 480px 정도) */
+                height: 480px; 
+                max-height: 480px;
+                
+                /* 내부 정렬을 위해 플렉스 설정 유지 */
+                display: flex;
+                flex-direction: column;
+                justify-content: center; /* 세로 중앙 정렬 */
             }
-            /* 범례가 아래로 갈 때 높이 확보 */
-            .chart-box.half-width {
-                height: 600px; 
-                min-height: 450px; 
+
+            /* 2. [핵심] 차트 알맹이(Canvas)가 너무 커지지 않게 제한 */
+            .chart-box.half-width canvas {
+                max-height: 300px !important; /* 차트 높이 강제 제한 */
+                width: 100% !important;
+                margin: 0 auto; /* 가운데 정렬 */
             }
         }
 
@@ -422,6 +433,7 @@
 
 </body>
 </html>
+
 
 
 
