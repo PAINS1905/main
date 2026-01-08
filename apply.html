@@ -3,220 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAINS - 부원 소개</title>
+    <title>PAINS - 11기 리크루팅</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
-        /* ==================== */
-        /* 기본 스타일       */
-        /* ==================== */
+        /* ============================ */
+        /* [1] 폰트 및 공통 스타일 (index.html과 동일) */
+        /* ============================ */
+        @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'SCDream'; src: url('SCDream5.otf'); font-weight: normal; font-style: normal; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; line-height: 1.6; color: #333; background-color: #fdfdfd; }
-        
+        body { font-family: 'SCDream', sans-serif; line-height: 1.6; color: #333; background-color: #fdfdfd; }
+        h1, h2, h3, h4 { font-family: 'KBO_Dia', sans-serif; }
+        section { padding: 3rem 2rem; max-width: 900px; margin: 0 auto; }
+        h3 { font-size: 1.8rem; color: #2c3e50; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+
+        /* 헤더 & 푸터 (index.html과 동일) */
         header { background-color: #cf8b8b; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         header h1 { font-size: 1.5rem; font-weight: bold; }
-        
         nav { display: flex; align-items: center; }
         nav a { color: #ecf0f1; text-decoration: none; margin-left: 15px; font-size: 0.9rem; transition: color 0.3s; }
         nav a:hover { color: #fff; font-weight: bold; }
+        nav a.active { color: #fff; font-weight: bold; border-bottom: 2px solid #fff; } /* 현재 페이지 강조 */
+        footer { background-color: #333; color: white; text-align: center; padding: 3rem 2rem 2rem; margin-top: 2rem; font-size: 0.8rem; }
+        .footer-icons { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; }
+        .icon-btn { display: flex; justify-content: center; align-items: center; width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); border-radius: 12px; transition: all 0.3s ease; }
+        .icon-btn:hover { background-color: #ab3333; transform: translateY(-3px); }
+        .icon-btn img { width: 24px; height: 24px; object-fit: contain; }
+
+        /* 히어로 섹션 (Apply 전용) */
+        .hero-apply { background-color: #ab3333; color: white; text-align: center; padding: 4rem 1rem; }
+        .hero-apply h2 { font-size: 2.5rem; margin-bottom: 15px; }
+        .hero-apply p { font-size: 1.2rem; opacity: 0.9; }
+
+        /* ============================ */
+        /* [2] Apply 페이지 전용 스타일 */
+        /* ============================ */
         
-        .apply-btn { background-color: white; color: #ab3333 !important; padding: 8px 16px; border-radius: 20px; font-weight: bold; transition: all 0.3s ease; }
-        .apply-btn:hover { background-color: #f0f0f0; transform: scale(1.05); }
+        /* 타임라인 스타일 */
+        .timeline { position: relative; max-width: 700px; margin: 0 auto; padding: 20px 0; }
+        .timeline::after { content: ''; position: absolute; width: 3px; background-color: #eee; top: 0; bottom: 0; left: 20px; margin-left: -1.5px; }
+        .timeline-item { padding: 10px 20px 20px 50px; position: relative; background-color: inherit; width: 100%; }
+        .timeline-item::after { content: ''; position: absolute; width: 16px; height: 16px; right: auto; left: 20px; top: 15px; border-radius: 50%; z-index: 1; background-color: #cf8b8b; border: 3px solid white; margin-left: -8px; }
+        .timeline-content { padding: 15px; background-color: white; position: relative; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 4px solid #ab3333; }
+        .timeline-date { font-weight: bold; color: #ab3333; margin-bottom: 5px; display: block; }
+        .timeline-title { font-weight: bold; font-size: 1.1rem; }
 
-        section { padding: 3rem 1rem; max-width: 1200px; margin: 0 auto; }
-        h2 { font-size: 2rem; color: #ab3333; margin-bottom: 40px; text-align: center;}
-        
-        footer { background-color: #333; color: white; text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.8rem; }
+        /* 차트 컨테이너 스타일 */
+        .chart-container-wrapper { display: flex; flex-wrap: wrap; gap: 30px; justify-content: space-around; margin-top: 30px; }
+        .chart-box { flex: 1; min-width: 300px; max-width: 450px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
+        .chart-box h4 { margin-bottom: 20px; color: #ab3333; }
 
-        /* ==================== */
-        /* 조직도 스타일      */
-        /* ==================== */
-        
-        /* 1. 가로 스크롤 컨테이너 */
-        .org-chart-wrapper {
-            overflow-x: auto; /* 좁으면 스크롤 생성 */
-            padding: 20px 0;
-            text-align: center;
-            /* 모바일 터치 스크롤 부드럽게 */
-            -webkit-overflow-scrolling: touch; 
-        }
+        /* 지원하기 버튼 영역 */
+        .apply-cta { text-align: center; padding: 4rem 2rem; background-color: #f9f9f9; margin-top: 2rem; }
+        .btn-apply-big { display: inline-block; background-color: #ab3333; color: white; padding: 15px 40px; border-radius: 30px; font-size: 1.3rem; font-weight: bold; text-decoration: none; transition: background 0.3s, transform 0.2s; box-shadow: 0 5px 15px rgba(171, 51, 51, 0.3); }
+        .btn-apply-big:hover { background-color: #8f2a2a; transform: translateY(-3px); }
 
-        /* 2. 트리 전체 컨테이너 */
-        .tree-container {
-            display: inline-block;
-            position: relative;
-            padding-top: 20px;
-            /* [중요] 최소 너비를 고정해서 모바일에서도 찌그러지지 않게 함 */
-            min-width: 700px; 
-        }
-
-        /* 카드 디자인 */
-        .org-card {
-            background: white;
-            border: 2px solid #ab3333;
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            width: 160px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 2;
-        }
-        
-        .org-img {
-            width: 80px; height: 80px;
-            background-color: #eee;
-            border-radius: 50%;
-            margin: 0 auto 10px;
-            background-size: cover;
-            background-position: center;
-        }
-        
-        .org-role { color: #ab3333; font-weight: bold; font-size: 0.9rem; margin-bottom: 4px; }
-        .org-name { font-size: 1.1rem; font-weight: bold; margin-bottom: 4px; }
-        .org-major { font-size: 0.8rem; color: #666; }
-
-        /* 레벨 배치 (모바일에서도 가로 정렬 유지) */
-        .level-1, .level-2, .level-3 {
-            display: flex;
-            justify-content: center;
-            position: relative;
-        }
-        .level-1 { margin-bottom: 50px; }
-        .level-2 { margin-bottom: 50px; }
-        .level-3 { gap: 40px; }
-
-        /* 연결선 스타일 */
-        .line {
-            position: absolute;
-            background-color: #ccc;
-            z-index: 1;
-        }
-
-        /* 회장 -> 부회장 세로선 */
-        .line-v-1 {
-            width: 2px;
-            height: 50px; /* 레벨 간격만큼 */
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        /* 부회장 하단 래퍼 및 선들 */
-        .vice-president-wrapper {
-            position: relative;
-            display: flex;
-            justify-content: center;
-        }
-        .line-v-2-short {
-            width: 2px; height: 25px; top: 100%; left: 50%; transform: translateX(-50%);
-        }
-        .line-h-long {
-            height: 2px; width: 400px; /* 3부장 간격에 맞춰 조절 */
-            top: calc(100% + 25px); left: 50%; transform: translateX(-50%);
-        }
-        .line-v-3-branches {
-            width: 2px; height: 25px; top: calc(100% + 25px);
-        }
-        .branch-left { left: calc(50% - 200px); }
-        .branch-center { left: 50%; transform: translateX(-50%); }
-        .branch-right { right: calc(50% - 200px); }
-
-        /* 총무 위치 (항상 회장 오른쪽에 고정) */
-        .general-affairs-wrapper {
-            position: absolute;
-            /* 회장 카드 중심에서 오른쪽으로 140px 떨어진 곳 */
-            left: calc(50% + 140px); 
-            top: 0;
-        }
-        .card-staff { border-color: #7f8c8d; }
-        .card-staff .org-role { color: #7f8c8d; }
-
-        /* 모바일용 미디어 쿼리는 레이아웃을 깨지 않기 위해 제거하거나 최소화 */
         @media (max-width: 600px) {
-            header { flex-direction: column; gap: 10px; } /* 헤더만 세로로 */
-            section { padding: 2rem 0; } /* 좌우 여백 제거해서 스크롤 확보 */
+            .hero-apply h2 { font-size: 2rem; }
+            .chart-container-wrapper { flex-direction: column; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>PAINS Members</h1>
+        <h1>Providing Academic INsights for Sports.</h1>
         <nav>
             <a href="index.html">Home</a>
-            <a href="members.html" style="font-weight: bold;">Members</a>
+            <a href="members.html">Members</a>
+            <a href="result.html">Result</a>
+            <a href="apply.html" class="active">Apply</a>
         </nav>
     </header>
 
+    <div class="hero-apply">
+        <h2>PAINS 11기 신입부원 모집</h2>
+        <p>스포츠 데이터를 보는 새로운 시각, PAINS와 함께하세요.</p>
+    </div>
+
     <section>
-        <h2>2025 운영진 조직도</h2>
+        <h3>📢 모집 개요</h3>
+        <p>
+            고려대학교 유일의 스포츠 통계분석 동아리 PAINS에서 2026년 1학기를 함께할 11기 신입 부원을 모집합니다.<br>
+            스포츠를 사랑하고 데이터 분석에 열정이 있다면 전공에 관계없이 누구나 환영합니다.
+        </p>
+    </section>
 
-        <div class="org-chart-wrapper">
-            <div class="tree-container">
-                
-                <div class="level-1">
-                    <div style="position: relative;">
-                        <div class="org-card">
-                            <div class="org-img" style="background-image: url('president.jpg');"></div> 
-                            <div class="org-role">회장</div>
-                            <div class="org-name">신다정</div>
-                            <div class="org-major">영어영문학과 24</div>
-                        </div>
-                        <div class="line line-v-1"></div>
-                    </div>
-
-                    <div class="general-affairs-wrapper">
-                        <div class="org-card card-staff">
-                            <div class="org-img"></div>
-                            <div class="org-role">총무</div>
-                            <div class="org-name">최나훈</div>
-                            <div class="org-major">컴퓨터학과 24</div>
-                        </div>
-                    </div>
+    <section style="background-color: #fafafa;">
+        <h3>📅 모집 일정</h3>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <span class="timeline-date">1.22(목) ~ 2.6(금) 23:59</span>
+                    <span class="timeline-title">서류 접수</span>
                 </div>
-
-                <div class="level-2">
-                    <div class="vice-president-wrapper">
-                        <div class="org-card">
-                            <div class="org-img"></div>
-                            <div class="org-role">부회장</div>
-                            <div class="org-name">이시영</div>
-                            <div class="org-major">훈련소</div>
-                        </div>
-                        <div class="line line-v-2-short"></div>
-                        <div class="line line-h-long"></div>
-                        <div class="line line-v-3-branches branch-left"></div>
-                        <div class="line line-v-3-branches branch-center"></div>
-                        <div class="line line-v-3-branches branch-right"></div>
-                    </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <span class="timeline-date">2.13(금) 예정</span>
+                    <span class="timeline-title">1차 서류 합격자 발표</span>
+                    <p style="font-size:0.9rem; color:#666;">(홈페이지 Result 메뉴에서 조회)</p>
                 </div>
-
-                <div class="level-3">
-                    <div class="org-card">
-                        <div class="org-img"></div>
-                        <div class="org-role">기획부장</div>
-                        <div class="org-name">전영재</div>
-                        <div class="org-major">언어학과 24</div>
-                    </div>
-                    <div class="org-card">
-                        <div class="org-img"></div>
-                        <div class="org-role">홍보부장</div>
-                        <div class="org-name">하승민</div>
-                        <div class="org-major">데이터과학과 23</div>
-                    </div>
-                    <div class="org-card">
-                        <div class="org-img"></div>
-                        <div class="org-role">교육부장</div>
-                        <div class="org-name">진민재</div>
-                        <div class="org-major">데이터과학과 24</div>
-                    </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <span class="timeline-date">2.21(토) ~ 2.22(일)</span>
+                    <span class="timeline-title">2차 면접 진행</span>
+                    <p style="font-size:0.9rem; color:#666;">(비대면 ZOOM 진행 예정)</p>
                 </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-content" style="border-left-color: #cf8b8b;">
+                    <span class="timeline-date" style="color: #cf8b8b;">2.26(목) 예정</span>
+                    <span class="timeline-title">최종 합격자 발표</span>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-content" style="background-color: #ab3333; color: white;">
+                    <span class="timeline-date" style="color: #ffcccc;">3.2(월)</span>
+                    <span class="timeline-title">신입 기수 OT 및 정기세션</span>
+                    <p style="font-size:0.9rem;">(필수 참석)</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            </div> </div> </section>
+    <section>
+        <h3>🎯 인재상 및 구성원</h3>
+        <p style="margin-bottom: 20px;">
+            PAINS는 특정 전공 지식보다는 스포츠와 데이터에 대한 <strong>열정</strong>을 가장 중요하게 생각합니다.<br>
+            아래 차트는 PAINS가 지향하는 인재상과 현재 활동 중인 부원들의 다양성을 보여줍니다.
+        </p>
+        
+        <div class="chart-container-wrapper">
+            <div class="chart-box">
+                <h4>Preferred Skills (우대사항)</h4>
+                <canvas id="skillsChart"></canvas>
+                <p style="font-size: 0.8rem; color: #888; margin-top: 15px;">* 절대적인 기준이 아니며, 열정이 가장 중요합니다!</p>
+            </div>
+
+            <div class="chart-box">
+                <h4>부원 전공 분포 (예시)</h4>
+                <canvas id="majorChart"></canvas>
+                <p style="font-size: 0.8rem; color: #888; margin-top: 15px;">* 통계 비전공자도 활발히 활동 중입니다.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="apply-cta">
+        <h3 style="border: none; text-align: center;">지금 바로 도전하세요!</h3>
+        <p style="margin-bottom: 30px;">망설임은 마감만 재촉할 뿐입니다.</p>
+        <a href="https://docs.google.com/forms/u/0/d/e/1FAIpQLSeLV9CYMYQdA3JKROM-HDO1Di5Vbv6HpEW85H9a1BztDsqHvQ/closedform" target="_blank" class="btn-apply-big">지원서 작성하기 (Google Forms)</a>
+        <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">* 지원 기간 내에만 접속 가능합니다.</p>
+    </div>
 
     <footer>
-        <p>&copy; 2025 PAINS. All rights reserved.</p>
+        <div class="footer-icons">
+            <a href="https://www.instagram.com/ku_pains" target="_blank" class="icon-btn" title="Instagram"><img src="instagram.png" alt="Instagram"></a>
+            <a href="https://www.notion.so/painsports/PAINS-a9294ba2a44b4ea6a53f0d5ae069749e" target="_blank" class="icon-btn" title="Notion"><img src="notion.png" alt="Notion"></a>
+            <a href="https://blog.naver.com/painsports" target="_blank" class="icon-btn" title="Blog"><img src="naver_blog.png" alt="NaverBlog"></a>
+        </div>
+        <p>&copy; 2026 PAINS. All rights reserved.</p>
     </footer>
+
+    <script>
+        // 1. 레이더 차트 (Preferred Skills) 설정
+        const ctxSkills = document.getElementById('skillsChart').getContext('2d');
+        new Chart(ctxSkills, {
+            type: 'radar', // 레이더 차트 타입
+            data: {
+                labels: ['스포츠 관심도', ['R/Python', '활용 능력'], '통계적 사고', '협업/커뮤니케이션', ['시각화 툴', '(Tableau 등)']],
+                datasets: [{
+                    label: 'PAINS 인재상 지수',
+                    data: [90, 75, 80, 85, 70], // 각 항목별 점수 (예시 데이터)
+                    fill: true,
+                    backgroundColor: 'rgba(171, 51, 51, 0.2)', // PAINS 빨간색 반투명
+                    borderColor: 'rgb(171, 51, 51)',         // PAINS 빨간색 선
+                    pointBackgroundColor: 'rgb(171, 51, 51)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(171, 51, 51)'
+                }]
+            },
+            options: {
+                scales: {
+                    r: { // 방사형 축 설정
+                        angleLines: { display: true },
+                        suggestedMin: 0,
+                        suggestedMax: 100,
+                        ticks: { display: false } // 축의 숫자 숨김 (깔끔하게)
+                    }
+                },
+                plugins: {
+                    legend: { display: false } // 범례 숨김
+                }
+            }
+        });
+
+        // 2. 도넛 차트 (전공 분포) 설정
+        const ctxMajor = document.getElementById('majorChart').getContext('2d');
+        new Chart(ctxMajor, {
+            type: 'doughnut', // 도넛 차트 타입
+            data: {
+                labels: ['통계/데이터', '체육/스포츠', '경영/경제', '컴퓨터/AI', '기타 인문/이공'],
+                datasets: [{
+                    data: [30, 20, 25, 15, 10], // 각 전공별 비율 (예시 데이터)
+                    backgroundColor: [
+                        '#ab3333', // PAINS 메인 레드
+                        '#cf8b8b', // 라이트 레드
+                        '#e67e22', // 주황
+                        '#3498db', // 파랑
+                        '#95a5a6'  // 회색
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' } // 범례를 아래로
+                }
+            }
+        });
+    </script>
 
 </body>
 </html>
-
