@@ -169,38 +169,56 @@
 
     <script>
         // ============================
-        // 1. 레이더 차트 (Preferred Skills)
+        // 1. 왼쪽 차트: 부원 성별 분포 (Gender Distribution)
         // ============================
-        const ctxSkills = document.getElementById('skillsChart').getContext('2d');
-        new Chart(ctxSkills, {
-            type: 'radar', 
+        // HTML의 <canvas id="skillsChart"> 위치에 그립니다.
+        const ctxGender = document.getElementById('skillsChart').getContext('2d');
+        
+        new Chart(ctxGender, {
+            type: 'doughnut', // 도넛 차트로 변경
             data: {
-                labels: ['스포츠 관심도', ['R/Python', '활용 능력'], '통계적 사고', '협업/커뮤니케이션', ['시각화 툴', '(Tableau 등)']],
+                labels: ['여자', '남자'],
                 datasets: [{
-                    label: 'PAINS 인재상 지수',
-                    data: [90, 75, 80, 85, 70], 
-                    fill: true,
-                    backgroundColor: 'rgba(171, 51, 51, 0.2)', 
-                    borderColor: 'rgb(171, 51, 51)',         
-                    pointBackgroundColor: 'rgb(171, 51, 51)',
-                    pointBorderColor: '#fff',
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: 'rgb(171, 51, 51)'
+                    // 요청하신 데이터: 여자 17.9%, 남자 82.1%
+                    data: [17.9, 82.1], 
+                    backgroundColor: [
+                        '#FF9AA2', // 여자 (파스텔 핑크 - 이미지 색상)
+                        '#6EB5FF'  // 남자 (파스텔 블루 - 이미지 색상)
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                    hoverOffset: 10
                 }]
             },
             options: {
-                scales: {
-                    r: { 
-                        angleLines: { display: true },
-                        suggestedMin: 0,
-                        suggestedMax: 100,
-                        ticks: { display: false }
-                    }
+                responsive: true,
+                maintainAspectRatio: false, // 박스 크기에 맞춰 조절
+                layout: {
+                    padding: 10
                 },
                 plugins: {
-                    legend: { display: false }
-                },
-                maintainAspectRatio: false
+                    legend: {
+                        position: 'right', // 범례 오른쪽 배치
+                        labels: {
+                            boxWidth: 12,
+                            padding: 10,
+                            font: {
+                                family: "'SCDream', sans-serif",
+                                size: 11
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            // 툴팁에 '%' 단위 붙이기
+                            label: function(context) {
+                                let label = context.label || '';
+                                let value = context.parsed;
+                                return `${label}: ${value}%`;
+                            }
+                        }
+                    }
+                }
             }
         });
 
@@ -291,6 +309,7 @@
 
 </body>
 </html>
+
 
 
 
