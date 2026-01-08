@@ -44,36 +44,21 @@
         .activities { display: flex; gap: 20px; flex-wrap: wrap; }
         .card { flex: 1; background: #f9f9f9; padding: 25px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); min-width: 280px; position: relative; border: 2px solid transparent; }
         
-        /* 카드 헤더 (제목과 D-DAY를 양옆으로 배치) */
+        /* 카드 헤더 */
         .card-header {
-            display: flex;
-            justify-content: space-between; /* 양 끝 정렬 */
-            align-items: center; /* 수직 중앙 정렬 */
-            margin-bottom: 15px; /* 아래 내용과의 간격 */
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;
         }
-        
-        /* 기존 h4 스타일 유지하되 마진 제거 (헤더 컨테이너가 마진 담당) */
         .card h4 { color: #ab3333; font-size: 1.2rem; font-weight: bold; margin: 0; }
+        .d-day-text { font-family: 'KBO_Dia', sans-serif; color: #000; font-size: 1.2rem; font-weight: bold; }
 
-        /* D-DAY 텍스트 스타일 */
-        .d-day-text {
-            font-family: 'KBO_Dia', sans-serif; /* 제목과 같은 폰트 */
-            color: #000; /* 검은색 */
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        /* [일정 전용 스타일] */
+        /* 일정 전용 스타일 */
         .schedule-content { text-align: left; margin-top: 10px; }
         .event-name { font-size: 1.3rem; font-weight: bold; margin-bottom: 8px; display: block; word-break: keep-all; }
         
-        /* D-DAY 강조 테두리 스타일 */
+        /* D-DAY 강조 */
         .d-day-border {
-            border: 3px solid #ab3333 !important;
-            background-color: #fff5f5 !important;
-            animation: pulse 2s infinite;
+            border: 3px solid #ab3333 !important; background-color: #fff5f5 !important; animation: pulse 2s infinite;
         }
-        
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(171, 51, 51, 0.4); }
             70% { box-shadow: 0 0 0 10px rgba(171, 51, 51, 0); }
@@ -103,6 +88,33 @@
             .activities { flex-direction: column; }
             header { flex-direction: column; gap: 10px; }
         }
+
+        /* ============================ */
+        /* [팝업] 스타일 추가           */
+        /* ============================ */
+        .popup-overlay {
+            display: none; /* 기본 숨김 */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            justify-content: center; align-items: center;
+        }
+        .popup-content {
+            background: white; width: 400px; max-width: 90%;
+            border-radius: 12px; overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .popup-img-box { width: 100%; background-color: #fff; }
+        .popup-img-box img { width: 100%; height: auto; display: block; }
+        .popup-footer { display: flex; border-top: 1px solid #eee; }
+        .popup-btn {
+            flex: 1; padding: 15px; border: none; background: white; cursor: pointer;
+            font-family: 'SCDream', sans-serif; font-size: 0.95rem; transition: background 0.2s;
+        }
+        .popup-btn:hover { background-color: #f5f5f5; }
+        .btn-today { border-right: 1px solid #eee; color: #666; }
+        .btn-close { color: #ab3333; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -208,72 +220,87 @@
         <p>&copy; 2026 PAINS. All rights reserved.</p>
     </footer>
 
+    <div id="img-popup" class="popup-overlay">
+        <div class="popup-content">
+            <div class="popup-img-box">
+                <img src="2026 HAPPY NEW YEAR.png" alt="2026 새해 복 많이 받으세요">
+            </div>
+            <div class="popup-footer">
+                <button class="popup-btn btn-today" onclick="closePopupToday()">오늘 하루 안 보기</button>
+                <button class="popup-btn btn-close" onclick="closePopup()">닫기</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ============================================
-        // [중요] 아까 복사한 '웹에 게시' 링크를 따옴표 안에 넣으세요!
-        // 주소 끝이 ...output=csv 로 끝나야 합니다.
+        // [팝업] 제어 로직
+        // ============================================
+        document.addEventListener("DOMContentLoaded", function() {
+            const popup = document.getElementById('img-popup');
+            const hideDate = localStorage.getItem('pains_popup_hide_date');
+            const today = new Date().toDateString(); // 예: "Fri Jan 09 2026"
+
+            // 저장된 날짜가 없거나 오늘과 다르면 팝업 띄움
+            if (hideDate !== today) {
+                popup.style.display = "flex";
+            }
+        });
+
+        function closePopup() {
+            document.getElementById('img-popup').style.display = "none";
+        }
+
+        function closePopupToday() {
+            // 오늘 날짜를 저장하고 닫기
+            localStorage.setItem('pains_popup_hide_date', new Date().toDateString());
+            closePopup();
+        }
+
+        // ============================================
+        // [기존 코드] 구글 시트 데이터 가져오기
         // ============================================
         const GOOGLESHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBnuUvyE2CDV-hG26xCVdnt88JhQgtusdEndJwTzaI62TXPdWTNldVvua9RLkXj1s34qiM0CEcNvbr/pub?gid=305458048&single=true&output=csv";
 
-        // ============================================
-        // 1. 구글 시트 데이터 가져오기 (CSV 파싱)
-        // ============================================
         async function fetchAndRenderSchedule() {
             try {
                 const response = await fetch(GOOGLESHEET_URL);
                 const data = await response.text();
                 
-                // CSV 텍스트를 줄 단위로 쪼개기
                 const rows = data.split("\n").map(row => row.trim()).filter(row => row.length > 0);
                 
-                // 첫 번째 줄(제목 행)은 버리고, 두 번째 줄부터 데이터로 변환
-                // 엑셀 순서: A(name), B(date), C(time), D(location), E(type) 라고 가정
                 const eventList = rows.slice(1).map(row => {
-                    // 콤마(,)로 칸 나누기 (따옴표 안에 콤마가 있는 경우 등 복잡한 경우는 제외하고 단순 처리)
                     const cols = row.split(",");
-                    
-                    // 혹시 데이터가 비어있을 수 있으니 안전장치
                     if (cols.length < 5) return null;
 
                     return {
                         name: cols[0].trim(),     // A열
-                        date: cols[1].trim(),     // B열 (YYYY-MM-DD)
+                        date: cols[1].trim(),     // B열
                         time: cols[2].trim(),     // C열
                         location: cols[3].trim(), // D열
                         type: cols[4].trim()      // E열
                     };
-                }).filter(event => event !== null); // 빈 줄 제거
+                }).filter(event => event !== null); 
 
-                // 데이터 준비 완료! 이제 화면 그리기 함수 호출
                 updateSchedule(eventList);
 
             } catch (error) {
                 console.error("일정을 불러오는 데 실패했습니다:", error);
-                // 에러 시 화면에 표시
                 document.getElementById('name-left').innerText = "일정 로딩 실패";
                 document.getElementById('name-right').innerText = "일정 로딩 실패";
             }
         }
 
-        // ============================================
-        // 2. 날짜 포맷 변환 함수
-        // ============================================
         function getFormattedDate(dateStr) {
             const days = ['일', '월', '화', '수', '목', '금', '토'];
-            // YYYY-MM-DD 형식 확인
             if (!dateStr || !dateStr.includes('-')) return dateStr;
-            
             const [y, m, d] = dateStr.split('-').map(Number);
             const date = new Date(y, m - 1, d); 
             const dayName = days[date.getDay()];
             return `${y}. ${String(m).padStart(2,'0')}. ${String(d).padStart(2,'0')}. (${dayName})`;
         }
 
-        // ============================================
-        // 3. 화면 업데이트 로직 (데이터를 인자로 받음)
-        // ============================================
         function updateSchedule(eventList) {
-            // (1) 한국 시간(KST) 기준 오늘 날짜 구하기
             const now = new Date();
             const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
             const kstOffset = 9 * 60 * 60 * 1000;
@@ -282,15 +309,12 @@
             const todayDateObj = new Date(kstDate.getFullYear(), kstDate.getMonth(), kstDate.getDate());
             const todayStr = kstDate.toISOString().split('T')[0];
 
-            // (2) 일정 분류
             let todayEvent = null;
             let pastEvents = [];
             let futureEvents = [];
 
             eventList.forEach(event => {
-                // 날짜 형식이 올바른지 확인 (YYYY-MM-DD)
                 if(!event.date || event.date.length !== 10) return;
-
                 if (event.date === todayStr) {
                     todayEvent = event;
                 } else if (event.date < todayStr) {
@@ -300,11 +324,9 @@
                 }
             });
 
-            // 정렬
             pastEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
             futureEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-            // (3) 왼쪽 카드 렌더링
             const leftCard = document.getElementById('card-left');
             const leftTitle = document.getElementById('title-left');
             
@@ -322,19 +344,16 @@
                 }
             }
 
-            // (4) 오른쪽 카드 렌더링
             const rightCard = document.getElementById('card-right');
             const dDayEl = document.getElementById('d-day-right');
             rightCard.classList.remove('d-day-border');
 
             if (futureEvents.length > 0) {
                 const nextEvent = futureEvents[0];
-                
                 const [ny, nm, nd] = nextEvent.date.split('-').map(Number);
                 const nextEventDateObj = new Date(ny, nm - 1, nd);
                 const diffTime = nextEventDateObj - todayDateObj;
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                
                 dDayEl.innerText = `D-${diffDays}`;
                 renderCard('right', nextEvent);
             } else {
@@ -343,23 +362,15 @@
             }
         }
 
-        // 카드 내용 채우기 도우미 함수
         function renderCard(side, event) {
             const badgeEl = document.getElementById(`badge-${side}`);
             const type = event.type || "기타";
             badgeEl.innerText = type;
-            
             badgeEl.className = 'badge';
             
-            if (type.includes('비정기')) {
-                badgeEl.classList.add('irregular'); // 주황색
-            } 
-            else if (type.includes('정기')) {
-                badgeEl.classList.add('regular');   // 초록색
-            } 
-            else {
-                badgeEl.classList.add('etc');       // 회색
-            }
+            if (type.includes('비정기')) badgeEl.classList.add('irregular'); 
+            else if (type.includes('정기')) badgeEl.classList.add('regular');
+            else badgeEl.classList.add('etc');
 
             document.getElementById(`name-${side}`).innerText = event.name || "TBD";
             document.getElementById(`date-${side}`).innerText = getFormattedDate(event.date);
@@ -375,10 +386,8 @@
             document.getElementById(`loc-${side}`).innerText = '-';
         }
 
-        // 실행!
         fetchAndRenderSchedule();
     </script>
 
 </body>
 </html>
-
