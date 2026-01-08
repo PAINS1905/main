@@ -168,59 +168,10 @@
     </footer>
 
     <script>
-        // 1. 도넛 차트 (부원 성별 분포) 설정
-        const ctxSkills = document.getElementById('skillsChart').getContext('2d');
-        new Chart(ctxSkills, {
-            type: 'doughnut', // 도넛 차트 타입
-            data: {
-                labels: ['여자', '남자'], // 성별
-                datasets: [{
-                    data: [17.9, 82.1], // 각 성별 비율
-                    backgroundColor: [
-                        '#FF9AA2', // 여자 (Pink)
-                        '#6EB5FF'  // 남자 (Blue)
-                    ],
-                    borderWidth: 2,
-                    borderColor: '#ffffff', // 도넛 조각 사이 흰색 경계선
-                    hoverOffset: 10 // 마우스 올렸을 때 튀어나오는 효과
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false, // 중요: 박스 크기에 맞춰 조절
-                layout: {
-                    padding: 10
-                },
-                plugins: {
-                    legend: {
-                        position: 'right', // 범례를 오른쪽에 배치
-                        labels: {
-                            boxWidth: 12, // 범례 색상 박스 크기 조절
-                            padding: 10,
-                            font: {
-                                family: "'SCDream', sans-serif",
-                                size: 11 // 글씨 크기 조절
-                            }
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            // 툴팁에 "비율(%)"을 표시하는 로직
-                            label: function(context) {
-                                let label = context.label || '';
-                                let value = context.parsed;
-                                return `${label}: ${value}%`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
         // 2. 도넛 차트 (부원 학과 분포 - 자동 기타 처리) 설정
         const ctxMajor = document.getElementById('majorChart').getContext('2d');
 
-        // [1] 원본 데이터 및 설정 (여기에 있는 데이터만 수정하면 알아서 계산됩니다)
+        // [1] 원본 데이터 및 설정
         const rawLabels = [
             '데이터과학과', '통계학과', '언어학과', '경영학과', 
             '중어중문학과', '경제학과', '컴퓨터학과', '영어영문학과', 
@@ -229,13 +180,97 @@
         ];
         const rawData = [5, 5, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
         
-        // 원본 색상 (데이터 순서대로 매핑됨)
+        // [수정됨] 밝은 파스텔톤 색상 팔레트 (총 16색)
         const rawColors = [
-            '#EA989E', '#E59E77', '#C39C54', '#A6A254', 
-            '#95A255', '#79B153', '#56A968', '#4CB08F', 
-            '#47A9A4', '#49A9BA', '#54A6C9', '#89A6DF', 
-            '#B4A3E6', '#DA9BE4', '#E995D4', '#EC97B4'
+            '#FFB3BA', // 파스텔 핑크
+            '#FFDFBA', // 파스텔 피치
+            '#FFFFBA', // 파스텔 옐로우
+            '#BAFFC9', // 파스텔 민트
+            '#BAE1FF', // 파스텔 스카이블루
+            '#CBAACB', // 파스텔 라벤더
+            '#FFCCE5', // 라이트 로즈
+            '#CCE5FF', // 베이비 블루
+            '#E5CCFF', // 라이트 퍼플
+            '#FFD1DC', // 버블검 핑크
+            '#FFFFAA', // 페일 옐로우
+            '#98FB98', // 페일 그린
+            '#AFEEEE', // 페일 터쿼이즈
+            '#DCD0FF', // 미스티 퍼플
+            '#FFDAC1', // 소프트 오렌지
+            '#F4C2C2'  // 베이비 핑크
         ];
+
+        // [2] 데이터 가공 로직 (1명인 항목은 '기타'로 합치기)
+        let finalLabels = [];
+        let finalData = [];
+        let finalColors = [];
+        let etcSum = 0; // 기타 합계
+
+        for (let i = 0; i < rawData.length; i++) {
+            if (rawData[i] > 1) {
+                // 1명보다 많으면 그대로 표시
+                finalLabels.push(rawLabels[i]);
+                finalData.push(rawData[i]);
+                finalColors.push(rawColors[i]);
+            } else {
+                // 1명이면 '기타'로 합산
+                etcSum += rawData[i];
+            }
+        }
+
+        // 기타 항목이 있으면 배열 마지막에 추가
+        if (etcSum > 0) {
+            finalLabels.push('기타');
+            finalData.push(etcSum);
+            // [수정됨] 기타 색상도 밝은 파스텔톤으로 변경 (파스텔 보라)
+            finalColors.push('#E0BBE4'); 
+        }
+
+        // [3] 차트 생성
+        new Chart(ctxMajor, {
+            type: 'doughnut', 
+            data: {
+                labels: finalLabels, 
+                datasets: [{
+                    data: finalData, 
+                    backgroundColor: finalColors, 
+                    borderWidth: 2,
+                    borderColor: '#ffffff', 
+                    hoverOffset: 10 
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: 10
+                },
+                plugins: {
+                    legend: {
+                        position: 'right', 
+                        labels: {
+                            boxWidth: 12, 
+                            padding: 10,
+                            font: {
+                                family: "'SCDream', sans-serif",
+                                size: 11 
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                let value = context.parsed;
+                                let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                let percentage = ((value / total) * 100).toFixed(1) + "%";
+                                return `${label}: ${value}명 (${percentage})`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
         // [2] 데이터 가공 로직 (1명인 항목은 '기타'로 합치기)
         let finalLabels = [];
@@ -311,6 +346,7 @@
 
 </body>
 </html>
+
 
 
 
