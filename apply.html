@@ -8,7 +8,7 @@
     
     <style>
         /* ============================ */
-        /* [1] 폰트 및 공통 스타일       */
+        /* [1] 폰트 및 공통 스타일        */
         /* ============================ */
         @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); font-weight: normal; font-style: normal; }
         @font-face { font-family: 'SCDream'; src: url('SCDream5.otf'); font-weight: normal; font-style: normal; }
@@ -51,22 +51,33 @@
         .timeline-date { font-weight: bold; color: #ab3333; margin-bottom: 5px; display: block; }
         .timeline-title { font-weight: bold; font-size: 1.1rem; }
 
-        /* 부서 소개 카드 (New) */
+        /* 부서 소개 카드 */
         .dept-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; }
         .dept-card { flex: 1; min-width: 250px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 4px solid #cf8b8b; transition: transform 0.2s; }
         .dept-card:hover { transform: translateY(-5px); }
         .dept-card h4 { color: #ab3333; margin-bottom: 10px; font-size: 1.2rem; }
         .dept-card p { font-size: 0.95rem; color: #555; margin: 0; word-break: keep-all; }
 
+        /* [NEW] 활동 톺아보기 카드 스타일 */
+        .activity-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 20px; }
+        .activity-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: transform 0.3s; border: 1px solid #eee; }
+        .activity-card:hover { transform: translateY(-5px); }
+        .activity-img-wrapper { width: 100%; height: 200px; background-color: #f0f0f0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .activity-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .activity-card:hover img { transform: scale(1.05); }
+        .activity-text { padding: 20px; }
+        .activity-text h4 { color: #ab3333; margin-bottom: 10px; font-size: 1.2rem; }
+        .activity-text p { font-size: 0.95rem; color: #555; margin: 0; line-height: 1.5; word-break: keep-all; }
+
         /* 체크리스트 스타일 */
         .check-list { list-style: none; padding: 0; }
         .check-list li { position: relative; padding-left: 25px; margin-bottom: 10px; font-size: 1rem; color: #444; }
         .check-list li::before { content: '✔'; position: absolute; left: 0; top: 0; color: #ab3333; font-weight: bold; }
 
-        /* 차트 컨테이너 (레이아웃 수정됨) */
+        /* 차트 컨테이너 */
         .chart-container-wrapper { 
             display: flex; 
-            flex-wrap: wrap; /* 줄바꿈 허용 */
+            flex-wrap: wrap; 
             gap: 20px; 
             justify-content: space-between; 
             margin-top: 30px; 
@@ -83,32 +94,29 @@
             flex-direction: column; 
         }
 
-        /* [1] 성별 분포: 가로로 긴 박스 (너비 100%) */
+        /* 성별 분포: 가로로 긴 박스 */
         .chart-box.full-width {
-            flex: 0 0 100%; /* 항상 100% 차지 */
-            height: 180px;  /* 높이는 낮게 설정 */
+            flex: 0 0 100%; 
+            height: 180px; 
         }
 
-        /* [2] 학과/학번 분포: 반반 박스 (너비 50% - 간격) */
+        /* 학과/학번 분포: 반반 박스 */
         .chart-box.half-width {
-            flex: 1 1 calc(50% - 20px); /* PC에서 절반씩 차지 */
+            flex: 1 1 calc(50% - 20px); 
             height: 400px;
-            min-width: 300px; /* 너무 좁아지면 줄바꿈 */
+            min-width: 300px; 
         }
 
         .chart-box canvas { 
             flex: 1; 
             width: 100% !important; 
             height: 100% !important; 
-            
-            /* [수정] 320px -> 280px로 줄여주세요 */
-            /* 그래프를 납작하게 만들고, 하단 여백을 확보합니다. */
             max-height: 300px; 
         }
         
         .chart-box h4 { margin-bottom: 15px; color: #ab3333; font-size: 1.1rem; }
 
-        /* [수정됨] 모바일 대응 스타일 */
+        /* 모바일 대응 스타일 */
         @media (max-width: 768px) {
             section {
                 padding: 3rem 1rem;
@@ -116,22 +124,17 @@
             .chart-box.half-width {
                 flex: 0 0 100%;
                 min-width: 0;
-                
-                /* 1. 박스 전체 높이는 범례가 들어갈 만큼 적당히 (너무 크지 않게 480px 정도) */
                 height: 480px; 
                 max-height: 480px;
-                
-                /* 내부 정렬을 위해 플렉스 설정 유지 */
                 display: flex;
                 flex-direction: column;
-                justify-content: center; /* 세로 중앙 정렬 */
+                justify-content: center; 
             }
 
-            /* 2. [핵심] 차트 알맹이(Canvas)가 너무 커지지 않게 제한 */
             .chart-box.half-width canvas {
-                max-height: 300px !important; /* 차트 높이 강제 제한 */
+                max-height: 300px !important; 
                 width: 100% !important;
-                margin: 0 auto; /* 가운데 정렬 */
+                margin: 0 auto; 
             }
         }
 
@@ -144,6 +147,7 @@
             .hero-apply h2 { font-size: 2rem; }
             .chart-container-wrapper { flex-direction: column; }
             .dept-container { flex-direction: column; }
+            .activity-container { grid-template-columns: 1fr; } /* 활동 카드 모바일 1열 */
         }
     </style>
 </head>
@@ -172,7 +176,73 @@
         </p>
     </section>
 
+    <section>
+        <h3>🎯 동아리 소개</h3>
+        <p style="margin-bottom: 20px;">
+            PAINS는 특정 전공 지식보다는 스포츠와 데이터에 대한 <strong>열정</strong>을 가장 중요하게 생각합니다.<br>
+            아래 차트는 현재 활동 중인 부원들의 다양성을 보여줍니다.
+        </p>
+        
+        <div class="chart-container-wrapper">
+            <div class="chart-box full-width">
+                <h4>부원 성별 분포</h4>
+                <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 0 20px;">
+                    <div style="width: 100%; height: 60px;">
+                        <canvas id="skillsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-box half-width">
+                <h4>부원 전공 분포</h4>
+                <canvas id="majorChart"></canvas>
+            </div>
+
+            <div class="chart-box half-width">
+                <h4>학번 분포</h4>
+                <canvas id="idChart"></canvas>
+            </div>
+        </div>
+    </section>
+
     <section style="background-color: #fafafa;">
+        <h3>📸 PAINS 활동 톺아보기</h3>
+        <p style="margin-bottom: 20px;">PAINS에서는 학기 중 다양한 학술 활동과 친목 활동을 진행합니다.</p>
+        
+        <div class="activity-container">
+            <div class="activity-card">
+                <div class="activity-img-wrapper">
+                    <img src="activity1.png" alt="정기 세미나 사진">
+                </div>
+                <div class="activity-text">
+                    <h4>정기 세미나</h4>
+                    <p>매주 진행되는 정기 세미나에서는 팀별 프로젝트 진행 상황을 공유하고 피드백을 주고받습니다.</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <div class="activity-img-wrapper">
+                    <img src="activity1.png" alt="MT 사진">
+                </div>
+                <div class="activity-text">
+                    <h4>MT 및 친목 활동</h4>
+                    <p>학기 초와 종강 후 MT를 통해 부원들 간의 친목을 다지고 즐거운 추억을 만듭니다.</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <div class="activity-img-wrapper">
+                    <img src="activity1.png" alt="체육대회 사진">
+                </div>
+                <div class="activity-text">
+                    <h4>PAINS 체육대회</h4>
+                    <p>스포츠 동아리답게 직접 몸으로 뛰며 땀 흘리는 체육대회를 개최합니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
         <h3>🏢 부서 운영</h3>
         <p style="margin-bottom: 20px;">모든 부원들은 아래 3개 부서 중 하나에 소속되어 활동할 수 있습니다.</p>
         <div class="dept-container">
@@ -261,35 +331,6 @@
             AAA<br>
             AAABBB <strong>CCC</strong>
         </p>
-    </section>
-
-    <section>
-        <h3>🎯 인재상 및 구성원</h3>
-        <p style="margin-bottom: 20px;">
-            PAINS는 특정 전공 지식보다는 스포츠와 데이터에 대한 <strong>열정</strong>을 가장 중요하게 생각합니다.<br>
-            아래 차트는 현재 활동 중인 부원들의 다양성을 보여줍니다.
-        </p>
-        
-        <div class="chart-container-wrapper">
-            <div class="chart-box full-width">
-                <h4>부원 성별 분포</h4>
-                <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 0 20px;">
-                    <div style="width: 100%; height: 60px;">
-                        <canvas id="skillsChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="chart-box half-width">
-                <h4>부원 전공 분포</h4>
-                <canvas id="majorChart"></canvas>
-            </div>
-
-            <div class="chart-box half-width">
-                <h4>학번 분포</h4>
-                <canvas id="idChart"></canvas>
-            </div>
-        </div>
     </section>
 
     <section style="text-align: center; padding-bottom: 1rem;">
@@ -436,16 +477,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
