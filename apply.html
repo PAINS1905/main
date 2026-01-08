@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAINS - 11기 리크루팅</title>
+    <title>PAINS - 신입부원 모집</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         /* ============================ */
-        /* [1] 폰트 및 공통 스타일 (index.html과 동일) */
+        /* [1] 폰트 및 공통 스타일       */
         /* ============================ */
         @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); font-weight: normal; font-style: normal; }
         @font-face { font-family: 'SCDream'; src: url('SCDream5.otf'); font-weight: normal; font-style: normal; }
@@ -17,21 +17,23 @@
         h1, h2, h3, h4 { font-family: 'KBO_Dia', sans-serif; }
         section { padding: 3rem 2rem; max-width: 900px; margin: 0 auto; }
         h3 { font-size: 1.8rem; color: #2c3e50; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        p { margin-bottom: 10px; }
+        strong { color: #ab3333; }
 
-        /* 헤더 & 푸터 (index.html과 동일) */
+        /* 헤더 & 푸터 */
         header { background-color: #cf8b8b; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         header h1 { font-size: 1.5rem; font-weight: bold; }
         nav { display: flex; align-items: center; }
         nav a { color: #ecf0f1; text-decoration: none; margin-left: 15px; font-size: 0.9rem; transition: color 0.3s; }
         nav a:hover { color: #fff; font-weight: bold; }
-        nav a.active { color: #fff; font-weight: bold; border-bottom: 2px solid #fff; } /* 현재 페이지 강조 */
+        nav a.active { color: #fff; font-weight: bold; border-bottom: 2px solid #fff; }
         footer { background-color: #333; color: white; text-align: center; padding: 3rem 2rem 2rem; margin-top: 2rem; font-size: 0.8rem; }
         .footer-icons { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; }
         .icon-btn { display: flex; justify-content: center; align-items: center; width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); border-radius: 12px; transition: all 0.3s ease; }
         .icon-btn:hover { background-color: #ab3333; transform: translateY(-3px); }
         .icon-btn img { width: 24px; height: 24px; object-fit: contain; }
 
-        /* 히어로 섹션 (Apply 전용) */
+        /* 히어로 섹션 */
         .hero-apply { background-color: #ab3333; color: white; text-align: center; padding: 4rem 1rem; }
         .hero-apply h2 { font-size: 2.5rem; margin-bottom: 15px; }
         .hero-apply p { font-size: 1.2rem; opacity: 0.9; }
@@ -40,7 +42,7 @@
         /* [2] Apply 페이지 전용 스타일 */
         /* ============================ */
         
-        /* 타임라인 스타일 */
+        /* 타임라인 */
         .timeline { position: relative; max-width: 700px; margin: 0 auto; padding: 20px 0; }
         .timeline::after { content: ''; position: absolute; width: 3px; background-color: #eee; top: 0; bottom: 0; left: 20px; margin-left: -1.5px; }
         .timeline-item { padding: 10px 20px 20px 50px; position: relative; background-color: inherit; width: 100%; }
@@ -49,19 +51,39 @@
         .timeline-date { font-weight: bold; color: #ab3333; margin-bottom: 5px; display: block; }
         .timeline-title { font-weight: bold; font-size: 1.1rem; }
 
-        /* 차트 컨테이너 스타일 */
+        /* 부서 소개 카드 (New) */
+        .dept-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; }
+        .dept-card { flex: 1; min-width: 250px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 4px solid #cf8b8b; transition: transform 0.2s; }
+        .dept-card:hover { transform: translateY(-5px); }
+        .dept-card h4 { color: #ab3333; margin-bottom: 10px; font-size: 1.2rem; }
+        .dept-card p { font-size: 0.95rem; color: #555; margin: 0; word-break: keep-all; }
+
+        /* 체크리스트 스타일 */
+        .check-list { list-style: none; padding: 0; }
+        .check-list li { position: relative; padding-left: 25px; margin-bottom: 10px; font-size: 1rem; color: #444; }
+        .check-list li::before { content: '✔'; position: absolute; left: 0; top: 0; color: #ab3333; font-weight: bold; }
+
+        /* 차트 컨테이너 */
         .chart-container-wrapper { display: flex; flex-wrap: wrap; gap: 30px; justify-content: space-around; margin-top: 30px; }
-        .chart-box { flex: 1; min-width: 350px; max-width: 450px; height: 450px; max-height: 450px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; display: flex; flex-direction: column; }
+        .chart-box { 
+            flex: 1; min-width: 350px; max-width: 450px; 
+            height: 450px; max-height: 450px;
+            background: white; padding: 25px; border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; 
+            display: flex; flex-direction: column; 
+        }
+        .chart-box canvas { flex: 1; width: 100% !important; height: 100% !important; max-height: 350px; }
         .chart-box h4 { margin-bottom: 20px; color: #ab3333; }
 
-        /* 지원하기 버튼 영역 */
-        .apply-cta { text-align: center; padding: 4rem 2rem; background-color: #f9f9f9; margin-top: 2rem; }
-        .btn-apply-big { display: inline-block; background-color: #ab3333; color: white; padding: 15px 40px; border-radius: 30px; font-size: 1.3rem; font-weight: bold; text-decoration: none; transition: background 0.3s, transform 0.2s; box-shadow: 0 5px 15px rgba(171, 51, 51, 0.3); }
+        /* 지원하기 버튼 */
+        .apply-cta { text-align: center; padding: 5rem 2rem; background-color: #f9f9f9; border-top: 1px solid #eee; }
+        .btn-apply-big { display: inline-block; background-color: #ab3333; color: white; padding: 18px 50px; border-radius: 40px; font-size: 1.4rem; font-weight: bold; text-decoration: none; transition: background 0.3s, transform 0.2s; box-shadow: 0 8px 20px rgba(171, 51, 51, 0.3); }
         .btn-apply-big:hover { background-color: #8f2a2a; transform: translateY(-3px); }
 
         @media (max-width: 600px) {
             .hero-apply h2 { font-size: 2rem; }
             .chart-container-wrapper { flex-direction: column; }
+            .dept-container { flex-direction: column; }
         }
     </style>
 </head>
@@ -78,55 +100,108 @@
     </header>
 
     <div class="hero-apply">
-        <h2>PAINS 11기 신입부원 모집</h2>
-        <p>PAINS는 스포츠와 데이터에 열정과 관심을 가지고 있는 여러분을 기다립니다.</p>
+        <h2>PAINS 신입부원 모집</h2>
+        <p>스포츠 데이터를 보는 새로운 시각, PAINS와 함께하세요.</p>
     </div>
 
     <section>
         <h3>📢 모집 개요</h3>
         <p>
-            고려대학교 유일의 스포츠 통계분석 동아리 PAINS에서 2026년 1학기를 함께할 11기 신입 부원을 모집합니다.<br>
+            스포츠 통계 동아리 <strong>PAINS</strong>가 2025년 하반기를 함께할 신입 부원을 모집합니다!<br>
+            PAINS는 평소 스포츠에 관심이 많은 학우들이 스포츠 통계 연구를 위해 스스로 결성한 모임입니다.<br>
             스포츠를 사랑하고 데이터 분석에 열정이 있다면 전공에 관계없이 누구나 환영합니다.
         </p>
     </section>
 
     <section style="background-color: #fafafa;">
+        <h3>🏢 부서 운영</h3>
+        <p style="margin-bottom: 20px;">신입부원은 첫 기수 활동 종료 시까지 아래 3개 부서 중 하나에 소속되어 활동합니다.</p>
+        <div class="dept-container">
+            <div class="dept-card">
+                <h4>📅 기획부</h4>
+                <p>세미나 준비, MT 등 전반적인 친목 활동 기획 및 기타 이벤트 기획</p>
+            </div>
+            <div class="dept-card">
+                <h4>📘 교육부</h4>
+                <p>초심자용 강의 제작 (Python / 세이버메트릭스 강의), 동아리 자료 및 파일 관리</p>
+            </div>
+            <div class="dept-card">
+                <h4>📢 홍보부</h4>
+                <p>홍보 플랫폼(SNS, 블로그) 관리, 리쿠르팅 홍보, 동아리 내 디자인 업무(포스터 등)</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
         <h3>📅 모집 일정</h3>
         <div class="timeline">
             <div class="timeline-item">
                 <div class="timeline-content">
-                    <span class="timeline-date">TBD</span>
-                    <span class="timeline-title">서류 접수</span>
+                    <span class="timeline-date">~ 9.1(월) 23:59</span>
+                    <span class="timeline-title">서류 신청 마감</span>
                 </div>
             </div>
             <div class="timeline-item">
                 <div class="timeline-content">
-                    <span class="timeline-date">TBD</span>
-                    <span class="timeline-title">1차 서류 합격자 발표</span>
-                    <p style="font-size:0.9rem; color:#666;">홈페이지 Result 메뉴에서 조회</p>
+                    <span class="timeline-date">9.2(화)</span>
+                    <span class="timeline-title">1차 합격자 발표</span>
+                    <p style="font-size:0.9rem; color:#666;">개별 안내</p>
                 </div>
             </div>
             <div class="timeline-item">
                 <div class="timeline-content">
-                    <span class="timeline-date">TBD</span>
-                    <span class="timeline-title">2차 면접 진행</span>
-                    <p style="font-size:0.9rem; color:#666;">비대면 ZOOM 진행 예정</p>
+                    <span class="timeline-date">9.5(금) ~ 9.8(월)</span>
+                    <span class="timeline-title">2차 면접 진행 (대면)</span>
+                    <p style="font-size:0.9rem; color:#666;">기간 중 일정 협의</p>
                 </div>
             </div>
             <div class="timeline-item">
                 <div class="timeline-content" style="border-left-color: #cf8b8b;">
-                    <span class="timeline-date" style="color: #cf8b8b;">TBD</span>
-                    <span class="timeline-title">최종 합격자 발표</span>
+                    <span class="timeline-date" style="color: #cf8b8b;">9.10(수)</span>
+                    <span class="timeline-title">최종 선발 공지</span>
+                    <p style="font-size:0.9rem; color:#666;">개별 통보</p>
                 </div>
             </div>
             <div class="timeline-item">
                 <div class="timeline-content" style="background-color: #ab3333; color: white;">
-                    <span class="timeline-date" style="color: #ffffff;">TBD</span>
-                    <span class="timeline-title">신입 기수 OT 및 정기세션</span>
-                    <p style="font-size:0.9rem;">필수 참석</p>
+                    <span class="timeline-date" style="color: #ffffff;">9.11(목) 19:00</span>
+                    <span class="timeline-title">신입 기수 OT</span>
+                    <p style="font-size:0.9rem;"><strong>참여 필수!</strong></p>
                 </div>
             </div>
         </div>
+    </section>
+
+    <section style="background-color: #fafafa;">
+        <div style="display: flex; flex-wrap: wrap; gap: 40px;">
+            <div style="flex: 1; min-width: 300px;">
+                <h3>✅ 지원 자격</h3>
+                <ul class="check-list">
+                    <li>1년(2학기) 이상 활동 가능한 재/휴학 대학생 (신입생 환영)</li>
+                    <li><strong>OT (9/11) 및 정기활동</strong>에 대면 참여가 가능한 사람</li>
+                    <li>즐겨보는 스포츠가 1개 이상 있는 사람</li>
+                    <li>스포츠를 데이터과학적 측면에서 접근해보고 싶은 사람</li>
+                </ul>
+            </div>
+            <div style="flex: 1; min-width: 300px;">
+                <h3>🗓️ 정기 활동 일정</h3>
+                <ul class="check-list" style="color: #555;">
+                    <li><strong>일반 정기 활동:</strong> 9/15(월), 9/22(월)</li>
+                    <li><strong>PAINS 체육대회:</strong> 11/15(토)</li>
+                    <li><strong>학기 중 세미나:</strong> 11/6(목), 11/7(금)</li>
+                    <li><strong>방학 중 세미나:</strong> 2026년 2/5(목), 2/6(금)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>💸 회비 안내</h3>
+        <p style="font-size: 1.1rem; color: #ab3333; font-weight: bold;">학기 당 2~3만원 (추후 확정)</p>
+        <p style="font-size: 0.95rem; color: #666; background: #eee; padding: 15px; border-radius: 8px;">
+            PAINS는 부원들의 적극적인 활동을 격려하기 위해 수시 과제 및 프로젝트 우수작에 대해 활동 격려금을 지급하고 있습니다.<br>
+            또한 프로그램 이용 대금 및 홍보자료 제작에 사용되며, <strong>활동 종료 직후 사용 내역은 투명하게 공개됩니다.</strong>
+        </p>
     </section>
 
     <section>
@@ -140,22 +215,25 @@
             <div class="chart-box">
                 <h4>부원 성별 분포</h4>
                 <canvas id="skillsChart"></canvas>
-                <p style="font-size: 0.8rem; color: #888; margin-top: 15px;">지원자의 성별에 따른 우대는 없음을 알려드립니다.</p>
             </div>
 
             <div class="chart-box">
                 <h4>부원 전공 분포</h4>
                 <canvas id="majorChart"></canvas>
-                <p style="font-size: 0.8rem; color: #888; margin-top: 15px;">통계 비전공자분들도 환영입니다!</p>
             </div>
         </div>
+    </section>
+
+    <section style="text-align: center; padding-bottom: 1rem;">
+        <h3>📞 문의사항</h3>
+        <p>PAINS 홍보부장 OOO (인스타그램 DM 또는 블로그 댓글)</p>
     </section>
 
     <div class="apply-cta">
         <h3 style="border: none; text-align: center;">지금 바로 도전하세요!</h3>
         <p style="margin-bottom: 30px;">망설임은 마감만 재촉할 뿐입니다.</p>
         <a href="https://docs.google.com/forms/u/0/d/e/1FAIpQLSeLV9CYMYQdA3JKROM-HDO1Di5Vbv6HpEW85H9a1BztDsqHvQ/closedform" target="_blank" class="btn-apply-big">지원서 작성하기 (Google Forms)</a>
-        <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">* 지원 기간 내에만 접속 가능합니다.</p>
+        <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">* 지원 기간(9/1 23:59) 내에만 접속 가능합니다.</p>
     </div>
 
     <footer>
@@ -178,7 +256,7 @@
             data: {
                 labels: ['여자', '남자'],
                 datasets: [{
-                    // [수정됨] 여자 9명(20%), 남자 36명(80%)
+                    // 요청하신 데이터: 여자 9명(20%), 남자 36명(80%)
                     data: [20, 80], 
                     backgroundColor: [
                         '#FF6B81', // 여자 (Vivid Pink)
@@ -236,24 +314,17 @@
             1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
         ];
         
-        // [수정] 더 선명하고 뚜렷한 색상 팔레트 (Vivid Palette)
+        // [2] 선명한 색상 팔레트 (Vivid Palette)
         const rawColors = [
-            '#FF6B6B', // 데이터과학과 (코랄 레드)
-            '#FF9F43', // 통계학과 (오렌지)
-            '#FDCB6E', // 중어중문학과 (머스타드 옐로우)
-            '#20BF6B', // 경제학과 (비비드 그린)
-            '#0FB9B1', // 언어학과 (청록색)
-            '#2D98DA', // 컴퓨터학과 (밝은 파랑)
-            '#3867D6', // 경영학과 (로얄 블루)
-            '#8854D0', // 행정학과 (진한 보라)
-            '#A55EEA', // 화학과 (밝은 보라)
-            '#F06292', // 사회학과 (핫핑크)
-            '#4B6584', // 국제학부 (블루 그레이)
+            '#FF6B6B', '#FF9F43', '#FDCB6E', '#20BF6B', 
+            '#0FB9B1', '#2D98DA', '#3867D6', '#8854D0', 
+            '#A55EEA', '#F06292', '#4B6584', 
             // 예비 색상들
-            '#00B894', '#00CEC9', '#6C5CE7', '#FD79A8', '#E17055'
+            '#00B894', '#00CEC9', '#6C5CE7', '#FD79A8', '#E17055',
+            '#55E6C1', '#F8EFBA', '#D6A2E8', '#25CCF7', '#1B9CFC', '#58B19F', '#EAB543'
         ];
 
-        // [2] 데이터 자동 가공
+        // [3] 데이터 자동 가공
         let finalLabels = [];
         let finalData = [];
         let finalColors = [];
@@ -272,11 +343,10 @@
         if (etcSum > 0) {
             finalLabels.push('기타');
             finalData.push(etcSum);
-            // [수정] 기타 색상도 선명한 보라색 계열로 변경
-            finalColors.push('#9980FA'); 
+            finalColors.push('#9980FA'); // 기타: 선명한 보라색
         }
 
-        // [3] 차트 그리기
+        // [4] 차트 그리기
         new Chart(ctxMajor, {
             type: 'doughnut', 
             data: {
@@ -297,7 +367,6 @@
                     legend: {
                         position: 'right', 
                         labels: {
-                            // [수정] 글자색을 더 진하고 선명한 회색으로 변경
                             color: '#333333',
                             boxWidth: 12, padding: 10,
                             font: { family: "'SCDream', sans-serif", size: 11 }
@@ -321,13 +390,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
