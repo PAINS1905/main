@@ -63,17 +63,53 @@
         .check-list li { position: relative; padding-left: 25px; margin-bottom: 10px; font-size: 1rem; color: #444; }
         .check-list li::before { content: '✔'; position: absolute; left: 0; top: 0; color: #ab3333; font-weight: bold; }
 
-        /* 차트 컨테이너 */
-        .chart-container-wrapper { display: flex; flex-wrap: wrap; gap: 30px; justify-content: space-around; margin-top: 30px; }
-        .chart-box { 
-            flex: 1; min-width: 350px; max-width: 450px; 
-            height: 450px; max-height: 450px;
-            background: white; padding: 25px; border-radius: 12px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; 
-            display: flex; flex-direction: column; 
+        /* 차트 컨테이너 (레이아웃 수정됨) */
+        .chart-container-wrapper { 
+            display: flex; 
+            flex-wrap: wrap; /* 줄바꿈 허용 */
+            gap: 20px; 
+            justify-content: space-between; 
+            margin-top: 30px; 
         }
-        .chart-box canvas { flex: 1; width: 100% !important; height: 100% !important; max-height: 350px; }
-        .chart-box h4 { margin-bottom: 20px; color: #ab3333; }
+
+        /* 공통 박스 스타일 */
+        .chart-box { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+            text-align: center; 
+            display: flex; 
+            flex-direction: column; 
+        }
+
+        /* [1] 성별 분포: 가로로 긴 박스 (너비 100%) */
+        .chart-box.full-width {
+            flex: 0 0 100%; /* 항상 100% 차지 */
+            height: 180px;  /* 높이는 낮게 설정 */
+        }
+
+        /* [2] 학과/학번 분포: 반반 박스 (너비 50% - 간격) */
+        .chart-box.half-width {
+            flex: 1 1 calc(50% - 20px); /* PC에서 절반씩 차지 */
+            height: 400px;
+            min-width: 300px; /* 너무 좁아지면 줄바꿈 */
+        }
+
+        .chart-box canvas { 
+            flex: 1; 
+            width: 100% !important; 
+            height: 100% !important; 
+        }
+        
+        .chart-box h4 { margin-bottom: 15px; color: #ab3333; font-size: 1.1rem; }
+
+        /* 모바일 대응: 화면이 좁을 땐 전부 100%로 변경 */
+        @media (max-width: 768px) {
+            .chart-box.half-width {
+                flex: 0 0 100%;
+            }
+        }
 
         /* 지원하기 버튼 */
         .apply-cta { text-align: center; padding: 5rem 2rem; background-color: #f9f9f9; border-top: 1px solid #eee; }
@@ -212,19 +248,21 @@
         </p>
         
         <div class="chart-container-wrapper">
-            <div class="chart-box">
+            <div class="chart-box full-width">
                 <h4>부원 성별 분포</h4>
-                <div style="height: 100px; width: 100%; margin-top: 50px;">
-                    <canvas id="skillsChart"></canvas>
+                <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 0 20px;">
+                    <div style="width: 100%; height: 60px;">
+                        <canvas id="skillsChart"></canvas>
+                    </div>
                 </div>
             </div>
 
-            <div class="chart-box">
+            <div class="chart-box half-width">
                 <h4>부원 전공 분포</h4>
                 <canvas id="majorChart"></canvas>
             </div>
 
-            <div class="chart-box">
+            <div class="chart-box half-width">
                 <h4>학번 분포</h4>
                 <canvas id="idChart"></canvas>
             </div>
@@ -375,5 +413,6 @@
 
 </body>
 </html>
+
 
 
