@@ -51,7 +51,7 @@
 
         /* 차트 컨테이너 스타일 */
         .chart-container-wrapper { display: flex; flex-wrap: wrap; gap: 30px; justify-content: space-around; margin-top: 30px; }
-        .chart-box { flex: 1; min-width: 300px; max-width: 450px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
+        .chart-box { flex: 1; min-width: 350px; min-height: 400px; max-width: 450px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
         .chart-box h4 { margin-bottom: 20px; color: #ab3333; }
 
         /* 지원하기 버튼 영역 */
@@ -79,7 +79,7 @@
 
     <div class="hero-apply">
         <h2>PAINS 11기 신입부원 모집</h2>
-        <p>스포츠 데이터를 보는 새로운 시각, PAINS와 함께하세요.</p>
+        <p>PAINS는 스포츠와 데이터에 열정과 관심을 가지고 있는 여러분을 기다립니다.</p>
     </div>
 
     <section>
@@ -95,35 +95,35 @@
         <div class="timeline">
             <div class="timeline-item">
                 <div class="timeline-content">
-                    <span class="timeline-date">1.22(목) ~ 2.6(금) 23:59</span>
+                    <span class="timeline-date">TBD</span>
                     <span class="timeline-title">서류 접수</span>
                 </div>
             </div>
             <div class="timeline-item">
                 <div class="timeline-content">
-                    <span class="timeline-date">2.13(금) 예정</span>
+                    <span class="timeline-date">TBD</span>
                     <span class="timeline-title">1차 서류 합격자 발표</span>
-                    <p style="font-size:0.9rem; color:#666;">(홈페이지 Result 메뉴에서 조회)</p>
+                    <p style="font-size:0.9rem; color:#666;">홈페이지 Result 메뉴에서 조회</p>
                 </div>
             </div>
             <div class="timeline-item">
                 <div class="timeline-content">
-                    <span class="timeline-date">2.21(토) ~ 2.22(일)</span>
+                    <span class="timeline-date">TBD</span>
                     <span class="timeline-title">2차 면접 진행</span>
-                    <p style="font-size:0.9rem; color:#666;">(비대면 ZOOM 진행 예정)</p>
+                    <p style="font-size:0.9rem; color:#666;">비대면 ZOOM 진행 예정</p>
                 </div>
             </div>
             <div class="timeline-item">
                 <div class="timeline-content" style="border-left-color: #cf8b8b;">
-                    <span class="timeline-date" style="color: #cf8b8b;">2.26(목) 예정</span>
+                    <span class="timeline-date" style="color: #cf8b8b;">TBD</span>
                     <span class="timeline-title">최종 합격자 발표</span>
                 </div>
             </div>
             <div class="timeline-item">
                 <div class="timeline-content" style="background-color: #ab3333; color: white;">
-                    <span class="timeline-date" style="color: #ffcccc;">3.2(월)</span>
+                    <span class="timeline-date" style="color: #ffffff;">TBD</span>
                     <span class="timeline-title">신입 기수 OT 및 정기세션</span>
-                    <p style="font-size:0.9rem;">(필수 참석)</p>
+                    <p style="font-size:0.9rem;">필수 참석</p>
                 </div>
             </div>
         </div>
@@ -202,27 +202,75 @@
         });
 
         // 2. 도넛 차트 (전공 분포) 설정
+        // 2. 도넛 차트 (부원 학과 분포) 설정
         const ctxMajor = document.getElementById('majorChart').getContext('2d');
         new Chart(ctxMajor, {
-            type: 'doughnut', // 도넛 차트 타입
+            type: 'doughnut', 
             data: {
-                labels: ['통계/데이터', '체육/스포츠', '경영/경제', '컴퓨터/AI', '기타 인문/이공'],
+                // 이미지 순서대로 학과 이름 매핑
+                labels: [
+                    '데이터과학과', '통계학과', '언어학과', '경영학과', 
+                    '중어중문학과', '경제학과', '컴퓨터학과', '영어영문학과', 
+                    '기계공학부', '식품공학과', '화공생명공학과', '행정학과', 
+                    '화학과', '사회학과', '스마트보안학부', '미디어학부'
+                ],
                 datasets: [{
-                    data: [30, 20, 25, 15, 10], // 각 전공별 비율 (예시 데이터)
+                    // 요청하신 실제 데이터 값
+                    data: [5, 5, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    // 이미지에서 추출한 색상 코드 (순서 일치)
                     backgroundColor: [
-                        '#ab3333', // PAINS 메인 레드
-                        '#cf8b8b', // 라이트 레드
-                        '#e67e22', // 주황
-                        '#3498db', // 파랑
-                        '#95a5a6'  // 회색
+                        '#EA989E', // 데이터과학과 (Pink)
+                        '#E59E77', // 통계학과 (Orange)
+                        '#C39C54', // 언어학과 (Mustard)
+                        '#A6A254', // 경영학과 (Olive)
+                        '#95A255', // 중어중문학과 (Greenish Olive)
+                        '#79B153', // 경제학과 (Green)
+                        '#56A968', // 컴퓨터학과 (Medium Green)
+                        '#4CB08F', // 영어영문학과 (Teal Green)
+                        '#47A9A4', // 기계공학부 (Teal)
+                        '#49A9BA', // 식품공학과 (Cyan)
+                        '#54A6C9', // 화공생명공학과 (Sky Blue)
+                        '#89A6DF', // 행정학과 (Periwinkle)
+                        '#B4A3E6', // 화학과 (Lavender)
+                        '#DA9BE4', // 사회학과 (Orchid)
+                        '#E995D4', // 스마트보안학부 (Pinkish Purple)
+                        '#EC97B4'  // 미디어학부 (Rose)
                     ],
-                    borderWidth: 1
+                    borderWidth: 2,
+                    borderColor: '#ffffff', // 도넛 조각 사이 흰색 경계선
+                    hoverOffset: 10 // 마우스 올렸을 때 튀어나오는 효과
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false, // CSS 크기에 맞춤
+                layout: {
+                    padding: 10
+                },
                 plugins: {
-                    legend: { position: 'bottom' } // 범례를 아래로
+                    legend: {
+                        position: 'right', // 항목이 많으므로 범례를 오른쪽에 배치
+                        labels: {
+                            boxWidth: 12, // 범례 색상 박스 크기 조절
+                            padding: 10,
+                            font: {
+                                family: "'SCDream', sans-serif",
+                                size: 11 // 글씨 크기 조절
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            // 툴팁에 "인원수"와 "비율(%)"을 함께 표시하는 로직
+                            label: function(context) {
+                                let label = context.label || '';
+                                let value = context.parsed;
+                                let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                let percentage = ((value / total) * 100).toFixed(1) + "%";
+                                return `${label}: ${value}명 (${percentage})`;
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -230,3 +278,4 @@
 
 </body>
 </html>
+
