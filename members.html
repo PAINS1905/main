@@ -14,17 +14,94 @@
         body { font-family: 'SCDream', sans-serif; line-height: 1.6; color: #333; background-color: #fdfdfd; }
         header h1, section h2 { font-family: 'KBO_Dia', sans-serif; }
 
-        /* [3] 레이아웃 */
-        header { background-color: #cf8b8b; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        header h1 { font-size: 1.5rem; font-weight: bold; }
-        nav { display: flex; align-items: center; }
-        nav a { color: #ecf0f1; text-decoration: none; margin-left: 15px; font-size: 0.9rem; transition: color 0.3s; }
-        nav a:hover { color: #fff; font-weight: bold; }
+        /* [3] 레이아웃 및 헤더 (수정됨: 햄버거 메뉴 적용) */
+        header { 
+            background-color: #cf8b8b; 
+            color: white; 
+            padding: 1rem 2rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 20px; 
+            position: relative;
+            z-index: 1000;
+        }
+        
+        /* 햄버거 버튼 스타일 */
+        .hamburger-btn {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+            cursor: pointer;
+            z-index: 1100;
+        }
+        .hamburger-btn span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: white;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        header h1 { font-size: 1.5rem; font-weight: bold; margin: 0; }
+        header h1 a { text-decoration: none; color: white; }
+
+        /* 기존 네비게이션 숨김 */
+        header nav { display: none; }
+
+        /* [추가] 사이드바 스타일 */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 260px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            transition: left 0.3s ease;
+            z-index: 1050;
+            padding-top: 80px;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar.active { left: 0; }
+
+        .sidebar a {
+            padding: 15px 30px;
+            text-decoration: none;
+            color: #333;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-bottom: 1px solid #f9f9f9;
+            transition: background 0.2s, color 0.2s;
+        }
+        .sidebar a:hover {
+            background-color: #fafafa;
+            color: #ab3333;
+            font-weight: bold;
+        }
+
+        /* 오버레이 스타일 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 1040;
+        }
+        .overlay.active { display: block; }
+
+        /* 기존 섹션 스타일 */
         section { padding: 3rem 1rem; max-width: 1200px; margin: 0 auto; }
         h2 { font-size: 2rem; color: #ab3333; margin-bottom: 40px; text-align: center;}
         footer { background-color: #333; color: white; text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.8rem; }
 
-        /* [4] 조직도 스타일 */
+        /* [4] 조직도 스타일 (기존 유지) */
         .org-chart-wrapper { overflow-x: auto; padding: 20px 0; text-align: center; -webkit-overflow-scrolling: touch; }
         .tree-container { display: inline-block; position: relative; padding-top: 20px; min-width: 700px; }
 
@@ -64,7 +141,7 @@
         .card-staff .org-role { color: #7f8c8d; }
 
         @media (max-width: 600px) {
-            header { flex-direction: column; gap: 10px; }
+            header { justify-content: flex-start; } /* 모바일 헤더 정렬 수정 */
             section { padding: 2rem 0; }
         }
     </style>
@@ -72,13 +149,21 @@
 <body>
 
     <header>
-        <h1>PAINS Members</h1>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="result.html">Result</a>
-            <a href="apply.html">Apply</a>
-        </nav>
+        <div class="hamburger-btn" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <h1><a href="index.html">PAINS Members</a></h1>
     </header>
+
+    <div class="sidebar" id="sidebar">
+        <a href="index.html">Home</a>
+        <a href="members.html">Members</a>
+        <a href="result.html">Result</a>
+        <a href="apply.html">Apply</a>
+    </div>
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <section>
         <h2>10기 운영진 조직도</h2>
@@ -153,7 +238,15 @@
     </footer>
 
     <script>
-        // 부원 명단 CSV 링크
+        // [New] 사이드바 토글 함수
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // [기존 코드] 부원 명단 이미지 로딩
         const MEMBERS_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBnuUvyE2CDV-hG26xCVdnt88JhQgtusdEndJwTzaI62TXPdWTNldVvua9RLkXj1s34qiM0CEcNvbr/pub?gid=346060998&single=true&output=csv";
 
         async function fetchAndFillImages() {
@@ -163,21 +256,16 @@
                 
                 const rows = data.split("\n").map(row => row.trim()).filter(row => row.length > 0);
                 
-                // 첫 줄(헤더) 제거하고 데이터 처리
-                // [구조] A열: Level, B열: Role, C열: Image
                 rows.slice(1).forEach(row => {
                     const cols = row.split(",");
                     if (cols.length < 3) return; 
 
-                    // B열(Role)로 찾아서 C열(Image)을 적용
                     const role = cols[1].trim(); 
                     const imageFile = cols[2].trim();
 
-                    // HTML에서 data-role이 일치하는 카드를 찾음
                     const targetCard = document.querySelector(`.org-card[data-role="${role}"]`);
                     
                     if (targetCard && imageFile) {
-                        // 이미지 설정
                         targetCard.querySelector('.org-img').style.backgroundImage = `url('${imageFile}')`;
                     }
                 });
@@ -192,4 +280,3 @@
 
 </body>
 </html>
-
