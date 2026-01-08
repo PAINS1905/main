@@ -171,19 +171,18 @@
         // ============================
         // 1. 왼쪽 차트: 부원 성별 분포 (Gender Distribution)
         // ============================
-        // HTML의 <canvas id="skillsChart"> 위치에 그립니다.
         const ctxGender = document.getElementById('skillsChart').getContext('2d');
         
         new Chart(ctxGender, {
-            type: 'doughnut', // 도넛 차트로 변경
+            type: 'doughnut',
             data: {
                 labels: ['여자', '남자'],
                 datasets: [{
-                    // 요청하신 데이터: 여자 17.9%, 남자 82.1%
                     data: [17.9, 82.1], 
                     backgroundColor: [
-                        '#FF9AA2', // 여자 (파스텔 핑크 - 이미지 색상)
-                        '#6EB5FF'  // 남자 (파스텔 블루 - 이미지 색상)
+                        // [수정] 더 선명해진 핑크/블루
+                        '#FF6B81', // 여자 (Vivid Pink)
+                        '#4D96FF'  // 남자 (Vivid Blue)
                     ],
                     borderWidth: 2,
                     borderColor: '#ffffff',
@@ -192,25 +191,20 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false, // 박스 크기에 맞춰 조절
-                layout: {
-                    padding: 10
-                },
+                maintainAspectRatio: false,
+                layout: { padding: 10 },
                 plugins: {
                     legend: {
-                        position: 'right', // 범례 오른쪽 배치
+                        position: 'right',
                         labels: {
-                            boxWidth: 12,
-                            padding: 10,
-                            font: {
-                                family: "'SCDream', sans-serif",
-                                size: 11
-                            }
+                            // [수정] 글자색을 더 진하고 선명한 회색으로 변경
+                            color: '#333333', 
+                            boxWidth: 12, padding: 10,
+                            font: { family: "'SCDream', sans-serif", size: 11 }
                         }
                     },
                     tooltip: {
                         callbacks: {
-                            // 툴팁에 '%' 단위 붙이기
                             label: function(context) {
                                 let label = context.label || '';
                                 let value = context.parsed;
@@ -227,45 +221,39 @@
         // ============================
         const ctxMajor = document.getElementById('majorChart').getContext('2d');
 
-        // [1] 원본 데이터 입력 (집계된 순서대로 정렬함)
+        // [1] 원본 데이터 입력
         const rawLabels = [
             '데이터과학과', '통계학과', '중어중문학과', '경제학과', 
             '언어학과', '컴퓨터학과', '경영학과', '행정학과', 
             '화학과', '사회학과', '국제학부', 
-            // -- 아래는 1명인 학과들 (자동으로 기타로 분류됨) --
             '영어영문학과', '기계공학부', '화공생명공학과', '스마트보안학부', 
             '미디어학부', '교육학과', '산업경영공학부', '보건환경융합과학부', 
             '불어불문학과', '체육교육과', '한문학', '서어서문학과'
         ];
         
         const rawData = [
-            6, 6, 4, 3, 
-            2, 2, 2, 2, 
-            2, 2, 2, 
-            1, 1, 1, 1, 
-            1, 1, 1, 1, 
-            1, 1, 1, 1
+            6, 6, 4, 3, 2, 2, 2, 2, 2, 2, 2, 
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
         ];
         
-        // [2] 밝은 파스텔톤 색상 팔레트 (항목 수에 맞춰 확장)
+        // [수정] 더 선명하고 뚜렷한 색상 팔레트 (Vivid Palette)
         const rawColors = [
-            '#FFB3BA', // 데이터과학과
-            '#FFDFBA', // 통계학과
-            '#FFFFBA', // 중어중문학과
-            '#BAFFC9', // 경제학과
-            '#BAE1FF', // 언어학과
-            '#CBAACB', // 컴퓨터학과
-            '#FFCCE5', // 경영학과
-            '#CCE5FF', // 행정학과
-            '#E5CCFF', // 화학과
-            '#FFD1DC', // 사회학과
-            '#FFFFAA', // 국제학부
-            // 아래 색상들은 혹시 인원이 늘어날 경우를 대비해 예비로 둠
-            '#98FB98', '#AFEEEE', '#DCD0FF', '#FFDAC1', '#F4C2C2',
-            '#A0CED9', '#ADF7B6', '#FFEE93', '#FFC09F', '#FCF5C7', '#A0E8AF'
+            '#FF6B6B', // 데이터과학과 (코랄 레드)
+            '#FF9F43', // 통계학과 (오렌지)
+            '#FDCB6E', // 중어중문학과 (머스타드 옐로우)
+            '#20BF6B', // 경제학과 (비비드 그린)
+            '#0FB9B1', // 언어학과 (청록색)
+            '#2D98DA', // 컴퓨터학과 (밝은 파랑)
+            '#3867D6', // 경영학과 (로얄 블루)
+            '#8854D0', // 행정학과 (진한 보라)
+            '#A55EEA', // 화학과 (밝은 보라)
+            '#F06292', // 사회학과 (핫핑크)
+            '#4B6584', // 국제학부 (블루 그레이)
+            // 예비 색상들
+            '#00B894', '#00CEC9', '#6C5CE7', '#FD79A8', '#E17055'
         ];
 
-        // [3] 데이터 자동 가공 (1명은 '기타'로 합산)
+        // [2] 데이터 자동 가공
         let finalLabels = [];
         let finalData = [];
         let finalColors = [];
@@ -281,14 +269,14 @@
             }
         }
 
-        // 기타 항목 추가
         if (etcSum > 0) {
             finalLabels.push('기타');
             finalData.push(etcSum);
-            finalColors.push('#E0BBE4'); // 기타: 밝은 파스텔 보라
+            // [수정] 기타 색상도 선명한 보라색 계열로 변경
+            finalColors.push('#9980FA'); 
         }
 
-        // [4] 차트 그리기
+        // [3] 차트 그리기
         new Chart(ctxMajor, {
             type: 'doughnut', 
             data: {
@@ -309,6 +297,8 @@
                     legend: {
                         position: 'right', 
                         labels: {
+                            // [수정] 글자색을 더 진하고 선명한 회색으로 변경
+                            color: '#333333',
                             boxWidth: 12, padding: 10,
                             font: { family: "'SCDream', sans-serif", size: 11 }
                         }
@@ -331,6 +321,7 @@
 
 </body>
 </html>
+
 
 
 
