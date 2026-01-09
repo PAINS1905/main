@@ -17,7 +17,7 @@
         h1, h2, h3, h4 { font-family: 'KBO_Dia', sans-serif; }
         
         /* ============================ */
-        /* [2] 레이아웃 및 헤더 (수정됨) */
+        /* [2] 레이아웃 및 헤더         */
         /* ============================ */
         header { 
             background-color: #cf8b8b; 
@@ -53,7 +53,7 @@
         header h1 a { text-decoration: none; color: white; }
         header nav { display: none; } /* 기존 네비게이션 숨김 */
 
-        /* [추가] 사이드바 스타일 */
+        /* [수정됨] 사이드바 스타일 */
         .sidebar {
             position: fixed;
             top: 0;
@@ -67,6 +67,7 @@
             padding-top: 80px;
             display: flex;
             flex-direction: column;
+            overflow-y: auto; /* 내용 많으면 스크롤 */
         }
         .sidebar.active { left: 0; }
 
@@ -78,11 +79,38 @@
             font-weight: 500;
             border-bottom: 1px solid #f9f9f9;
             transition: background 0.2s, color 0.2s;
+            display: block;
         }
         .sidebar a:hover {
             background-color: #fafafa;
             color: #ab3333;
             font-weight: bold;
+        }
+
+        /* [NEW] 드롭다운 메뉴 스타일 */
+        .sidebar a.menu-toggle {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .submenu {
+            display: none; /* 기본 숨김 */
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #eee;
+        }
+        .submenu.open {
+            display: block; /* 열림 */
+        }
+        .submenu a {
+            padding-left: 50px; /* 들여쓰기 */
+            font-size: 1rem;
+            color: #666;
+            border-bottom: none;
+        }
+        .submenu a:hover {
+            color: #ab3333;
+            background-color: #f0f0f0;
         }
 
         /* 오버레이 스타일 */
@@ -191,8 +219,15 @@
     <div class="sidebar" id="sidebar">
         <a href="index.html">Home</a>
         <a href="members.html">운영진</a>
-        <a href="result.html">지원 결과 안내</a>
-        <a href="apply.html" style="color: #ab3333; font-weight: bold; background-color: #fafafa;">지원하기</a>
+        
+        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu()">
+            지원 <span id="arrow" style="font-size:0.8rem;">▼</span>
+        </a>
+        
+        <div class="submenu" id="support-submenu">
+            <a href="result.html">지원 결과 안내</a>
+            <a href="apply.html" style="color: #ab3333; font-weight: bold; background-color: #f0f0f0;">지원하기</a>
+        </div>
     </div>
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
@@ -400,12 +435,27 @@
     </footer>
 
     <script>
-        // [New] 사이드바 토글 함수
+        // [1] 사이드바 토글 함수
         function toggleMenu() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
+        }
+
+        // [2] 지원 메뉴 드롭다운 토글 함수 (NEW)
+        function toggleSubmenu() {
+            const submenu = document.getElementById('support-submenu');
+            const arrow = document.getElementById('arrow');
+            
+            // 클래스 on/off
+            if (submenu.classList.contains('open')) {
+                submenu.classList.remove('open');
+                arrow.innerText = '▼';
+            } else {
+                submenu.classList.add('open');
+                arrow.innerText = '▲';
+            }
         }
 
         // ============================
@@ -530,15 +580,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
