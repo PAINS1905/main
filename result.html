@@ -14,7 +14,7 @@
         body { font-family: 'SCDream', sans-serif; background-color: #fdfdfd; color: #333; line-height: 1.6; }
         
         /* ============================ */
-        /* [3] 레이아웃 및 헤더 (수정됨) */
+        /* [3] 레이아웃 및 헤더         */
         /* ============================ */
         header { 
             background-color: #cf8b8b; 
@@ -52,7 +52,7 @@
         /* 기존 네비게이션 숨김 */
         header nav { display: none; }
 
-        /* [추가] 사이드바 스타일 */
+        /* [수정됨] 사이드바 스타일 */
         .sidebar {
             position: fixed;
             top: 0;
@@ -66,6 +66,7 @@
             padding-top: 80px;
             display: flex;
             flex-direction: column;
+            overflow-y: auto; /* 내용이 길어지면 스크롤 */
         }
         .sidebar.active { left: 0; }
 
@@ -77,11 +78,38 @@
             font-weight: 500;
             border-bottom: 1px solid #f9f9f9;
             transition: background 0.2s, color 0.2s;
+            display: block;
         }
         .sidebar a:hover {
             background-color: #fafafa;
             color: #ab3333;
             font-weight: bold;
+        }
+
+        /* [NEW] 드롭다운 메뉴 스타일 */
+        .sidebar a.menu-toggle {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .submenu {
+            display: none; /* 기본 숨김 */
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #eee;
+        }
+        .submenu.open {
+            display: block; /* 열림 */
+        }
+        .submenu a {
+            padding-left: 50px; /* 들여쓰기 */
+            font-size: 1rem;
+            color: #666;
+            border-bottom: none;
+        }
+        .submenu a:hover {
+            color: #ab3333;
+            background-color: #f0f0f0;
         }
 
         /* 오버레이 스타일 */
@@ -174,8 +202,15 @@
     <div class="sidebar" id="sidebar">
         <a href="index.html">Home</a>
         <a href="members.html">운영진</a>
-        <a href="result.html" style="color: #ab3333; font-weight: bold; background-color: #fafafa;">지원 결과 안내</a>
-        <a href="apply.html">지원하기</a>
+        
+        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu()">
+            지원 <span id="arrow" style="font-size:0.8rem;">▼</span>
+        </a>
+        
+        <div class="submenu" id="support-submenu">
+            <a href="result.html" style="color: #ab3333; font-weight: bold; background-color: #f0f0f0;">지원 결과 안내</a>
+            <a href="apply.html">지원하기</a>
+        </div>
     </div>
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
@@ -219,12 +254,27 @@
     </div>
 
     <script>
-        // [New] 사이드바 토글 함수
+        // [1] 사이드바 토글 함수
         function toggleMenu() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
+        }
+
+        // [2] 지원 메뉴 드롭다운 토글 함수 (NEW)
+        function toggleSubmenu() {
+            const submenu = document.getElementById('support-submenu');
+            const arrow = document.getElementById('arrow');
+            
+            // 클래스 on/off
+            if (submenu.classList.contains('open')) {
+                submenu.classList.remove('open');
+                arrow.innerText = '▼';
+            } else {
+                submenu.classList.add('open');
+                arrow.innerText = '▲';
+            }
         }
 
         // ============================================
@@ -233,7 +283,6 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwOE0sZKFWWSHzb3EzyCgzdMkMt_HV4p0lHkQLqdNy8GeY1No9rrhOKRWXrLZFRVHaIfw/exec";
 
         async function checkResult() {
-            // 한글 중복 입력 방지 (200ms)
             document.getElementById('input-id').blur();
             document.getElementById('input-name').blur();
             await new Promise(r => setTimeout(r, 200));
@@ -246,7 +295,6 @@
                 return;
             }
 
-            // UI 로딩 상태
             const btn = document.getElementById('btn-search');
             const loader = document.getElementById('loader');
             const resultArea = document.getElementById('result-area');
@@ -261,20 +309,16 @@
                 const response = await fetch(targetUrl);
                 const data = await response.json();
 
-                // 1. 정보가 없는 경우 (명단에 없음)
                 if (data.result === "fail") {
                     alert("일치하는 지원 정보를 찾을 수 없습니다.\n학번과 이름을 다시 확인해주세요.");
                     return;
                 }
 
-                // 2. [보안 강화] 시간이 아직 안 된 경우 (서버에서 'locked'를 보냄)
                 if (data.result === "locked") {
-                    // 서버가 보내준 발표 예정 시간을 표시
                     alert(`아직 결과 발표 기간이 아닙니다.\n발표 일시: ${data.releaseDate} ${data.releaseTime}`);
                     return;
                 }
 
-                // 3. 성공 (result === "success")
                 document.getElementById('user-name-display').innerText = name;
                 const badge = document.getElementById('status-badge');
                 const desc = document.getElementById('result-desc');
@@ -282,22 +326,22 @@
 
                 if (data.status === "합격") {
                     badge.innerText = "합 격";
-                    badge.className = "status-badge status-pass"; // 초록색
+                    badge.className = "status-badge status-pass"; 
                     desc.innerText = "축하드립니다! 1차 서류 전형에 합격하셨습니다.\n아래 면접 일정을 확인해주시기 바랍니다.";
                     
                     if (data.interviewDate && data.interviewTime) {
                         document.getElementById('int-date').innerText = data.interviewDate;
                         document.getElementById('int-time').innerText = data.interviewTime;
-                        interviewBox.style.display = "block"; // 박스 보이기
+                        interviewBox.style.display = "block"; 
                     } else {
                         interviewBox.style.display = "none";
                     }
 
                 } else {
                     badge.innerText = "불합격";
-                    badge.className = "status-badge status-fail"; // 빨간색
+                    badge.className = "status-badge status-fail"; 
                     desc.innerHTML = "지원해주셔서 감사합니다.<br>아쉽게도 이번 모집에는 함께하지 못하게 되었습니다.<br>추후 더 좋은 기회로 뵙기를 고대하겠습니다.";
-                    interviewBox.style.display = "none"; // 면접 박스 숨김
+                    interviewBox.style.display = "none"; 
                 }
 
                 resultArea.style.display = "block";
@@ -306,7 +350,6 @@
                 console.error("에러 발생:", error);
                 alert("조회 중 오류가 발생했습니다.");
             } finally {
-                // UI 복구
                 btn.disabled = false;
                 btn.innerText = "결과 확인하기";
                 loader.style.display = "none";
@@ -316,6 +359,3 @@
 
 </body>
 </html>
-
-
-
