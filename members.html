@@ -14,7 +14,7 @@
         body { font-family: 'SCDream', sans-serif; line-height: 1.6; color: #333; background-color: #fdfdfd; }
         header h1, section h2 { font-family: 'KBO_Dia', sans-serif; }
 
-        /* [3] 레이아웃 및 헤더 (수정됨) */
+        /* [3] 레이아웃 및 헤더 */
         header { 
             background-color: #cf8b8b; 
             color: white; 
@@ -47,9 +47,9 @@
 
         header h1 { font-size: 1.5rem; font-weight: bold; margin: 0; }
         header h1 a { text-decoration: none; color: white; }
-        header nav { display: none; } /* 기존 네비게이션 숨김 */
+        header nav { display: none; }
 
-        /* [수정됨] 사이드바 스타일 */
+        /* 사이드바 스타일 */
         .sidebar {
             position: fixed;
             top: 0;
@@ -63,7 +63,7 @@
             padding-top: 80px;
             display: flex;
             flex-direction: column;
-            overflow-y: auto; /* 내용이 길어지면 스크롤 */
+            overflow-y: auto;
         }
         .sidebar.active { left: 0; }
 
@@ -83,7 +83,7 @@
             font-weight: bold;
         }
 
-        /* [NEW] 드롭다운 메뉴 스타일 */
+        /* 드롭다운 메뉴 스타일 */
         .sidebar a.menu-toggle {
             cursor: pointer;
             display: flex;
@@ -91,15 +91,13 @@
             align-items: center;
         }
         .submenu {
-            display: none; /* 기본 숨김 */
+            display: none;
             background-color: #f8f8f8;
             border-bottom: 1px solid #eee;
         }
-        .submenu.open {
-            display: block; /* 열림 */
-        }
+        .submenu.open { display: block; }
         .submenu a {
-            padding-left: 50px; /* 들여쓰기 */
+            padding-left: 50px;
             font-size: 1rem;
             color: #666;
             border-bottom: none;
@@ -127,7 +125,7 @@
         h2 { font-size: 2rem; color: #ab3333; margin-bottom: 40px; text-align: center;}
         footer { background-color: #333; color: white; text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.8rem; }
 
-        /* [4] 조직도 스타일 (기존 유지) */
+        /* [4] 조직도 스타일 */
         .org-chart-wrapper { overflow-x: auto; padding: 20px 0; text-align: center; -webkit-overflow-scrolling: touch; }
         .tree-container { display: inline-block; position: relative; padding-top: 20px; min-width: 700px; }
 
@@ -140,6 +138,7 @@
         .org-img {
             width: 80px; height: 80px; background-color: #eee; border-radius: 50%;
             margin: 0 auto 10px; background-size: cover; background-position: center;
+            /* 이미지가 바뀔 때 부드럽게 전환 */
             transition: background-image 0.3s ease-in-out;
         }
         .org-role { color: #ab3333; font-weight: bold; font-size: 0.9rem; margin-bottom: 4px; }
@@ -167,7 +166,7 @@
         .card-staff .org-role { color: #7f8c8d; }
 
         @media (max-width: 600px) {
-            header { justify-content: flex-start; } /* 모바일 헤더 정렬 수정 */
+            header { justify-content: flex-start; }
             section { padding: 2rem 0; }
         }
     </style>
@@ -185,7 +184,7 @@
 
     <div class="sidebar" id="sidebar">
         <a href="index.html">Home</a>
-        <a href="members.html" style="color: #ab3333; font-weight: bold; background-color: #f0f0f0;">운영진</a>
+        <a href="members.html" style="color: #ab3333; font-weight: bold; background-color: #fafafa;">운영진</a>
         
         <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu()">
             지원 <span id="arrow" style="font-size:0.8rem;">▼</span>
@@ -279,12 +278,11 @@
             overlay.classList.toggle('active');
         }
 
-        // [2] 지원 메뉴 드롭다운 토글 함수 (NEW)
+        // [2] 지원 메뉴 드롭다운 토글 함수
         function toggleSubmenu() {
             const submenu = document.getElementById('support-submenu');
             const arrow = document.getElementById('arrow');
             
-            // 클래스 on/off
             if (submenu.classList.contains('open')) {
                 submenu.classList.remove('open');
                 arrow.innerText = '▼';
@@ -294,36 +292,21 @@
             }
         }
 
-        // [기존 코드] 부원 명단 이미지 로딩
-        const MEMBERS_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBnuUvyE2CDV-hG26xCVdnt88JhQgtusdEndJwTzaI62TXPdWTNldVvua9RLkXj1s34qiM0CEcNvbr/pub?gid=346060998&single=true&output=csv";
+        // [3] 부원 명단 이미지 로컬 설정 (수정됨)
+        // 구글 시트 연동을 제거하고, 각 카드의 data-role 값과 동일한 이름의 png 파일을 배경으로 설정합니다.
+        document.addEventListener("DOMContentLoaded", function() {
+            const cards = document.querySelectorAll('.org-card');
 
-        async function fetchAndFillImages() {
-            try {
-                const response = await fetch(MEMBERS_SHEET_URL);
-                const data = await response.text();
-                
-                const rows = data.split("\n").map(row => row.trim()).filter(row => row.length > 0);
-                
-                rows.slice(1).forEach(row => {
-                    const cols = row.split(",");
-                    if (cols.length < 3) return; 
+            cards.forEach(card => {
+                const role = card.getAttribute('data-role'); // 예: "회장"
+                const imgDiv = card.querySelector('.org-img');
 
-                    const role = cols[1].trim(); 
-                    const imageFile = cols[2].trim();
-
-                    const targetCard = document.querySelector(`.org-card[data-role="${role}"]`);
-                    
-                    if (targetCard && imageFile) {
-                        targetCard.querySelector('.org-img').style.backgroundImage = `url('${imageFile}')`;
-                    }
-                });
-
-            } catch (error) {
-                console.error("이미지 로딩 실패:", error);
-            }
-        }
-
-        fetchAndFillImages();
+                if (role && imgDiv) {
+                    // 직책이름.png 로 이미지 설정 (예: 회장.png, 총무.png)
+                    imgDiv.style.backgroundImage = `url('${role}.png')`;
+                }
+            });
+        });
     </script>
 
 </body>
