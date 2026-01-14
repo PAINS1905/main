@@ -84,23 +84,6 @@
     </header>
 
     <div class="sidebar" id="sidebar">
-        <a href="index.html">Home</a>
-        
-        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('members-submenu', 'members-arrow')">
-            Members <span id="members-arrow" style="font-size:0.8rem;">▲</span>
-        </a>
-        <div class="submenu open" id="members-submenu">
-            <a href="members.html" style="color: #ab3333; font-weight: bold; background-color: #f0f0f0;">운영진</a>
-            <a href="attendance.html">출석 현황 확인</a>
-        </div>
-
-        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('support-submenu', 'support-arrow')">
-            지원 <span id="support-arrow" style="font-size:0.8rem;">▼</span>
-        </a>
-        <div class="submenu" id="support-submenu">
-            <a href="result.html">지원 결과 안내</a>
-            <a href="apply.html">지원하기</a>
-        </div>
     </div>
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
@@ -170,29 +153,9 @@
         <p>&copy; 2026 PAINS. All rights reserved.</p>
     </footer>
 
+    <script scr="menu.js"></script>
+    
     <script>
-        // [1] 사이드바 토글 함수
-        function toggleMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-        }
-
-        // [2] 드롭다운 토글 함수 (범용)
-        function toggleSubmenu(menuId, arrowId) {
-            const submenu = document.getElementById(menuId);
-            const arrow = document.getElementById(arrowId);
-            
-            if (submenu.classList.contains('open')) {
-                submenu.classList.remove('open');
-                arrow.innerText = '▼';
-            } else {
-                submenu.classList.add('open');
-                arrow.innerText = '▲';
-            }
-        }
-
         // [3] 부원 명단 이미지 로컬 설정
         document.addEventListener("DOMContentLoaded", function() {
             const cards = document.querySelectorAll('.org-card');
@@ -207,3 +170,4 @@
     </script>
 </body>
 </html>
+
