@@ -16,108 +16,29 @@
 
         /* [3] 레이아웃 및 헤더 */
         header { 
-            background-color: #cf8b8b; 
-            color: white; 
-            padding: 1rem 2rem; 
-            display: flex; 
-            align-items: center; 
-            gap: 20px; 
-            position: relative;
-            z-index: 1000;
+            background-color: #cf8b8b; color: white; padding: 1rem 2rem; 
+            display: flex; align-items: center; gap: 20px; position: relative; z-index: 1000; 
         }
-        
-        /* 햄버거 버튼 스타일 */
-        .hamburger-btn {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 24px;
-            height: 18px;
-            cursor: pointer;
-            z-index: 1100;
-        }
-        .hamburger-btn span {
-            display: block;
-            width: 100%;
-            height: 2px;
-            background-color: white;
-            border-radius: 3px;
-            transition: all 0.3s ease;
-        }
-
+        .hamburger-btn { display: flex; flex-direction: column; justify-content: space-between; width: 24px; height: 18px; cursor: pointer; z-index: 1100; }
+        .hamburger-btn span { display: block; width: 100%; height: 2px; background-color: white; border-radius: 3px; transition: all 0.3s ease; }
         header h1 { font-size: 1.5rem; font-weight: bold; margin: 0; }
         header h1 a { text-decoration: none; color: white; }
         header nav { display: none; }
 
-        /* 사이드바 스타일 */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -300px;
-            width: 260px;
-            height: 100vh;
-            background-color: white;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            transition: left 0.3s ease;
-            z-index: 1050;
-            padding-top: 80px;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
+        /* [사이드바 스타일 업데이트] */
+        .sidebar { position: fixed; top: 0; left: -300px; width: 260px; height: 100vh; background-color: white; box-shadow: 2px 0 10px rgba(0,0,0,0.1); transition: left 0.3s ease; z-index: 1050; padding-top: 80px; display: flex; flex-direction: column; overflow-y: auto; }
         .sidebar.active { left: 0; }
-
-        .sidebar a {
-            padding: 15px 30px;
-            text-decoration: none;
-            color: #333;
-            font-size: 1.1rem;
-            font-weight: 500;
-            border-bottom: 1px solid #f9f9f9;
-            transition: background 0.2s, color 0.2s;
-            display: block;
-        }
-        .sidebar a:hover {
-            background-color: #fafafa;
-            color: #ab3333;
-            font-weight: bold;
-        }
-
+        .sidebar a { padding: 15px 30px; text-decoration: none; color: #333; font-size: 1.1rem; font-weight: 500; border-bottom: 1px solid #f9f9f9; transition: background 0.2s, color 0.2s; display: block; }
+        .sidebar a:hover { background-color: #fafafa; color: #ab3333; font-weight: bold; }
+        
         /* 드롭다운 메뉴 스타일 */
-        .sidebar a.menu-toggle {
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .submenu {
-            display: none;
-            background-color: #f8f8f8;
-            border-bottom: 1px solid #eee;
-        }
+        .sidebar a.menu-toggle { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .submenu { display: none; background-color: #f8f8f8; border-bottom: 1px solid #eee; }
         .submenu.open { display: block; }
-        .submenu a {
-            padding-left: 50px;
-            font-size: 1rem;
-            color: #666;
-            border-bottom: none;
-        }
-        .submenu a:hover {
-            color: #ab3333;
-            background-color: #f0f0f0;
-        }
+        .submenu a { padding-left: 50px; font-size: 1rem; color: #666; border-bottom: none; }
+        .submenu a:hover { color: #ab3333; background-color: #f0f0f0; }
 
-        /* 오버레이 스타일 */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            display: none;
-            z-index: 1040;
-        }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: none; z-index: 1040; }
         .overlay.active { display: block; }
 
         /* 기존 섹션 스타일 */
@@ -128,29 +49,15 @@
         /* [4] 조직도 스타일 */
         .org-chart-wrapper { overflow-x: auto; padding: 20px 0; text-align: center; -webkit-overflow-scrolling: touch; }
         .tree-container { display: inline-block; position: relative; padding-top: 20px; min-width: 700px; }
-
-        /* 카드 디자인 */
-        .org-card {
-            background: white; border: 2px solid #ab3333; border-radius: 12px; padding: 15px;
-            text-align: center; width: 160px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            position: relative; z-index: 2; margin: 0 auto;
-        }
-        .org-img {
-            width: 80px; height: 80px; background-color: #eee; border-radius: 50%;
-            margin: 0 auto 10px; background-size: cover; background-position: center;
-            /* 이미지가 바뀔 때 부드럽게 전환 */
-            transition: background-image 0.3s ease-in-out;
-        }
+        .org-card { background: white; border: 2px solid #ab3333; border-radius: 12px; padding: 15px; text-align: center; width: 160px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative; z-index: 2; margin: 0 auto; }
+        .org-img { width: 80px; height: 80px; background-color: #eee; border-radius: 50%; margin: 0 auto 10px; background-size: cover; background-position: center; transition: background-image 0.3s ease-in-out; }
         .org-role { color: #ab3333; font-weight: bold; font-size: 0.9rem; margin-bottom: 4px; }
         .org-name { font-size: 1.1rem; font-weight: bold; margin-bottom: 4px; }
         .org-major { font-size: 0.8rem; color: #666; word-break: keep-all; }
-
-        /* 레벨 및 선 스타일 */
         .level-1, .level-2, .level-3 { display: flex; justify-content: center; position: relative; }
         .level-1 { margin-bottom: 50px; }
         .level-2 { margin-bottom: 50px; }
         .level-3 { gap: 40px; }
-        
         .line { position: absolute; background-color: #ccc; z-index: 1; }
         .line-v-1 { width: 2px; height: 50px; top: 100%; left: 50%; transform: translateX(-50%); }
         .vice-president-wrapper { position: relative; display: flex; justify-content: center; }
@@ -160,36 +67,36 @@
         .branch-left { left: calc(50% - 200px); }
         .branch-center { left: 50%; transform: translateX(-50%); }
         .branch-right { right: calc(50% - 200px); }
-        
         .general-affairs-wrapper { position: absolute; left: calc(50% + 140px); top: 0; }
         .card-staff { border-color: #7f8c8d; }
         .card-staff .org-role { color: #7f8c8d; }
 
-        @media (max-width: 600px) {
-            header { justify-content: flex-start; }
-            section { padding: 2rem 0; }
-        }
+        @media (max-width: 600px) { header { justify-content: flex-start; } section { padding: 2rem 0; } }
     </style>
 </head>
 <body>
 
     <header>
         <div class="hamburger-btn" onclick="toggleMenu()">
-            <span></span>
-            <span></span>
-            <span></span>
+            <span></span><span></span><span></span>
         </div>
         <h1><a href="index.html">PAINS Members</a></h1>
     </header>
 
     <div class="sidebar" id="sidebar">
         <a href="index.html">Home</a>
-        <a href="members.html" style="color: #ab3333; font-weight: bold; background-color: #fafafa;">운영진</a>
         
-        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu()">
-            지원 <span id="arrow" style="font-size:0.8rem;">▼</span>
+        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('members-submenu', 'members-arrow')">
+            Members <span id="members-arrow" style="font-size:0.8rem;">▲</span>
         </a>
-        
+        <div class="submenu open" id="members-submenu">
+            <a href="members.html" style="color: #ab3333; font-weight: bold; background-color: #f0f0f0;">운영진</a>
+            <a href="attendance.html">출석 현황 확인</a>
+        </div>
+
+        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('support-submenu', 'support-arrow')">
+            지원 <span id="support-arrow" style="font-size:0.8rem;">▼</span>
+        </a>
         <div class="submenu" id="support-submenu">
             <a href="result.html">지원 결과 안내</a>
             <a href="apply.html">지원하기</a>
@@ -199,10 +106,8 @@
 
     <section>
         <h2>10기 운영진 조직도</h2>
-
         <div class="org-chart-wrapper">
             <div class="tree-container">
-                
                 <div class="level-1">
                     <div style="position: relative;">
                         <div class="org-card" data-role="회장">
@@ -213,7 +118,6 @@
                         </div>
                         <div class="line line-v-1"></div>
                     </div>
-
                     <div class="general-affairs-wrapper">
                         <div class="org-card card-staff" data-role="총무">
                             <div class="org-img"></div>
@@ -223,7 +127,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="level-2">
                     <div class="vice-president-wrapper">
                         <div class="org-card" data-role="부회장">
@@ -239,7 +142,6 @@
                         <div class="line line-v-3-branches branch-right"></div>
                     </div>
                 </div>
-
                 <div class="level-3">
                     <div class="org-card" data-role="기획부장">
                         <div class="org-img"></div>
@@ -260,7 +162,6 @@
                         <div class="org-major">데이터과학과 24</div>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
@@ -278,10 +179,10 @@
             overlay.classList.toggle('active');
         }
 
-        // [2] 지원 메뉴 드롭다운 토글 함수
-        function toggleSubmenu() {
-            const submenu = document.getElementById('support-submenu');
-            const arrow = document.getElementById('arrow');
+        // [2] 드롭다운 토글 함수 (범용)
+        function toggleSubmenu(menuId, arrowId) {
+            const submenu = document.getElementById(menuId);
+            const arrow = document.getElementById(arrowId);
             
             if (submenu.classList.contains('open')) {
                 submenu.classList.remove('open');
@@ -292,22 +193,17 @@
             }
         }
 
-        // [3] 부원 명단 이미지 로컬 설정 (수정됨)
-        // 구글 시트 연동을 제거하고, 각 카드의 data-role 값과 동일한 이름의 png 파일을 배경으로 설정합니다.
+        // [3] 부원 명단 이미지 로컬 설정
         document.addEventListener("DOMContentLoaded", function() {
             const cards = document.querySelectorAll('.org-card');
-
             cards.forEach(card => {
-                const role = card.getAttribute('data-role'); // 예: "회장"
+                const role = card.getAttribute('data-role');
                 const imgDiv = card.querySelector('.org-img');
-
                 if (role && imgDiv) {
-                    // 직책이름.png 로 이미지 설정 (예: 회장.png, 총무.png)
                     imgDiv.style.backgroundImage = `url('${role}.png')`;
                 }
             });
         });
     </script>
-
 </body>
 </html>
