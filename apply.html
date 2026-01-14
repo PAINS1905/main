@@ -51,7 +51,7 @@
 
         header h1 { font-size: 1.5rem; font-weight: bold; margin: 0; }
         header h1 a { text-decoration: none; color: white; }
-        header nav { display: none; } /* 기존 네비게이션 숨김 */
+        header nav { display: none; } 
 
         /* [수정됨] 사이드바 스타일 */
         .sidebar {
@@ -67,7 +67,7 @@
             padding-top: 80px;
             display: flex;
             flex-direction: column;
-            overflow-y: auto; /* 내용 많으면 스크롤 */
+            overflow-y: auto;
         }
         .sidebar.active { left: 0; }
 
@@ -87,7 +87,7 @@
             font-weight: bold;
         }
 
-        /* [NEW] 드롭다운 메뉴 스타일 */
+        /* 드롭다운 메뉴 스타일 */
         .sidebar a.menu-toggle {
             cursor: pointer;
             display: flex;
@@ -95,15 +95,13 @@
             align-items: center;
         }
         .submenu {
-            display: none; /* 기본 숨김 */
+            display: none; 
             background-color: #f8f8f8;
             border-bottom: 1px solid #eee;
         }
-        .submenu.open {
-            display: block; /* 열림 */
-        }
+        .submenu.open { display: block; }
         .submenu a {
-            padding-left: 50px; /* 들여쓰기 */
+            padding-left: 50px; 
             font-size: 1rem;
             color: #666;
             border-bottom: none;
@@ -113,7 +111,7 @@
             background-color: #f0f0f0;
         }
 
-        /* 오버레이 스타일 */
+        /* 오버레이 */
         .overlay {
             position: fixed;
             top: 0;
@@ -217,6 +215,23 @@
     </header>
 
     <div class="sidebar" id="sidebar">
+        <a href="index.html">Home</a>
+        
+        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('members-submenu', 'members-arrow')">
+            Members <span id="members-arrow" style="font-size:0.8rem;">▼</span>
+        </a>
+        <div class="submenu" id="members-submenu">
+            <a href="members.html">운영진</a>
+            <a href="attendance.html">출석 현황 확인</a>
+        </div>
+
+        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('support-submenu', 'support-arrow')">
+            지원 <span id="support-arrow" style="font-size:0.8rem;">▲</span>
+        </a>
+        <div class="submenu open" id="support-submenu">
+            <a href="result.html">지원 결과 안내</a>
+            <a href="apply.html" style="color: #ab3333; font-weight: bold; background-color: #f0f0f0;">지원하기</a>
+        </div>
     </div>
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
@@ -423,10 +438,30 @@
         <p>&copy; 2026 PAINS. All rights reserved.</p>
     </footer>
 
-    <script src="menu.js"></script>
-    
     <script>
-        loadSidebar('apply');
+        // [1] 사이드바 토글 함수 (수정됨)
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // [2] 지원 메뉴 드롭다운 토글 함수 (수정됨: ID 받아서 처리)
+        function toggleSubmenu(menuId, arrowId) {
+            const submenu = document.getElementById(menuId);
+            const arrow = document.getElementById(arrowId);
+            
+            // 클래스 on/off
+            if (submenu.classList.contains('open')) {
+                submenu.classList.remove('open');
+                arrow.innerText = '▼';
+            } else {
+                submenu.classList.add('open');
+                arrow.innerText = '▲';
+            }
+        }
+
         // ============================
         // 1. 성별 분포 (단일 막대 비율 그래프)
         // ============================
@@ -549,4 +584,3 @@
 
 </body>
 </html>
-
