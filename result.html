@@ -13,9 +13,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'SCDream', sans-serif; background-color: #fdfdfd; color: #333; line-height: 1.6; }
         
-        /* ============================ */
-        /* [3] 레이아웃 및 헤더         */
-        /* ============================ */
+        /* [3] 레이아웃 및 헤더 */
         header { 
             background-color: #cf8b8b; 
             color: white; 
@@ -49,7 +47,6 @@
         header h1 { font-family: 'KBO_Dia', sans-serif; font-size: 1.5rem; margin: 0; }
         header h1 a { text-decoration: none; color: white; }
         
-        /* 기존 네비게이션 숨김 */
         header nav { display: none; }
 
         /* [수정됨] 사이드바 스타일 */
@@ -66,7 +63,7 @@
             padding-top: 80px;
             display: flex;
             flex-direction: column;
-            overflow-y: auto; /* 내용이 길어지면 스크롤 */
+            overflow-y: auto; 
         }
         .sidebar.active { left: 0; }
 
@@ -94,15 +91,15 @@
             align-items: center;
         }
         .submenu {
-            display: none; /* 기본 숨김 */
+            display: none; 
             background-color: #f8f8f8;
             border-bottom: 1px solid #eee;
         }
         .submenu.open {
-            display: block; /* 열림 */
+            display: block; 
         }
         .submenu a {
-            padding-left: 50px; /* 들여쓰기 */
+            padding-left: 50px; 
             font-size: 1rem;
             color: #666;
             border-bottom: none;
@@ -125,12 +122,9 @@
         }
         .overlay.active { display: block; }
 
-        /* ============================ */
-        /* [4] 기존 조회 페이지 스타일    */
-        /* ============================ */
+        /* [4] 기존 조회 페이지 스타일 */
         .container { max-width: 500px; margin: 5rem auto; padding: 0 1rem; text-align: center; }
         
-        /* 조회 카드 */
         .search-card {
             background: white; border-radius: 12px; padding: 2.5rem 2rem;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eee;
@@ -138,7 +132,6 @@
         .search-card h2 { font-family: 'KBO_Dia', sans-serif; color: #ab3333; margin-bottom: 0.5rem; font-size: 1.8rem; }
         .sub-title { color: #666; font-size: 0.9rem; margin-bottom: 30px; }
 
-        /* 입력폼 */
         .input-group { margin-bottom: 15px; text-align: left; }
         .input-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; color: #555; }
         .input-group input {
@@ -147,38 +140,33 @@
         }
         .input-group input:focus { outline: none; border-color: #ab3333; }
 
-        /* 버튼 */
         .btn-submit {
             width: 100%; padding: 12px; background-color: #ab3333; color: white; border: none;
             border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 10px;
         }
         .btn-submit:hover { background-color: #8f2a2a; }
         
-        /* 결과창 */
         #result-area { margin-top: 30px; display: none; padding-top: 30px; border-top: 2px dashed #eee; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 결과 텍스트 스타일 */
         .result-msg { font-size: 1.1rem; margin-bottom: 15px; }
         .status-badge { 
             display: inline-block; padding: 8px 20px; border-radius: 30px; 
             font-size: 1.5rem; font-weight: bold; color: white; margin-bottom: 20px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .status-pass { background-color: #27ae60; } /* 합격 - 초록 */
-        .status-fail { background-color: #e74c3c; } /* 불합격 - 빨강 */
+        .status-pass { background-color: #27ae60; } 
+        .status-fail { background-color: #e74c3c; } 
 
-        /* 면접 정보 박스 */
         .interview-box {
             background-color: #f8f9fa; border-radius: 10px; padding: 20px;
             text-align: left; border-left: 5px solid #ab3333; margin-top: 20px;
-            display: none; /* 기본 숨김 */
+            display: none; 
         }
         .interview-box h4 { margin-bottom: 10px; color: #333; font-weight: bold; }
         .interview-info li { list-style: none; margin-bottom: 5px; color: #555; }
         .interview-info strong { color: #333; margin-right: 5px; }
 
-        /* 로딩 */
         .loader { display: none; margin: 20px auto; border: 4px solid #f3f3f3; border-top: 4px solid #ab3333; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -201,13 +189,19 @@
 
     <div class="sidebar" id="sidebar">
         <a href="index.html">Home</a>
-        <a href="members.html">운영진</a>
         
-        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu()">
-            지원 <span id="arrow" style="font-size:0.8rem;">▼</span>
+        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('members-submenu', 'members-arrow')">
+            Members <span id="members-arrow" style="font-size:0.8rem;">▼</span>
         </a>
-        
-        <div class="submenu" id="support-submenu">
+        <div class="submenu" id="members-submenu">
+            <a href="members.html">운영진</a>
+            <a href="attendance.html">출석 현황 확인</a>
+        </div>
+
+        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('support-submenu', 'support-arrow')">
+            지원 <span id="support-arrow" style="font-size:0.8rem;">▲</span>
+        </a>
+        <div class="submenu open" id="support-submenu">
             <a href="result.html" style="color: #ab3333; font-weight: bold; background-color: #f0f0f0;">지원 결과 안내</a>
             <a href="apply.html">지원하기</a>
         </div>
@@ -262,12 +256,12 @@
             overlay.classList.toggle('active');
         }
 
-        // [2] 지원 메뉴 드롭다운 토글 함수 (NEW)
-        function toggleSubmenu() {
-            const submenu = document.getElementById('support-submenu');
-            const arrow = document.getElementById('arrow');
+        // [2] 드롭다운 토글 함수 (수정됨: 범용 함수로 변경)
+        // 기존에는 id가 고정되어 있었으나, 이제 id를 받아서 처리합니다.
+        function toggleSubmenu(menuId, arrowId) {
+            const submenu = document.getElementById(menuId);
+            const arrow = document.getElementById(arrowId);
             
-            // 클래스 on/off
             if (submenu.classList.contains('open')) {
                 submenu.classList.remove('open');
                 arrow.innerText = '▼';
@@ -278,7 +272,7 @@
         }
 
         // ============================================
-        // [기존 코드] 앱스 스크립트 연동 (수정 없음)
+        // [기존 코드] 앱스 스크립트 연동
         // ============================================
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwOE0sZKFWWSHzb3EzyCgzdMkMt_HV4p0lHkQLqdNy8GeY1No9rrhOKRWXrLZFRVHaIfw/exec";
 
