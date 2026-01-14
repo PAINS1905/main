@@ -58,9 +58,9 @@
 
         header h1 { font-size: 1.5rem; font-weight: bold; margin: 0; }
         header h1 a { text-decoration: none; color: white; }
-        header nav { display: none; } /* 기존 네비게이션 숨김 */
+        header nav { display: none; }
 
-        /* [수정됨] 사이드바 스타일 */
+        /* [3] 사이드바 스타일 */
         .sidebar {
             position: fixed;
             top: 0;
@@ -74,7 +74,7 @@
             padding-top: 80px;
             display: flex;
             flex-direction: column;
-            overflow-y: auto; /* 내용 많으면 스크롤 */
+            overflow-y: auto;
         }
         .sidebar.active { left: 0; }
 
@@ -94,7 +94,7 @@
             font-weight: bold;
         }
 
-        /* [NEW] 드롭다운 메뉴 스타일 */
+        /* 드롭다운 메뉴 스타일 */
         .sidebar a.menu-toggle {
             cursor: pointer;
             display: flex;
@@ -102,13 +102,11 @@
             align-items: center;
         }
         .submenu {
-            display: none; /* 기본 숨김 */
+            display: none;
             background-color: #f8f8f8;
             border-bottom: 1px solid #eee;
         }
-        .submenu.open {
-            display: block; /* 열림 */
-        }
+        .submenu.open { display: block; }
         .submenu a {
             padding-left: 50px; /* 들여쓰기 */
             font-size: 1rem;
@@ -120,7 +118,7 @@
             background-color: #f0f0f0;
         }
 
-        /* 오버레이 스타일 */
+        /* 오버레이 */
         .overlay {
             position: fixed;
             top: 0;
@@ -133,9 +131,7 @@
         }
         .overlay.active { display: block; }
 
-        /* ============================ */
-        /* [4] 기존 섹션 스타일 유지     */
-        /* ============================ */
+        /* [4] 기존 섹션 스타일 */
         .hero { background-color: #ab3333; color: white; text-align: center; padding: 4rem 1rem; }
         .hero-image { max-width: 80%; width: 400px; height: auto; margin-bottom: 20px; border-radius: 12px; }
         .hero p { font-size: 1.2rem; opacity: 0.9; }
@@ -143,43 +139,32 @@
         section { padding: 3rem 2rem; max-width: 1000px; margin: 0 auto; }
         h3 { font-size: 1.8rem; color: #2c3e50; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
 
-        /* 카드 공통 스타일 */
         .activities { display: flex; gap: 20px; flex-wrap: wrap; }
         .card { flex: 1; background: #f9f9f9; padding: 25px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); min-width: 280px; position: relative; border: 2px solid transparent; }
         
-        /* 카드 헤더 */
-        .card-header {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;
-        }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .card h4 { color: #ab3333; font-size: 1.2rem; font-weight: bold; margin: 0; }
         .d-day-text { font-family: 'KBO_Dia', sans-serif; color: #000; font-size: 1.2rem; font-weight: bold; }
 
-        /* 일정 전용 스타일 */
         .schedule-content { text-align: left; margin-top: 10px; }
         .event-name { font-size: 1.3rem; font-weight: bold; margin-bottom: 8px; display: block; word-break: keep-all; }
         
-        /* D-DAY 강조 */
-        .d-day-border {
-            border: 3px solid #ab3333 !important; background-color: #fff5f5 !important; animation: pulse 2s infinite;
-        }
+        .d-day-border { border: 3px solid #ab3333 !important; background-color: #fff5f5 !important; animation: pulse 2s infinite; }
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(171, 51, 51, 0.4); }
             70% { box-shadow: 0 0 0 10px rgba(171, 51, 51, 0); }
             100% { box-shadow: 0 0 0 0 rgba(171, 51, 51, 0); }
         }
 
-        /* 배지 스타일 */
         .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; color: white; margin-bottom: 8px; }
         .badge.regular { background-color: #27ae60; }
         .badge.irregular { background-color: #e67e22; }
         .badge.etc { background-color: #7f8c8d; }
 
-        /* 리스트 스타일 */
         .schedule-detail { list-style: none; padding: 0; }
         .schedule-detail li { margin-bottom: 5px; font-size: 0.95rem; color: #555; }
         .schedule-detail strong { color: #333; margin-right: 5px; }
 
-        /* 푸터 스타일 */
         footer { background-color: #333; color: white; text-align: center; padding: 3rem 2rem 2rem; margin-top: 2rem; font-size: 0.8rem; }
         .footer-icons { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; }
         .icon-btn { display: flex; justify-content: center; align-items: center; width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); border-radius: 12px; transition: all 0.3s ease; }
@@ -192,9 +177,7 @@
             header { justify-content: flex-start; } 
         }
 
-        /* ============================ */
-        /* [팝업] 스타일 유지            */
-        /* ============================ */
+        /* 팝업 스타일 */
         .popup-overlay {
             display: none; 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -233,12 +216,18 @@
 
     <div class="sidebar" id="sidebar">
         <a href="index.html" style="color: #ab3333; font-weight: bold; background-color: #f0f0f0;">Home</a>
-        <a href="members.html">운영진</a>
         
-        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu()">
-            지원 <span id="arrow" style="font-size:0.8rem;">▼</span>
+        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('members-submenu', 'members-arrow')">
+            Members <span id="members-arrow" style="font-size:0.8rem;">▼</span>
         </a>
-        
+        <div class="submenu" id="members-submenu">
+            <a href="members.html">운영진</a>
+            <a href="attendance.html">출석 현황 확인</a>
+        </div>
+
+        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('support-submenu', 'support-arrow')">
+            지원 <span id="support-arrow" style="font-size:0.8rem;">▼</span>
+        </a>
         <div class="submenu" id="support-submenu">
             <a href="result.html">지원 결과 안내</a>
             <a href="apply.html">지원하기</a>
@@ -351,7 +340,9 @@
     </div>
 
     <script>
-        // [1] 사이드바 토글 함수
+        // ============================================
+        // 1. 사이드바 및 오버레이 토글
+        // ============================================
         function toggleMenu() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
@@ -359,12 +350,14 @@
             overlay.classList.toggle('active');
         }
 
-        // [2] 지원 메뉴 드롭다운 토글 함수 (NEW)
-        function toggleSubmenu() {
-            const submenu = document.getElementById('support-submenu');
-            const arrow = document.getElementById('arrow');
+        // ============================================
+        // 2. [수정] 드롭다운 메뉴 토글 (범용 함수)
+        // ============================================
+        function toggleSubmenu(menuId, arrowId) {
+            const submenu = document.getElementById(menuId);
+            const arrow = document.getElementById(arrowId);
             
-            // 클래스 on/off
+            // open 클래스 토글
             if (submenu.classList.contains('open')) {
                 submenu.classList.remove('open');
                 arrow.innerText = '▼';
