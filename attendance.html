@@ -3,33 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAINS 10기 출석 조회</title>
+    <title>PAINS - 결석계 사용 현황</title>
     <style>
-        /* [폰트 설정] */
-        @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); }
-        @font-face { font-family: 'SCDream'; src: url('SCDream5.otf'); }
-
-        /* [기본 스타일] */
+        /* [1] 폰트 및 공통 스타일 */
+        @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'SCDream'; src: url('SCDream5.otf'); font-weight: normal; font-style: normal; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'SCDream', sans-serif; background-color: #fdfdfd; color: #333; line-height: 1.6; }
-        
-        /* [헤더] */
-        header { background-color: #cf8b8b; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        header h1 { font-family: 'KBO_Dia', sans-serif; font-size: 1.5rem; }
-        nav a { color: #ecf0f1; text-decoration: none; margin-left: 15px; font-size: 0.9rem; transition: color 0.3s; }
-        nav a:hover { color: #fff; font-weight: bold; }
+        body { font-family: 'SCDream', sans-serif; line-height: 1.6; color: #333; background-color: #fdfdfd; }
+        h1, h2, h3 { font-family: 'KBO_Dia', sans-serif; }
 
-        /* [메인 컨테이너] */
+        /* [2] 헤더 & 사이드바 (기존 유지) */
+        header { 
+            background-color: #cf8b8b; color: white; padding: 1rem 2rem; 
+            display: flex; align-items: center; gap: 20px; position: relative; z-index: 1000; 
+        }
+        .hamburger-btn { display: flex; flex-direction: column; justify-content: space-between; width: 24px; height: 18px; cursor: pointer; z-index: 1100; }
+        .hamburger-btn span { display: block; width: 100%; height: 2px; background-color: white; border-radius: 3px; transition: all 0.3s ease; }
+        header h1 { font-size: 1.5rem; font-weight: bold; margin: 0; }
+        header h1 a { text-decoration: none; color: white; }
+        header nav { display: none; }
+
+        .sidebar { position: fixed; top: 0; left: -300px; width: 260px; height: 100vh; background-color: white; box-shadow: 2px 0 10px rgba(0,0,0,0.1); transition: left 0.3s ease; z-index: 1050; padding-top: 80px; display: flex; flex-direction: column; overflow-y: auto; }
+        .sidebar.active { left: 0; }
+        .sidebar a { padding: 15px 30px; text-decoration: none; color: #333; font-size: 1.1rem; font-weight: 500; border-bottom: 1px solid #f9f9f9; transition: background 0.2s, color 0.2s; display: block; }
+        .sidebar a:hover { background-color: #fafafa; color: #ab3333; font-weight: bold; }
+        .sidebar a.menu-toggle { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .submenu { display: none; background-color: #f8f8f8; border-bottom: 1px solid #eee; }
+        .submenu.open { display: block; }
+        .submenu a { padding-left: 50px; font-size: 1rem; color: #666; border-bottom: none; }
+        .submenu a:hover { color: #ab3333; background-color: #f0f0f0; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: none; z-index: 1040; }
+        .overlay.active { display: block; }
+
+        /* [3] 조회 페이지 전용 스타일 */
         .container { max-width: 500px; margin: 5rem auto; padding: 0 1rem; text-align: center; }
         
-        /* [조회 카드] */
         .search-card {
-            background: white; border-radius: 12px; padding: 2rem;
+            background: white; border-radius: 12px; padding: 2.5rem 2rem;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eee;
         }
-        .search-card h2 { font-family: 'KBO_Dia', sans-serif; color: #ab3333; margin-bottom: 1.5rem; font-size: 1.8rem; }
-        
-        /* [입력폼] */
+        .search-card h2 { font-family: 'KBO_Dia', sans-serif; color: #ab3333; margin-bottom: 0.5rem; font-size: 1.8rem; }
+        .sub-title { color: #666; font-size: 0.9rem; margin-bottom: 30px; }
+
         .input-group { margin-bottom: 15px; text-align: left; }
         .input-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; color: #555; }
         .input-group input {
@@ -38,114 +53,143 @@
         }
         .input-group input:focus { outline: none; border-color: #ab3333; }
 
-        /* [버튼] */
         .btn-submit {
             width: 100%; padding: 12px; background-color: #ab3333; color: white; border: none;
             border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 10px;
         }
         .btn-submit:hover { background-color: #8f2a2a; }
-        .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; }
-
-        /* [결과창 레이아웃] */
-        #result-area { margin-top: 2rem; display: none; padding-top: 2rem; border-top: 2px dashed #eee; }
         
-        /* 2열 그리드 (출석률, 결석정보 등 공통 사용) */
-        .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        
-        /* 한 줄 꽉 차는 박스 */
-        .result-full { margin-bottom: 10px; }
-
-        .result-box { background-color: #f9f9f9; padding: 15px; border-radius: 8px; }
-        .result-label { font-size: 0.8rem; color: #666; margin-bottom: 5px; }
-        .result-value { font-size: 1.2rem; font-weight: bold; color: #333; }
-        
-        .highlight { color: #ab3333; font-size: 1.3rem; } /* 출석률 강조 */
-        .status-highlight { color: #2980b9; } /* 회원자격 강조 */
-
-        /* [로딩 애니메이션] */
+        /* 로딩 애니메이션 */
         .loader { display: none; margin: 20px auto; border: 4px solid #f3f3f3; border-top: 4px solid #ab3333; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        @media (max-width: 600px) { .container { margin-top: 2rem; } }
+        /* 결과 표시 영역 */
+        #result-area { margin-top: 30px; display: none; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .result-msg { font-size: 1.1rem; margin-bottom: 10px; }
+        .count-badge { 
+            display: inline-block; padding: 10px 25px; border-radius: 30px; 
+            font-size: 1.8rem; font-weight: bold; color: white; margin-bottom: 20px;
+            background-color: #333; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .count-badge span { font-size: 1rem; font-weight: normal; margin-left: 5px; }
+
+        /* [중요] 운영회칙 안내 박스 */
+        .rule-box {
+            background-color: #fff5f5; /* 연한 붉은색 배경 */
+            border: 1px solid #ffcccc;
+            border-left: 5px solid #ab3333; /* 왼쪽 강조선 */
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+            text-align: left;
+            font-size: 0.9rem;
+            color: #555;
+            line-height: 1.6;
+        }
+        .rule-box strong { color: #ab3333; font-weight: bold; }
+
+        @media (max-width: 600px) { 
+            .container { margin-top: 2rem; } 
+            header { justify-content: flex-start; }
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Attendance Check</h1>
-        <nav>
-            <a href="index.html">Home</a>
-        </nav>
+        <div class="hamburger-btn" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </div>
+        <h1><a href="index.html">PAINS Attendance</a></h1>
     </header>
+
+    <div class="sidebar" id="sidebar">
+        <a href="index.html">Home</a>
+        <a href="members.html">운영진</a>
+        <a href="attendance.html" style="color: #ab3333; font-weight: bold; background-color: #fafafa;">출석 관리</a>
+        
+        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu()">
+            지원 <span id="arrow" style="font-size:0.8rem;">▼</span>
+        </a>
+        <div class="submenu" id="support-submenu">
+            <a href="result.html">지원 결과 안내</a>
+            <a href="apply.html">지원하기</a>
+        </div>
+    </div>
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <div class="container">
         <div class="search-card">
-            <h2>📊 10기 출석 현황 조회</h2>
-            <p style="margin-bottom: 20px; color: #666; font-size: 0.9rem;">
-                학번과 이름을 입력해주세요.
-            </p>
+            <h2>📅 결석계 사용 조회</h2>
+            <p class="sub-title">학번과 이름을 입력하여 사용 내역을 확인하세요.</p>
 
             <div class="input-group">
-                <label for="input-id">학번 (ID)</label>
-                <input type="text" id="input-id" placeholder="예: 2026123456">
+                <label for="input-id">학번</label>
+                <input type="text" id="input-id" placeholder="예: 2024123456">
             </div>
             <div class="input-group">
-                <label for="input-name">이름 (Name)</label>
+                <label for="input-name">이름</label>
                 <input type="text" id="input-name" placeholder="예: 홍길동">
             </div>
 
-            <button class="btn-submit" onclick="searchAttendance()" id="btn-search">조회하기</button>
+            <button class="btn-submit" onclick="checkUsedCount()" id="btn-search">조회하기</button>
             <div class="loader" id="loader"></div>
 
             <div id="result-area">
+                <p class="result-msg"><span id="user-name-display" style="font-weight:bold;"></span>님의 현재까지 사용한 결석계</p>
                 
-                <div class="result-grid">
-                    <div class="result-box">
-                        <div class="result-label">실제 출석률</div>
-                        <div class="result-value highlight" id="res-rate-real">-</div>
-                    </div>
-                    <div class="result-box">
-                        <div class="result-label">실질 출석률</div>
-                        <div class="result-value highlight" id="res-rate-calc">-</div>
-                    </div>
+                <div class="count-badge">
+                    <span id="used-count">0</span><span>회</span>
                 </div>
 
-                <div class="result-grid">
-                    <div class="result-box">
-                        <div class="result-label">일반 결석</div>
-                        <div class="result-value" id="res-general">-</div>
-                    </div>
-                    <div class="result-box">
-                        <div class="result-label" style="color: #e74c3c;">무단 결석</div>
-                        <div class="result-value" id="res-unexcused" style="color: #e74c3c;">-</div>
-                    </div>
+                <div class="rule-box">
+                    <strong>[운영회칙 안내]</strong><br>
+                    출석 세칙 2장 제6조 3.에 따라, 준회원 및 정회원은 
+                    <strong>한 기수에 결석계를 3번째 사용하는 시점부터 1회당 5,000원의 결석비를 납부</strong>하여야 합니다.<br><br>
+                    자세한 세칙 사항은 notion의 회칙 부문에서 읽어보실 수 있으며, 
+                    결석계 사용 또는 회칙에 대해 문의사항이 있으실 경우 카카오톡 채널로 문의 바랍니다.
                 </div>
-
-                <div class="result-box result-full">
-                    <div class="result-label">현재 회원 자격</div>
-                    <div class="result-value status-highlight" id="res-status">-</div>
-                </div>
-
-                <p style="font-size: 0.8rem; color: #999; margin-top: 15px;">
-                    잘못된 정보나 문의사항은 운영진에게 문의주시기 바랍니다.
-                </p>
             </div>
 
         </div>
     </div>
 
-    <script>
-        // ============================================
-        // [중요] 앱스 스크립트 배포 주소를 여기에 넣으세요!
-        // ============================================
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDEHOyq-B9BDprRYbnRXp7iobW8WDykzESrRbwvOZqB4tJHGLeYbiVgMtqvoVIC9TcbA/exec";
+    <footer>
+        <p>&copy; 2026 PAINS. All rights reserved.</p>
+    </footer>
 
-        async function searchAttendance() {
-            // [한글 중복 입력 방지]
+    <script>
+        // 사이드바 토글 함수
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+        function toggleSubmenu() {
+            const submenu = document.getElementById('support-submenu');
+            const arrow = document.getElementById('arrow');
+            if (submenu.classList.contains('open')) {
+                submenu.classList.remove('open');
+                arrow.innerText = '▼';
+            } else {
+                submenu.classList.add('open');
+                arrow.innerText = '▲';
+            }
+        }
+
+        // ============================================
+        // [중요] 여기에 배포한 웹 앱 URL을 붙여넣으세요!
+        // ============================================
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYOUR_DEPLOY_ID_HERE/exec";
+
+        async function checkUsedCount() {
+            // 키보드 내리기 (모바일)
             document.getElementById('input-id').blur();
             document.getElementById('input-name').blur();
-            await new Promise(r => setTimeout(r, 100));
-
+            
             const id = document.getElementById('input-id').value.trim();
             const name = document.getElementById('input-name').value.trim();
             
@@ -154,7 +198,7 @@
                 return;
             }
 
-            // UI 로딩 상태
+            // 로딩 UI 설정
             const btn = document.getElementById('btn-search');
             const loader = document.getElementById('loader');
             const resultArea = document.getElementById('result-area');
@@ -165,49 +209,23 @@
             resultArea.style.display = "none";
 
             try {
-                const targetUrl = `${SCRIPT_URL}?id=${id}&name=${name}`;
-                
-                const response = await fetch(targetUrl);
+                // GET 요청
+                const response = await fetch(`${SCRIPT_URL}?id=${id}&name=${name}`);
                 const data = await response.json();
 
                 if (data.result === "success") {
-                    
-                    // 1. [실질 출석률] 계산 (엑셀 데이터 그대로)
-                    let realRateText = "-";
-                    let realRateNum = parseFloat(data.rate);
-                    if (!isNaN(realRateNum)) {
-                        // 1 이하(0.xx)면 100 곱하기
-                        if (realRateNum <= 1) realRateNum *= 100;
-                        realRateText = realRateNum.toFixed(2) + "%";
-                    }
-
-                    // 2. [실제 출석률] 계산 ( (7 - 무단결석) / 7 )
-                    let calcRateText = "-";
-                    let unexcusedCount = parseFloat(data.unexcused); // 무단결석 횟수
-                    
-                    if (!isNaN(unexcusedCount)) {
-                        // 공식: (7 - 무단결석) / 7 * 100
-                        let calcRateNum = ((7 - unexcusedCount) / 7) * 100;
-                        calcRateText = calcRateNum.toFixed(2) + "%";
-                    }
-
-                    // 화면 표시
-                    document.getElementById('res-rate-real').innerText = realRateText; // 왼쪽: 실질
-                    document.getElementById('res-rate-calc').innerText = calcRateText; // 오른쪽: 실제
-                    
-                    document.getElementById('res-general').innerText = data.general + "회";
-                    document.getElementById('res-unexcused').innerText = data.unexcused + "회";
-                    document.getElementById('res-status').innerText = data.status;
-                    
+                    document.getElementById('user-name-display').innerText = name;
+                    document.getElementById('used-count').innerText = data.usedCount;
                     resultArea.style.display = "block";
                 } else {
-                    alert("일치하는 정보를 찾을 수 없습니다.\n학번과 이름을 다시 확인해주세요.");
+                    alert("일치하는 부원 정보가 없습니다.\n학번과 이름을 다시 확인해주세요.");
                 }
 
             } catch (error) {
                 console.error("에러 발생:", error);
                 alert("조회 중 오류가 발생했습니다.");
             } finally {
+                // UI 복구
                 btn.disabled = false;
                 btn.innerText = "조회하기";
                 loader.style.display = "none";
@@ -217,10 +235,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
