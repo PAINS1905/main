@@ -188,23 +188,7 @@
     </header>
 
     <div class="sidebar" id="sidebar">
-        <a href="index.html">Home</a>
         
-        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('members-submenu', 'members-arrow')">
-            Members <span id="members-arrow" style="font-size:0.8rem;">▼</span>
-        </a>
-        <div class="submenu" id="members-submenu">
-            <a href="members.html">운영진</a>
-            <a href="attendance.html">출석 현황 확인</a>
-        </div>
-
-        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('support-submenu', 'support-arrow')">
-            지원 <span id="support-arrow" style="font-size:0.8rem;">▲</span>
-        </a>
-        <div class="submenu open" id="support-submenu">
-            <a href="result.html" style="color: #ab3333; font-weight: bold; background-color: #f0f0f0;">지원 결과 안내</a>
-            <a href="apply.html">지원하기</a>
-        </div>
     </div>
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
@@ -247,29 +231,10 @@
         </div>
     </div>
 
-    <script>
-        // [1] 사이드바 토글 함수
-        function toggleMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-        }
+    <script scr="menu.js"></script>
 
-        // [2] 드롭다운 토글 함수 (수정됨: 범용 함수로 변경)
-        // 기존에는 id가 고정되어 있었으나, 이제 id를 받아서 처리합니다.
-        function toggleSubmenu(menuId, arrowId) {
-            const submenu = document.getElementById(menuId);
-            const arrow = document.getElementById(arrowId);
-            
-            if (submenu.classList.contains('open')) {
-                submenu.classList.remove('open');
-                arrow.innerText = '▼';
-            } else {
-                submenu.classList.add('open');
-                arrow.innerText = '▲';
-            }
-        }
+    <script>
+        loadSidebar('result');
 
         // ============================================
         // [기존 코드] 앱스 스크립트 연동
@@ -353,3 +318,4 @@
 
 </body>
 </html>
+
