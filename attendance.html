@@ -12,7 +12,7 @@
         body { font-family: 'SCDream', sans-serif; line-height: 1.6; color: #333; background-color: #fdfdfd; }
         h1, h2, h3 { font-family: 'KBO_Dia', sans-serif; }
 
-        /* [2] 헤더 & 사이드바 (기존 유지) */
+        /* [2] 헤더 */
         header { 
             background-color: #cf8b8b; color: white; padding: 1rem 2rem; 
             display: flex; align-items: center; gap: 20px; position: relative; z-index: 1000; 
@@ -23,19 +23,24 @@
         header h1 a { text-decoration: none; color: white; }
         header nav { display: none; }
 
+        /* [3] 사이드바 스타일 (수정됨) */
         .sidebar { position: fixed; top: 0; left: -300px; width: 260px; height: 100vh; background-color: white; box-shadow: 2px 0 10px rgba(0,0,0,0.1); transition: left 0.3s ease; z-index: 1050; padding-top: 80px; display: flex; flex-direction: column; overflow-y: auto; }
         .sidebar.active { left: 0; }
         .sidebar a { padding: 15px 30px; text-decoration: none; color: #333; font-size: 1.1rem; font-weight: 500; border-bottom: 1px solid #f9f9f9; transition: background 0.2s, color 0.2s; display: block; }
         .sidebar a:hover { background-color: #fafafa; color: #ab3333; font-weight: bold; }
+        
+        /* 드롭다운 메뉴 스타일 */
         .sidebar a.menu-toggle { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .submenu { display: none; background-color: #f8f8f8; border-bottom: 1px solid #eee; }
         .submenu.open { display: block; }
         .submenu a { padding-left: 50px; font-size: 1rem; color: #666; border-bottom: none; }
         .submenu a:hover { color: #ab3333; background-color: #f0f0f0; }
+
+        /* 오버레이 */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: none; z-index: 1040; }
         .overlay.active { display: block; }
 
-        /* [3] 조회 페이지 전용 스타일 */
+        /* [4] 조회 페이지 전용 스타일 */
         .container { max-width: 500px; margin: 5rem auto; padding: 0 1rem; text-align: center; }
         
         .search-card {
@@ -67,19 +72,38 @@
         #result-area { margin-top: 30px; display: none; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .result-msg { font-size: 1.1rem; margin-bottom: 10px; }
+        .result-msg { font-size: 1.1rem; margin-bottom: 15px; }
+        
+        /* [수정] 횟수 뱃지 스타일 (중앙 정렬 강화) */
         .count-badge { 
-            display: inline-block; padding: 10px 25px; border-radius: 30px; 
-            font-size: 1.8rem; font-weight: bold; color: white; margin-bottom: 20px;
-            background-color: #333; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: inline-flex; /* Flexbox로 내부 정렬 */
+            justify-content: center;
+            align-items: baseline; /* 텍스트 베이스라인 맞춤 */
+            gap: 5px;
+            padding: 10px 30px; 
+            border-radius: 40px; 
+            background-color: #333; 
+            color: white; 
+            margin: 0 auto 20px auto; /* 가운데 정렬 */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .count-badge span { font-size: 1rem; font-weight: normal; margin-left: 5px; }
+        .count-badge .number {
+            font-family: 'KBO_Dia', sans-serif; /* 숫자 강조 폰트 */
+            font-size: 2.2rem; 
+            line-height: 1;
+            font-weight: bold;
+        }
+        .count-badge .unit {
+            font-family: 'SCDream', sans-serif;
+            font-size: 1.1rem; 
+            font-weight: normal;
+        }
 
-        /* [중요] 운영회칙 안내 박스 */
+        /* 운영회칙 안내 박스 */
         .rule-box {
-            background-color: #fff5f5; /* 연한 붉은색 배경 */
+            background-color: #fff5f5; 
             border: 1px solid #ffcccc;
-            border-left: 5px solid #ab3333; /* 왼쪽 강조선 */
+            border-left: 5px solid #ab3333; 
             border-radius: 8px;
             padding: 20px;
             margin-top: 25px;
@@ -89,6 +113,13 @@
             line-height: 1.6;
         }
         .rule-box strong { color: #ab3333; font-weight: bold; }
+
+        /* [수정] 푸터 스타일 (다른 페이지와 통일) */
+        footer { background-color: #333; color: white; text-align: center; padding: 3rem 2rem 2rem; margin-top: 2rem; font-size: 0.8rem; }
+        .footer-icons { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; }
+        .icon-btn { display: flex; justify-content: center; align-items: center; width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); border-radius: 12px; transition: all 0.3s ease; }
+        .icon-btn:hover { background-color: #ab3333; transform: translateY(-3px); }
+        .icon-btn img { width: 24px; height: 24px; object-fit: contain; }
 
         @media (max-width: 600px) { 
             .container { margin-top: 2rem; } 
@@ -107,11 +138,17 @@
 
     <div class="sidebar" id="sidebar">
         <a href="index.html">Home</a>
-        <a href="members.html">운영진</a>
-        <a href="attendance.html" style="color: #ab3333; font-weight: bold; background-color: #fafafa;">출석 관리</a>
         
-        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu()">
-            지원 <span id="arrow" style="font-size:0.8rem;">▼</span>
+        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('members-submenu', 'members-arrow')">
+            Members <span id="members-arrow" style="font-size:0.8rem;">▲</span>
+        </a>
+        <div class="submenu open" id="members-submenu">
+            <a href="members.html">운영진</a>
+            <a href="attendance.html" style="color: #ab3333; font-weight: bold; background-color: #f0f0f0;">출석 현황 확인</a>
+        </div>
+
+        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('support-submenu', 'support-arrow')">
+            지원 <span id="support-arrow" style="font-size:0.8rem;">▼</span>
         </a>
         <div class="submenu" id="support-submenu">
             <a href="result.html">지원 결과 안내</a>
@@ -141,7 +178,8 @@
                 <p class="result-msg"><span id="user-name-display" style="font-weight:bold;"></span>님의 현재까지 사용한 결석계</p>
                 
                 <div class="count-badge">
-                    <span id="used-count">0</span><span>회</span>
+                    <span id="used-count" class="number">0</span>
+                    <span class="unit">회</span>
                 </div>
 
                 <div class="rule-box">
@@ -157,6 +195,11 @@
     </div>
 
     <footer>
+        <div class="footer-icons">
+            <a href="https://www.instagram.com/ku_pains" target="_blank" class="icon-btn" title="Instagram"><img src="instagram.png" alt="Instagram"></a>
+            <a href="https://www.notion.so/painsports/PAINS-a9294ba2a44b4ea6a53f0d5ae069749e" target="_blank" class="icon-btn" title="Notion"><img src="notion.png" alt="Notion"></a>
+            <a href="https://blog.naver.com/painsports" target="_blank" class="icon-btn" title="Blog"><img src="naver_blog.png" alt="NaverBlog"></a>
+        </div>
         <p>&copy; 2026 PAINS. All rights reserved.</p>
     </footer>
 
@@ -168,9 +211,10 @@
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
         }
-        function toggleSubmenu() {
-            const submenu = document.getElementById('support-submenu');
-            const arrow = document.getElementById('arrow');
+        // 드롭다운 메뉴 토글 함수 (범용)
+        function toggleSubmenu(menuId, arrowId) {
+            const submenu = document.getElementById(menuId);
+            const arrow = document.getElementById(arrowId);
             if (submenu.classList.contains('open')) {
                 submenu.classList.remove('open');
                 arrow.innerText = '▼';
@@ -235,4 +279,3 @@
 
 </body>
 </html>
-
