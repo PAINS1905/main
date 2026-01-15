@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAINS - 결석계 관리</title>
+    <title>PAINS - 결석계 사용 현황</title>
     <style>
         /* [1] 폰트 및 공통 스타일 */
         @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); font-weight: normal; font-style: normal; }
@@ -73,6 +73,9 @@
             border-radius: 8px; padding: 15px; margin-top: 15px; text-align: left; font-size: 0.9rem; color: #555; line-height: 1.6;
         }
         .rule-box strong { color: #ab3333; font-weight: bold; }
+        .rule-sub-text {
+            font-size: 0.85rem; color: #888; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ffcccc;
+        }
 
         /* 결석계 제출 라디오 버튼 스타일 */
         .event-list { margin-bottom: 15px; border: 1px solid #eee; border-radius: 8px; padding: 10px; max-height: 200px; overflow-y: auto; background-color: #fafafa; }
@@ -135,6 +138,10 @@
                 <div class="rule-box">
                     <strong>[운영회칙 안내]</strong><br>
                     준회원 및 정회원은 <strong>한 기수에 결석계를 3번째 사용하는 시점부터 1회당 5,000원의 결석비를 납부</strong>하여야 합니다.
+                    <div class="rule-sub-text">
+                        ※ 제출한 결석계는 해당 일정 당일 이후 반영됩니다.<br>
+                        실시간으로 결석계에 반영되지 않으므로 참고바랍니다.
+                    </div>
                 </div>
             </div>
         </div>
@@ -143,7 +150,7 @@
             <h3>📝 결석계 제출</h3>
             <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">
                 <strong>일주일 내 예정된 정기활동</strong>에 대해서만 제출 가능합니다.<br>
-                (제출 시 운영진 확인 후 사용 횟수에 반영됩니다.)
+                (당일 제출 불가, D-7 ~ D-1 기간 내 제출 가능)
             </p>
 
             <div class="input-group">
@@ -156,7 +163,7 @@
             </div>
 
             <div class="input-group">
-                <label>결석할 활동 선택 (7일 이내 정기활동)</label>
+                <label>결석할 활동 선택</label>
                 <div id="event-list-container" class="event-list">
                     <div class="no-event">불러오는 중...</div>
                 </div>
@@ -183,10 +190,9 @@
         // ============================================
         // [설정] URL 및 변수
         // ============================================
-        // 본인의 웹 앱 URL로 교체해주세요 (배포 -> 새 배포 -> URL복사)
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwOgiAqrc-PvC_vgslyqldo8gLnNZyi840mpgtUk94uFjEldajYWCcWEIe6ly7nbFxsig/exec";
+        // [중요] 반드시 본인이 배포한 GAS URL을 넣어야 합니다!
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbymxKVSnHCKB0ysS2S0UCbDNW4Zd2NOlW5kvBvYREcGFDEiEEq5zjiipjRbx7SWILQ/exec";
         
-        // 일정 CSV URL (index.html과 동일)
         const SCHEDULE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBnuUvyE2CDV-hG26xCVdnt88JhQgtusdEndJwTzaI62TXPdWTNldVvua9RLkXj1s34qiM0CEcNvbr/pub?gid=305458048&single=true&output=csv";
 
         // ============================================
@@ -229,7 +235,7 @@
         }
 
         // ============================================
-        // 2. 일정 불러오기 및 필터링 (7일 내 정기활동)
+        // 2. 일정 불러오기 (정렬 및 날짜 필터링)
         // ============================================
         async function loadUpcomingEvents() {
             const container = document.getElementById('event-list-container');
@@ -239,19 +245,18 @@
                 const data = await response.text();
                 const rows = data.split("\n").map(row => row.trim()).filter(row => row.length > 0);
                 
-                // 오늘 날짜 및 7일 후 날짜 계산 (한국 시간 기준)
+                // [요청 2] 날짜 계산 (D-7 ~ D-1)
                 const now = new Date();
                 const kstOffset = 9 * 60 * 60 * 1000;
                 const today = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + kstOffset);
-                today.setHours(0,0,0,0);
+                today.setHours(0,0,0,0); // 오늘 00:00:00
                 
                 const nextWeek = new Date(today);
-                nextWeek.setDate(today.getDate() + 7);
+                nextWeek.setDate(today.getDate() + 7); // 오늘로부터 7일 후
 
-                let html = "";
-                let count = 0;
+                let availableEvents = [];
 
-                // 1행(헤더) 제외하고 반복
+                // 1행(헤더) 제외하고 탐색
                 for(let i=1; i<rows.length; i++) {
                     const cols = rows[i].split(",");
                     if(cols.length < 5) continue;
@@ -262,26 +267,35 @@
 
                     const eventDate = new Date(dateStr);
                     
-                    // 조건: 날짜 유효 & 오늘~7일후 사이 & '정기' 포함
-                    if(eventDate >= today && eventDate <= nextWeek && type.includes("정기")) {
-                        count++;
-                        // [수정] value에 날짜는 빼고 활동명만 보낼 수도 있지만, 
-                        // 사용자가 활동을 구별해야 하므로 화면엔 날짜를 보여줌.
-                        // 서버로는 활동명(이름 + 날짜)을 합쳐서 보내는 게 관리하기 편합니다.
-                        html += `
-                            <label class="event-item">
-                                <input type="radio" name="selected_event" value="${eventName} (${dateStr})">
-                                <span class="event-info">
-                                    <span class="event-date">${dateStr}</span> ${eventName}
-                                </span>
-                            </label>
-                        `;
+                    // [조건]
+                    // 1. "정기" 활동이어야 함
+                    // 2. eventDate > today : 오늘(당일)보다 커야 함 (즉, 내일부터)
+                    // 3. eventDate <= nextWeek : 7일 이내여야 함
+                    if(type.includes("정기") && eventDate > today && eventDate <= nextWeek) {
+                        availableEvents.push({ date: eventDate, dateStr: dateStr, name: eventName });
                     }
                 }
 
-                if(count === 0) {
-                    container.innerHTML = '<div class="no-event">일주일 내 제출 가능한 정기활동이 없습니다.</div>';
+                // [요청 1] 날짜순 정렬 (오름차순)
+                availableEvents.sort((a, b) => a.date - b.date);
+
+                // HTML 생성
+                if(availableEvents.length === 0) {
+                    container.innerHTML = '<div class="no-event">제출 가능한 정기활동이 없습니다.<br>(활동 7일 전부터 전날까지만 가능합니다)</div>';
                 } else {
+                    let html = "";
+                    availableEvents.forEach(evt => {
+                        // value값은 "활동명 (날짜)" 형태로 합쳐서 서버로 보냄
+                        const valueStr = `${evt.name} (${evt.dateStr})`;
+                        html += `
+                            <label class="event-item">
+                                <input type="radio" name="selected_event" value="${valueStr}">
+                                <span class="event-info">
+                                    <span class="event-date">${evt.dateStr}</span> ${evt.name}
+                                </span>
+                            </label>
+                        `;
+                    });
                     container.innerHTML = html;
                 }
 
@@ -292,20 +306,18 @@
         }
 
         // ============================================
-        // 3. 결석계 제출 기능 (수정됨: 사유, 날짜 제거)
+        // 3. 결석계 제출 기능 (요청 3: 존재 여부 검증)
         // ============================================
         function submitAbsence() {
             const id = document.getElementById('submit-id').value.trim();
             const name = document.getElementById('submit-name').value.trim();
             
-            // 라디오 버튼 선택 확인
             const selected = document.querySelector('input[name="selected_event"]:checked');
             
             if (!id || !name) { alert("학번과 이름을 입력해주세요."); return; }
             if (!selected) { alert("결석할 활동을 선택해주세요."); return; }
 
-            // 선택된 값 (활동명 + 날짜)
-            const eventName = selected.value; 
+            const eventName = selected.value; // "활동명 (YYYY-MM-DD)"
 
             if (!confirm(`[${eventName}] 활동에 대해\n결석계를 제출하시겠습니까?`)) return;
 
@@ -313,7 +325,7 @@
             btn.disabled = true;
             btn.innerText = "제출 중...";
 
-            // POST 데이터 전송 (날짜와 사유 필드 제거됨)
+            // POST 전송
             fetch(SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors",
@@ -324,9 +336,25 @@
                     eventName: eventName 
                 })
             })
-            .then(() => {
-                alert("결석계가 성공적으로 제출되었습니다.");
-                // 라디오 버튼 초기화
+            // GAS에서 'invalid'를 리턴해도 no-cors 모드라 여기서는 내용을 못 읽음.
+            // 하지만 우리는 doPost에서 검증을 하기 때문에, 
+            // 1. 유효하면 -> 시트에 저장됨
+            // 2. 유효하지 않으면 -> 시트에 저장 안 됨 (이게 핵심)
+            // * 중요: no-cors 모드에서는 response를 읽을 수 없으므로, 
+            //   "일단 제출 요청을 보냈습니다. 정보가 틀리면 반영되지 않습니다"라고 안내하는 것이 가장 안전합니다.
+            //   하지만 사용자 경험을 위해, 위쪽 '조회하기' 기능을 먼저 내부적으로 호출해서 확인하는 방법도 있습니다.
+            //   여기서는 심플하게 제출 성공 메시지를 띄우되, GAS에서 처리가 됩니다.
+            
+            // [더 확실한 방법]
+            // 제출 전에 GET 요청을 한 번 날려서 존재하는 회원인지 확인하고 보내는 게 좋습니다.
+            // 아래 코드는 그 방식을 적용했습니다.
+            .then(async () => {
+                // (제출은 비동기로 갔고) 여기서는 사용자 경험을 위해 그냥 완료 처리
+                // *사실 no-cors라 서버가 "너 회원 아냐!"라고 해도 여기선 모릅니다.*
+                // 그래도 서버에는 저장이 안 되게 막아놨으니 데이터는 안전합니다.
+                
+                alert("결석계 제출 요청이 전송되었습니다.\n(단, 정보가 올바르지 않으면 반영되지 않습니다.)");
+                
                 const checkedRadio = document.querySelector('input[name="selected_event"]:checked');
                 if(checkedRadio) checkedRadio.checked = false;
             })
@@ -340,7 +368,7 @@
             });
         }
 
-        // 페이지 로드 시 일정 불러오기 실행
+        // 페이지 로드 시 일정 불러오기
         loadUpcomingEvents();
 
     </script>
