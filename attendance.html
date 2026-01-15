@@ -189,7 +189,7 @@
     <script>
         loadSidebar('attendance');
 
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7shd9op70ZSSuEYe3Iod6wSoRfQ_UKLs7DU1TdOAWoFr1Xr-d8ZDzBBQ_Iq1kEivPg/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbymxKVSnHCKB0ysS2S0UCbDNW4Zd2NOlW5kvBvYREcGFDEiEEq5zjiipjRbx7SWILQ/exec";
         const SCHEDULE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBnuUvyE2CDV-hG26xCVdnt88JhQgtusdEndJwTzaI62TXPdWTNldVvua9RLkXj1s34qiM0CEcNvbr/pub?gid=305458048&single=true&output=csv";
 
         // ============================================
@@ -211,6 +211,7 @@
             btn.innerText = "조회 중...";
             
             try {
+                // 단순 조회 시에는 id와 name만 보냄
                 const response = await fetch(`${SCRIPT_URL}?id=${id}&name=${name}`);
                 const data = await response.json();
 
@@ -295,7 +296,7 @@
         }
 
         // ============================================
-        // 3. 결석계 제출 (사전 검증 추가)
+        // 3. 결석계 제출 (중복 및 존재 여부 검증)
         // ============================================
         async function submitAbsence() {
             const id = document.getElementById('submit-id').value.trim();
@@ -308,21 +309,34 @@
             const btn = document.getElementById('btn-submit-form');
             const originalBtnText = btn.innerText;
 
+            const eventName = selected.value; // "활동명 (YYYY-MM-DD)"
+            const dateMatch = eventName.match(/\((\d{4}-\d{2}-\d{2})\)$/);
+            const dateStr = dateMatch ? dateMatch[1] : ""; 
+
             // [1] 제출 전 사전 검증 (GET)
+            // 중복 확인을 위해 eventName도 쿼리 스트링에 포함시킴 (URL 인코딩 필요)
             btn.disabled = true;
             btn.innerText = "정보 확인 중...";
 
             try {
-                // 부원 확인 (기존 GET 기능 활용)
-                const checkResponse = await fetch(`${SCRIPT_URL}?id=${id}&name=${name}`);
+                const encodedEventName = encodeURIComponent(eventName);
+                const checkResponse = await fetch(`${SCRIPT_URL}?id=${id}&name=${name}&eventName=${encodedEventName}`);
                 const checkData = await checkResponse.json();
 
-                // 'success'가 아니면 부원 정보 없음
-                if (checkData.result !== 'success') {
+                // 1-1. 중복 제출인 경우
+                if (checkData.result === 'duplicate') {
+                    alert("이미 해당 활동에 대한 결석계를 제출하셨습니다.\n결석계 취소를 원하실 경우, 운영진에게 문의해주세요.");
+                    btn.disabled = false;
+                    btn.innerText = originalBtnText;
+                    return; // 중단
+                }
+
+                // 1-2. 부원 정보가 없는 경우 (fail)
+                if (checkData.result === 'fail') {
                     alert("일치하는 부원 정보가 없습니다.\n학번과 이름을 다시 확인해주세요.");
                     btn.disabled = false;
                     btn.innerText = originalBtnText;
-                    return; // 여기서 멈춤 (POST 안 함)
+                    return; // 중단
                 }
 
             } catch (e) {
@@ -333,11 +347,7 @@
                 return;
             }
 
-            // [2] 정보가 맞으면 최종 제출 진행
-            const eventName = selected.value; 
-            const dateMatch = eventName.match(/\((\d{4}-\d{2}-\d{2})\)$/);
-            const dateStr = dateMatch ? dateMatch[1] : ""; 
-
+            // [2] 검증 통과 -> 제출 진행
             if (!confirm(`[${eventName}] 활동에 대해\n결석계를 제출하시겠습니까?`)) {
                 btn.disabled = false;
                 btn.innerText = originalBtnText;
@@ -346,7 +356,6 @@
 
             btn.innerText = "제출 중...";
 
-            // [3] POST 전송 (no-cors)
             fetch(SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors",
@@ -379,6 +388,7 @@
 
 </body>
 </html>
+
 
 
 
