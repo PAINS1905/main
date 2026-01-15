@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAINS - 결석계 사용 현황</title>
+    <title>PAINS - 결석계 관리</title>
     <style>
         /* [1] 폰트 및 공통 스타일 */
         @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); font-weight: normal; font-style: normal; }
@@ -23,98 +23,68 @@
         header h1 a { text-decoration: none; color: white; }
         header nav { display: none; }
 
-        /* [3] 사이드바 스타일 (수정됨) */
+        /* [3] 사이드바 스타일 */
         .sidebar { position: fixed; top: 0; left: -300px; width: 260px; height: 100vh; background-color: white; box-shadow: 2px 0 10px rgba(0,0,0,0.1); transition: left 0.3s ease; z-index: 1050; padding-top: 80px; display: flex; flex-direction: column; overflow-y: auto; }
         .sidebar.active { left: 0; }
         .sidebar a { padding: 15px 30px; text-decoration: none; color: #333; font-size: 1.1rem; font-weight: 500; border-bottom: 1px solid #f9f9f9; transition: background 0.2s, color 0.2s; display: block; }
         .sidebar a:hover { background-color: #fafafa; color: #ab3333; font-weight: bold; }
-        
-        /* 드롭다운 메뉴 스타일 */
         .sidebar a.menu-toggle { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .submenu { display: none; background-color: #f8f8f8; border-bottom: 1px solid #eee; }
         .submenu.open { display: block; }
         .submenu a { padding-left: 50px; font-size: 1rem; color: #666; border-bottom: none; }
         .submenu a:hover { color: #ab3333; background-color: #f0f0f0; }
-
-        /* 오버레이 */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: none; z-index: 1040; }
         .overlay.active { display: block; }
 
-        /* [4] 조회 페이지 전용 스타일 */
-        .container { max-width: 500px; margin: 5rem auto; padding: 0 1rem; text-align: center; }
+        /* [4] 메인 컨텐츠 스타일 */
+        .container { max-width: 600px; margin: 4rem auto; padding: 0 1.5rem; }
         
-        .search-card {
-            background: white; border-radius: 12px; padding: 2.5rem 2rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eee;
+        .section-card {
+            background: white; border-radius: 12px; padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; margin-bottom: 2rem;
         }
-        .search-card h2 { font-family: 'KBO_Dia', sans-serif; color: #ab3333; margin-bottom: 0.5rem; font-size: 1.8rem; }
-        .sub-title { color: #666; font-size: 0.9rem; margin-bottom: 30px; }
-
-        .input-group { margin-bottom: 15px; text-align: left; }
-        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; color: #555; }
-        .input-group input {
-            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;
-            font-size: 1rem; font-family: 'SCDream', sans-serif;
+        .section-card h3 { color: #ab3333; font-size: 1.5rem; margin-bottom: 1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
+        
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
+        .input-group input { 
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; font-family: 'SCDream', sans-serif; 
         }
-        .input-group input:focus { outline: none; border-color: #ab3333; }
-
-        .btn-submit {
-            width: 100%; padding: 12px; background-color: #ab3333; color: white; border: none;
-            border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 10px;
+        
+        .btn-check, .btn-submit { 
+            width: 100%; padding: 12px; background-color: #333; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; 
         }
+        .btn-submit { background-color: #ab3333; margin-top: 10px; }
+        .btn-check:hover { background-color: #555; }
         .btn-submit:hover { background-color: #8f2a2a; }
-        
-        /* 로딩 애니메이션 */
-        .loader { display: none; margin: 20px auto; border: 4px solid #f3f3f3; border-top: 4px solid #ab3333; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* 결과 표시 영역 */
-        #result-area { margin-top: 30px; display: none; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .result-msg { font-size: 1.1rem; margin-bottom: 15px; }
-        
-        /* [수정] 횟수 뱃지 스타일 (중앙 정렬 강화) */
+        #result-area { display: none; margin-top: 20px; text-align: center; }
         .count-badge { 
-            display: inline-flex; /* Flexbox로 내부 정렬 */
-            justify-content: center;
-            align-items: baseline; /* 텍스트 베이스라인 맞춤 */
-            gap: 5px;
-            padding: 10px 30px; 
-            border-radius: 40px; 
-            background-color: #333; 
-            color: white; 
-            margin: 0 auto 20px auto; /* 가운데 정렬 */
+            display: inline-flex; justify-content: center; align-items: baseline; gap: 5px;
+            padding: 10px 30px; border-radius: 40px; background-color: #333; color: white; margin: 15px auto;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .count-badge .number {
-            font-family: 'KBO_Dia', sans-serif; /* 숫자 강조 폰트 */
-            font-size: 2.2rem; 
-            line-height: 1;
-            font-weight: bold;
-        }
-        .count-badge .unit {
-            font-family: 'SCDream', sans-serif;
-            font-size: 1.1rem; 
-            font-weight: normal;
-        }
+        .count-badge .number { font-family: 'KBO_Dia', sans-serif; font-size: 2rem; font-weight: bold; line-height: 1; }
+        .count-badge .unit { font-family: 'SCDream', sans-serif; font-size: 1rem; font-weight: normal; }
 
-        /* 운영회칙 안내 박스 */
         .rule-box {
-            background-color: #fff5f5; 
-            border: 1px solid #ffcccc;
-            border-left: 5px solid #ab3333; 
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 25px;
-            text-align: left;
-            font-size: 0.9rem;
-            color: #555;
-            line-height: 1.6;
+            background-color: #fff5f5; border: 1px solid #ffcccc; border-left: 5px solid #ab3333;
+            border-radius: 8px; padding: 15px; margin-top: 15px; text-align: left; font-size: 0.9rem; color: #555; line-height: 1.6;
         }
         .rule-box strong { color: #ab3333; font-weight: bold; }
 
-        /* [수정] 푸터 스타일 (다른 페이지와 통일) */
+        /* 결석계 제출 라디오 버튼 스타일 */
+        .event-list { margin-bottom: 15px; border: 1px solid #eee; border-radius: 8px; padding: 10px; max-height: 200px; overflow-y: auto; background-color: #fafafa; }
+        .event-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; }
+        .event-item:last-child { border-bottom: none; }
+        .event-item:hover { background-color: #fff; }
+        .event-item input { margin-right: 10px; width: 18px; height: 18px; accent-color: #ab3333; }
+        .event-info { font-size: 0.95rem; }
+        .event-date { font-weight: bold; color: #ab3333; margin-right: 5px; }
+        .no-event { text-align: center; color: #888; padding: 20px; font-size: 0.9rem; }
+
+        /* 푸터 */
         footer { background-color: #333; color: white; text-align: center; padding: 3rem 2rem 2rem; margin-top: 2rem; font-size: 0.8rem; }
         .footer-icons { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; }
         .icon-btn { display: flex; justify-content: center; align-items: center; width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); border-radius: 12px; transition: all 0.3s ease; }
@@ -136,45 +106,65 @@
         <h1><a href="index.html">PAINS Attendance</a></h1>
     </header>
 
-    <div class="sidebar" id="sidebar">
-    </div>
+    <div class="sidebar" id="sidebar"></div>
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <div class="container">
-        <div class="search-card">
-            <h2>📅 결석계 사용 조회</h2>
-            <p class="sub-title">학번과 이름을 입력하여 사용 내역을 확인하세요.</p>
-
+        
+        <div class="section-card">
+            <h3>🔍 사용한 결석계 조회</h3>
+            <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">학번과 이름을 입력하여 현재까지 사용한 횟수를 확인하세요.</p>
+            
             <div class="input-group">
-                <label for="input-id">학번</label>
-                <input type="text" id="input-id" placeholder="예: 2024123456">
+                <label>학번</label>
+                <input type="text" id="check-id" placeholder="예: 2024123456">
             </div>
             <div class="input-group">
-                <label for="input-name">이름</label>
-                <input type="text" id="input-name" placeholder="예: 홍길동">
+                <label>이름</label>
+                <input type="text" id="check-name" placeholder="예: 홍길동">
             </div>
-
-            <button class="btn-submit" onclick="checkUsedCount()" id="btn-search">조회하기</button>
-            <div class="loader" id="loader"></div>
+            
+            <button class="btn-check" onclick="checkUsedCount()" id="btn-check-submit">조회하기</button>
 
             <div id="result-area">
-                <p class="result-msg"><span id="user-name-display" style="font-weight:bold;"></span>님의 현재까지 사용한 결석계</p>
-                
+                <p class="result-msg"><span id="user-name-display" style="font-weight:bold;"></span>님의 사용한 결석계</p>
                 <div class="count-badge">
                     <span id="used-count" class="number">0</span>
                     <span class="unit">회</span>
                 </div>
-
                 <div class="rule-box">
                     <strong>[운영회칙 안내]</strong><br>
-                    출석 세칙 2장 제6조 3.에 따라, 준회원 및 정회원은 
-                    <strong>한 기수에 결석계를 3번째 사용하는 시점부터 1회당 5,000원의 결석비를 납부</strong>하여야 합니다.<br><br>
-                    자세한 세칙 사항은 notion의 회칙 부문에서 읽어보실 수 있으며, 
-                    결석계 사용 또는 회칙에 대해 문의사항이 있으실 경우 카카오톡 채널로 문의 바랍니다.
+                    준회원 및 정회원은 <strong>한 기수에 결석계를 3번째 사용하는 시점부터 1회당 5,000원의 결석비를 납부</strong>하여야 합니다.
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <h3>📝 결석계 제출</h3>
+            <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">
+                <strong>일주일 내 예정된 정기활동</strong>에 대해서만 제출 가능합니다.<br>
+                (제출 시 운영진 확인 후 사용 횟수에 반영됩니다.)
+            </p>
+
+            <div class="input-group">
+                <label>학번</label>
+                <input type="text" id="submit-id" placeholder="예: 2024123456">
+            </div>
+            <div class="input-group">
+                <label>이름</label>
+                <input type="text" id="submit-name" placeholder="예: 홍길동">
+            </div>
+
+            <div class="input-group">
+                <label>결석할 활동 선택 (7일 이내 정기활동)</label>
+                <div id="event-list-container" class="event-list">
+                    <div class="no-event">불러오는 중...</div>
                 </div>
             </div>
 
+            <button class="btn-submit" onclick="submitAbsence()" id="btn-submit-form">제출하기</button>
         </div>
+
     </div>
 
     <footer>
@@ -186,40 +176,38 @@
         <p>&copy; 2026 PAINS. All rights reserved.</p>
     </footer>
 
-    <script src="menu.js"> </script>
+    <script src="menu.js"></script>
     <script>
         loadSidebar('attendance');
 
         // ============================================
-        // [중요] 여기에 배포한 웹 앱 URL을 붙여넣으세요!
+        // [설정] URL 및 변수
         // ============================================
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbymxKVSnHCKB0ysS2S0UCbDNW4Zd2NOlW5kvBvYREcGFDEiEEq5zjiipjRbx7SWILQ/exec";
+        // 본인의 웹 앱 URL로 교체해주세요 (배포 -> 새 배포 -> URL복사)
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwOgiAqrc-PvC_vgslyqldo8gLnNZyi840mpgtUk94uFjEldajYWCcWEIe6ly7nbFxsig/exec";
+        
+        // 일정 CSV URL (index.html과 동일)
+        const SCHEDULE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBnuUvyE2CDV-hG26xCVdnt88JhQgtusdEndJwTzaI62TXPdWTNldVvua9RLkXj1s34qiM0CEcNvbr/pub?gid=305458048&single=true&output=csv";
 
+        // ============================================
+        // 1. 결석 횟수 조회 기능
+        // ============================================
         async function checkUsedCount() {
-            // 키보드 내리기 (모바일)
-            document.getElementById('input-id').blur();
-            document.getElementById('input-name').blur();
+            document.getElementById('check-id').blur();
+            document.getElementById('check-name').blur();
             
-            const id = document.getElementById('input-id').value.trim();
-            const name = document.getElementById('input-name').value.trim();
+            const id = document.getElementById('check-id').value.trim();
+            const name = document.getElementById('check-name').value.trim();
             
-            if (!id || !name) {
-                alert("학번과 이름을 모두 입력해주세요.");
-                return;
-            }
+            if (!id || !name) { alert("학번과 이름을 입력해주세요."); return; }
 
-            // 로딩 UI 설정
-            const btn = document.getElementById('btn-search');
-            const loader = document.getElementById('loader');
+            const btn = document.getElementById('btn-check-submit');
             const resultArea = document.getElementById('result-area');
             
             btn.disabled = true;
             btn.innerText = "조회 중...";
-            loader.style.display = "block";
-            resultArea.style.display = "none";
-
+            
             try {
-                // GET 요청
                 const response = await fetch(`${SCRIPT_URL}?id=${id}&name=${name}`);
                 const data = await response.json();
 
@@ -228,21 +216,134 @@
                     document.getElementById('used-count').innerText = data.usedCount;
                     resultArea.style.display = "block";
                 } else {
-                    alert("일치하는 부원 정보가 없습니다.\n학번과 이름을 다시 확인해주세요.");
+                    alert("일치하는 부원 정보가 없습니다.");
+                    resultArea.style.display = "none";
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("조회 중 오류가 발생했습니다.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "조회하기";
+            }
+        }
+
+        // ============================================
+        // 2. 일정 불러오기 및 필터링 (7일 내 정기활동)
+        // ============================================
+        async function loadUpcomingEvents() {
+            const container = document.getElementById('event-list-container');
+            
+            try {
+                const response = await fetch(SCHEDULE_CSV_URL);
+                const data = await response.text();
+                const rows = data.split("\n").map(row => row.trim()).filter(row => row.length > 0);
+                
+                // 오늘 날짜 및 7일 후 날짜 계산 (한국 시간 기준)
+                const now = new Date();
+                const kstOffset = 9 * 60 * 60 * 1000;
+                const today = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + kstOffset);
+                today.setHours(0,0,0,0);
+                
+                const nextWeek = new Date(today);
+                nextWeek.setDate(today.getDate() + 7);
+
+                let html = "";
+                let count = 0;
+
+                // 1행(헤더) 제외하고 반복
+                for(let i=1; i<rows.length; i++) {
+                    const cols = rows[i].split(",");
+                    if(cols.length < 5) continue;
+
+                    const eventName = cols[0].trim();
+                    const dateStr = cols[1].trim(); // YYYY-MM-DD
+                    const type = cols[4].trim();    // 정기/비정기 등
+
+                    const eventDate = new Date(dateStr);
+                    
+                    // 조건: 날짜 유효 & 오늘~7일후 사이 & '정기' 포함
+                    if(eventDate >= today && eventDate <= nextWeek && type.includes("정기")) {
+                        count++;
+                        // [수정] value에 날짜는 빼고 활동명만 보낼 수도 있지만, 
+                        // 사용자가 활동을 구별해야 하므로 화면엔 날짜를 보여줌.
+                        // 서버로는 활동명(이름 + 날짜)을 합쳐서 보내는 게 관리하기 편합니다.
+                        html += `
+                            <label class="event-item">
+                                <input type="radio" name="selected_event" value="${eventName} (${dateStr})">
+                                <span class="event-info">
+                                    <span class="event-date">${dateStr}</span> ${eventName}
+                                </span>
+                            </label>
+                        `;
+                    }
+                }
+
+                if(count === 0) {
+                    container.innerHTML = '<div class="no-event">일주일 내 제출 가능한 정기활동이 없습니다.</div>';
+                } else {
+                    container.innerHTML = html;
                 }
 
             } catch (error) {
-                console.error("에러 발생:", error);
-                alert("조회 중 오류가 발생했습니다.");
-            } finally {
-                // UI 복구
-                btn.disabled = false;
-                btn.innerText = "조회하기";
-                loader.style.display = "none";
+                console.error("Schedule Load Error:", error);
+                container.innerHTML = '<div class="no-event">일정을 불러오지 못했습니다.</div>';
             }
         }
+
+        // ============================================
+        // 3. 결석계 제출 기능 (수정됨: 사유, 날짜 제거)
+        // ============================================
+        function submitAbsence() {
+            const id = document.getElementById('submit-id').value.trim();
+            const name = document.getElementById('submit-name').value.trim();
+            
+            // 라디오 버튼 선택 확인
+            const selected = document.querySelector('input[name="selected_event"]:checked');
+            
+            if (!id || !name) { alert("학번과 이름을 입력해주세요."); return; }
+            if (!selected) { alert("결석할 활동을 선택해주세요."); return; }
+
+            // 선택된 값 (활동명 + 날짜)
+            const eventName = selected.value; 
+
+            if (!confirm(`[${eventName}] 활동에 대해\n결석계를 제출하시겠습니까?`)) return;
+
+            const btn = document.getElementById('btn-submit-form');
+            btn.disabled = true;
+            btn.innerText = "제출 중...";
+
+            // POST 데이터 전송 (날짜와 사유 필드 제거됨)
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: id,
+                    name: name,
+                    eventName: eventName 
+                })
+            })
+            .then(() => {
+                alert("결석계가 성공적으로 제출되었습니다.");
+                // 라디오 버튼 초기화
+                const checkedRadio = document.querySelector('input[name="selected_event"]:checked');
+                if(checkedRadio) checkedRadio.checked = false;
+            })
+            .catch(err => {
+                console.error(err);
+                alert("제출 중 오류가 발생했습니다.");
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerText = "제출하기";
+            });
+        }
+
+        // 페이지 로드 시 일정 불러오기 실행
+        loadUpcomingEvents();
+
     </script>
 
 </body>
 </html>
-
