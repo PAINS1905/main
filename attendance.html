@@ -235,7 +235,7 @@
         }
 
         // ============================================
-        // 2. 일정 불러오기 (정렬 및 날짜 필터링)
+        // 2. 일정 불러오기 및 필터링 (시간 문제 해결됨)
         // ============================================
         async function loadUpcomingEvents() {
             const container = document.getElementById('event-list-container');
@@ -245,14 +245,15 @@
                 const data = await response.text();
                 const rows = data.split("\n").map(row => row.trim()).filter(row => row.length > 0);
                 
-                // [요청 2] 날짜 계산 (D-7 ~ D-1)
+                // [수정] 오늘 날짜 (KST 자정 기준)
                 const now = new Date();
                 const kstOffset = 9 * 60 * 60 * 1000;
                 const today = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + kstOffset);
                 today.setHours(0,0,0,0); // 오늘 00:00:00
                 
+                // [수정] 마감 기한 (오늘 + 7일 자정)
                 const nextWeek = new Date(today);
-                nextWeek.setDate(today.getDate() + 7); // 오늘로부터 7일 후
+                nextWeek.setDate(today.getDate() + 7); 
 
                 let availableEvents = [];
 
@@ -266,17 +267,19 @@
                     const type = cols[4].trim();    // 정기/비정기 등
 
                     const eventDate = new Date(dateStr);
+                    // [중요] 비교를 위해 행사 날짜도 자정으로 초기화
+                    eventDate.setHours(0,0,0,0);
                     
                     // [조건]
                     // 1. "정기" 활동이어야 함
-                    // 2. eventDate > today : 오늘(당일)보다 커야 함 (즉, 내일부터)
-                    // 3. eventDate <= nextWeek : 7일 이내여야 함
+                    // 2. eventDate > today : 오늘(당일)은 제외 (내일부터)
+                    // 3. eventDate <= nextWeek : 22일 자정 == 22일 자정 (포함됨)
                     if(type.includes("정기") && eventDate > today && eventDate <= nextWeek) {
                         availableEvents.push({ date: eventDate, dateStr: dateStr, name: eventName });
                     }
                 }
 
-                // [요청 1] 날짜순 정렬 (오름차순)
+                // 날짜순 정렬 (오름차순)
                 availableEvents.sort((a, b) => a.date - b.date);
 
                 // HTML 생성
@@ -285,7 +288,6 @@
                 } else {
                     let html = "";
                     availableEvents.forEach(evt => {
-                        // value값은 "활동명 (날짜)" 형태로 합쳐서 서버로 보냄
                         const valueStr = `${evt.name} (${evt.dateStr})`;
                         html += `
                             <label class="event-item">
@@ -375,3 +377,4 @@
 
 </body>
 </html>
+
