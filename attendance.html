@@ -187,9 +187,7 @@
     <script>
         loadSidebar('attendance');
 
-        // [중요] 배포한 구글 앱스 스크립트 URL을 여기에 입력하세요
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbymxKVSnHCKB0ysS2S0UCbDNW4Zd2NOlW5kvBvYREcGFDEiEEq5zjiipjRbx7SWILQ/exec";
-        
         const SCHEDULE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBnuUvyE2CDV-hG26xCVdnt88JhQgtusdEndJwTzaI62TXPdWTNldVvua9RLkXj1s34qiM0CEcNvbr/pub?gid=305458048&single=true&output=csv";
 
         // ============================================
@@ -232,7 +230,7 @@
         }
 
         // ============================================
-        // 2. 일정 불러오기 (정렬 및 필터링)
+        // 2. 일정 불러오기
         // ============================================
         async function loadUpcomingEvents() {
             const container = document.getElementById('event-list-container');
@@ -242,14 +240,13 @@
                 const data = await response.text();
                 const rows = data.split("\n").map(row => row.trim()).filter(row => row.length > 0);
                 
-                // [시차 계산] - 외국에서도 한국시간 기준으로 계산
                 const now = new Date();
                 const kstOffset = 9 * 60 * 60 * 1000;
                 const today = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + kstOffset);
-                today.setHours(0,0,0,0); // 오늘 자정 (00:00:00)
+                today.setHours(0,0,0,0); 
                 
                 const nextWeek = new Date(today);
-                nextWeek.setDate(today.getDate() + 7); // 오늘+7일 자정 (00:00:00)
+                nextWeek.setDate(today.getDate() + 7); 
 
                 let availableEvents = [];
 
@@ -262,16 +259,13 @@
                     const type = cols[4].trim(); 
 
                     const eventDate = new Date(dateStr);
-                    eventDate.setHours(0,0,0,0); // 행사 날짜도 자정으로
+                    eventDate.setHours(0,0,0,0); 
                     
-                    // [조건] D-Day(오늘) 포함 X, 내일부터 ~ 7일 뒤까지
-                    // 예: 오늘 15일 -> 16,17,18,19,20,21,22일(7일뒤) 까지 가능
                     if(type.includes("정기") && eventDate > today && eventDate <= nextWeek) {
                         availableEvents.push({ date: eventDate, dateStr: dateStr, name: eventName });
                     }
                 }
 
-                // 날짜순 정렬
                 availableEvents.sort((a, b) => a.date - b.date);
 
                 if(availableEvents.length === 0) {
@@ -279,7 +273,6 @@
                 } else {
                     let html = "";
                     availableEvents.forEach(evt => {
-                        // value에 날짜정보를 포함 (검증용)
                         const valueStr = `${evt.name} (${evt.dateStr})`;
                         html += `
                             <label class="event-item">
@@ -300,9 +293,9 @@
         }
 
         // ============================================
-        // 3. 결석계 제출 (서버 검증 포함)
+        // 3. 결석계 제출 (사전 검증 추가)
         // ============================================
-        function submitAbsence() {
+        async function submitAbsence() {
             const id = document.getElementById('submit-id').value.trim();
             const name = document.getElementById('submit-name').value.trim();
             const selected = document.querySelector('input[name="selected_event"]:checked');
@@ -310,25 +303,48 @@
             if (!id || !name) { alert("학번과 이름을 입력해주세요."); return; }
             if (!selected) { alert("결석할 활동을 선택해주세요."); return; }
 
-            const eventName = selected.value; // "활동명 (2026-01-22)" 형태
+            const btn = document.getElementById('btn-submit-form');
+            const originalBtnText = btn.innerText;
 
-            // [중요] 날짜 부분만 추출해서 서버로 따로 보냄 (검증용)
-            // 괄호 안의 날짜만 쏙 빼냄
+            // [1] 제출 전 사전 검증 (GET)
+            btn.disabled = true;
+            btn.innerText = "정보 확인 중...";
+
+            try {
+                // 부원 확인 (기존 GET 기능 활용)
+                const checkResponse = await fetch(`${SCRIPT_URL}?id=${id}&name=${name}`);
+                const checkData = await checkResponse.json();
+
+                // 'success'가 아니면 부원 정보 없음
+                if (checkData.result !== 'success') {
+                    alert("일치하는 부원 정보가 없습니다.\n학번과 이름을 다시 확인해주세요.");
+                    btn.disabled = false;
+                    btn.innerText = originalBtnText;
+                    return; // 여기서 멈춤 (POST 안 함)
+                }
+
+            } catch (e) {
+                console.error(e);
+                alert("서버 연결 중 오류가 발생했습니다.");
+                btn.disabled = false;
+                btn.innerText = originalBtnText;
+                return;
+            }
+
+            // [2] 정보가 맞으면 최종 제출 진행
+            const eventName = selected.value; 
             const dateMatch = eventName.match(/\((\d{4}-\d{2}-\d{2})\)$/);
             const dateStr = dateMatch ? dateMatch[1] : ""; 
 
-            if (!confirm(`[${eventName}] 활동에 대해\n결석계를 제출하시겠습니까?`)) return;
+            if (!confirm(`[${eventName}] 활동에 대해\n결석계를 제출하시겠습니까?`)) {
+                btn.disabled = false;
+                btn.innerText = originalBtnText;
+                return;
+            }
 
-            const btn = document.getElementById('btn-submit-form');
-            btn.disabled = true;
             btn.innerText = "제출 중...";
 
-            // GET 요청을 먼저 보내서 응답을 읽음 (POST는 no-cors라 응답 못읽음)
-            // *단, GAS에서 POST 기능을 GET으로 흉내내거나, 
-            // *아니면 그냥 POST(no-cors)로 보내고 성공 메시지 띄우되, 서버에서 조용히 무시하게 할 수도 있음.
-            // *여기서는 가장 확실한 방법: "POST로 보내되, 사용자에게는 성공했다하고, 서버에서 거른다" 방식을 씁니다.
-            // (사유: GAS 무료 계정에서 CORS 헤더 설정이 복잡하므로)
-            
+            // [3] POST 전송 (no-cors)
             fetch(SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors",
@@ -337,14 +353,11 @@
                     id: id,
                     name: name,
                     eventName: eventName,
-                    date: dateStr // 날짜 별도 전송
+                    date: dateStr
                 })
             })
             .then(() => {
-                // no-cors라 서버가 "invalid"를 보내도 여기선 알 수 없음.
-                // 그래서 문구를 조금 조심스럽게 씁니다.
-                alert("결석계 제출 요청이 전송되었습니다.\n\n[주의]\n* 정보가 틀리거나\n* 제출 기한(D-7~D-1)이 아니면\n자동으로 반영되지 않습니다.");
-                
+                alert("결석계가 성공적으로 제출되었습니다.");
                 const checkedRadio = document.querySelector('input[name="selected_event"]:checked');
                 if(checkedRadio) checkedRadio.checked = false;
             })
