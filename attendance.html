@@ -296,7 +296,7 @@
         }
 
         // ============================================
-        // 3. 결석계 제출 (중복 및 존재 여부 검증)
+        // 3. 결석계 제출 (중복 안내 기능 추가)
         // ============================================
         async function submitAbsence() {
             const id = document.getElementById('submit-id').value.trim();
@@ -319,16 +319,19 @@
             btn.innerText = "정보 확인 중...";
 
             try {
+                // 한글이나 특수문자가 섞인 활동명을 URL에 안전하게 넣기 위해 인코딩
                 const encodedEventName = encodeURIComponent(eventName);
+                
+                // 서버에 "이 사람 + 이 활동" 조합이 있는지 물어봄
                 const checkResponse = await fetch(`${SCRIPT_URL}?id=${id}&name=${name}&eventName=${encodedEventName}`);
                 const checkData = await checkResponse.json();
 
-                // 1-1. 중복 제출인 경우
+                // 1-1. 중복 제출인 경우 ('duplicate' 응답)
                 if (checkData.result === 'duplicate') {
                     alert("이미 해당 활동에 대한 결석계를 제출하셨습니다.\n결석계 취소를 원하실 경우, 운영진에게 문의해주세요.");
                     btn.disabled = false;
                     btn.innerText = originalBtnText;
-                    return; // 중단
+                    return; // 중단 (POST로 안 넘어감)
                 }
 
                 // 1-2. 부원 정보가 없는 경우 (fail)
@@ -356,6 +359,7 @@
 
             btn.innerText = "제출 중...";
 
+            // [3] POST 전송 (no-cors)
             fetch(SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors",
@@ -388,6 +392,7 @@
 
 </body>
 </html>
+
 
 
 
