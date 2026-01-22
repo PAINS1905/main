@@ -17,8 +17,8 @@ function loadSidebar(currentPage) {
             지원 <span id="support-arrow" style="font-size:0.8rem;">▼</span>
         </a>
         <div class="submenu" id="support-submenu">
-            <a href="result.html" id="link-result">지원 결과 안내</a>
-            <a href="apply.html" id="link-apply">지원하기</a>
+            <a href="javascript:void(0)" onclick="alert('지원 기간이 아닙니다.')" id="link-result">지원 결과 안내</a>
+            <a href="javascript:void(0)" onclick="alert('지원 기간이 아닙니다.')" id="link-apply">지원하기</a>
         </div>
     `;
 
