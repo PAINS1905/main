@@ -229,8 +229,8 @@
             지원 <span id="support-arrow" style="font-size:0.8rem;">▼</span>
         </a>
         <div class="submenu" id="support-submenu">
-            <a href="result.html">지원 결과 안내</a>
-            <a href="apply.html">지원하기</a>
+            <a href="javascript:void(0)" onclick="alert('지원 기간이 아닙니다.')">지원 결과 안내</a>
+            <a href="javascript:void(0)" onclick="alert('지원 기간이 아닙니다.')">지원하기</a>
         </div>
     </div>
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
@@ -351,8 +351,7 @@
         }
 
         // ============================================
-        // [2] 드롭다운 토글 함수 (수정됨: 범용)
-        // 괄호 안의 menuId와 arrowId를 받아서 처리하도록 수정했습니다!
+        // [2] 드롭다운 토글 함수
         // ============================================
         function toggleSubmenu(menuId, arrowId) {
             const submenu = document.getElementById(menuId);
