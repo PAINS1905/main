@@ -151,7 +151,7 @@
             <h3>📝 결석계 제출</h3>
             <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">
                 <strong>일주일 내 예정된 정기활동</strong>에 대해서만 제출 가능합니다.<br>
-                7일 전 자정부터 제출이 가능하며, 활동 당일에는 제출이 불가합니다.<br>
+                21일(3주) 전 자정부터 제출이 가능하며, 활동 당일에는 제출이 불가합니다.<br>
                 결석계 제출 현황이나, 정상 제출 여부를 알고 싶다면 운영진에게 문의바랍니다.
             </p>
 
@@ -211,7 +211,6 @@
             btn.innerText = "조회 중...";
             
             try {
-                // 단순 조회 시에는 id와 name만 보냄
                 const response = await fetch(`${SCRIPT_URL}?id=${id}&name=${name}`);
                 const data = await response.json();
 
@@ -248,8 +247,9 @@
                 const today = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + kstOffset);
                 today.setHours(0,0,0,0); 
                 
+                // [수정] 7일 -> 21일로 범위 확대
                 const nextWeek = new Date(today);
-                nextWeek.setDate(today.getDate() + 7); 
+                nextWeek.setDate(today.getDate() + 21); 
 
                 let availableEvents = [];
 
@@ -272,7 +272,8 @@
                 availableEvents.sort((a, b) => a.date - b.date);
 
                 if(availableEvents.length === 0) {
-                    container.innerHTML = '<div class="no-event">제출 가능한 정기활동이 없습니다.<br>(활동 7일 전부터 전날까지만 가능합니다)</div>';
+                    // [수정] 안내 텍스트 변경
+                    container.innerHTML = '<div class="no-event">제출 가능한 정기활동이 없습니다.<br>(활동 21일 전부터 전날까지만 가능합니다)</div>';
                 } else {
                     let html = "";
                     availableEvents.forEach(evt => {
@@ -296,7 +297,7 @@
         }
 
         // ============================================
-        // 3. 결석계 제출 (중복 안내 기능 추가)
+        // 3. 결석계 제출
         // ============================================
         async function submitAbsence() {
             const id = document.getElementById('submit-id').value.trim();
@@ -309,37 +310,31 @@
             const btn = document.getElementById('btn-submit-form');
             const originalBtnText = btn.innerText;
 
-            const eventName = selected.value; // "활동명 (YYYY-MM-DD)"
+            const eventName = selected.value; 
             const dateMatch = eventName.match(/\((\d{4}-\d{2}-\d{2})\)$/);
             const dateStr = dateMatch ? dateMatch[1] : ""; 
 
             // [1] 제출 전 사전 검증 (GET)
-            // 중복 확인을 위해 eventName도 쿼리 스트링에 포함시킴 (URL 인코딩 필요)
             btn.disabled = true;
             btn.innerText = "정보 확인 중...";
 
             try {
-                // 한글이나 특수문자가 섞인 활동명을 URL에 안전하게 넣기 위해 인코딩
                 const encodedEventName = encodeURIComponent(eventName);
-                
-                // 서버에 "이 사람 + 이 활동" 조합이 있는지 물어봄
                 const checkResponse = await fetch(`${SCRIPT_URL}?id=${id}&name=${name}&eventName=${encodedEventName}`);
                 const checkData = await checkResponse.json();
 
-                // 1-1. 중복 제출인 경우 ('duplicate' 응답)
                 if (checkData.result === 'duplicate') {
                     alert("이미 해당 활동에 대한 결석계를 제출하셨습니다.\n결석계 취소를 원하실 경우, 운영진에게 문의해주세요.");
                     btn.disabled = false;
                     btn.innerText = originalBtnText;
-                    return; // 중단 (POST로 안 넘어감)
+                    return; 
                 }
 
-                // 1-2. 부원 정보가 없는 경우 (fail)
                 if (checkData.result === 'fail') {
                     alert("일치하는 부원 정보가 없습니다.\n학번과 이름을 다시 확인해주세요.");
                     btn.disabled = false;
                     btn.innerText = originalBtnText;
-                    return; // 중단
+                    return; 
                 }
 
             } catch (e) {
@@ -359,7 +354,6 @@
 
             btn.innerText = "제출 중...";
 
-            // [3] POST 전송 (no-cors)
             fetch(SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors",
@@ -392,10 +386,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
