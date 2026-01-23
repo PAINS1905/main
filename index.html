@@ -415,8 +415,8 @@
             <div id="modal-badge" class="event-modal-badge"></div>
             <div id="modal-title" class="event-modal-title"></div>
             <ul class="event-modal-info">
-                <li><strong>📅 일시:</strong> <span id="modal-date"></span></li>
-                <li><strong>⏰ 시각:</strong> <span id="modal-time"></span></li>
+                <li id="li-date"><strong>📅 일시:</strong> <span id="modal-date"></span></li>
+                <li id="li-time"><strong>⏰ 시각:</strong> <span id="modal-time"></span></li>
                 <li><strong>📍 장소:</strong> <span id="modal-location"></span></li>
             </ul>
         </div>
@@ -442,7 +442,7 @@
         loadSidebar('home');
 
         // ============================================
-        // 팝업 로직 (새해 인사)
+        // 팝업 로직
         // ============================================
         document.addEventListener("DOMContentLoaded", function() {
             const popup = document.getElementById('img-popup');
@@ -457,7 +457,7 @@
         }
 
         // ============================================
-        // [수정됨] 달력 로직 (Week 단위 렌더링 + 여백 추가)
+        // 달력 로직
         // ============================================
         
         let allEvents = []; 
@@ -474,7 +474,6 @@
                 const data = await response.text();
                 const rows = data.split("\n").map(row => row.trim()).filter(row => row.length > 0);
                 
-                // 데이터 파싱 (A~G열)
                 allEvents = rows.slice(1).map(row => {
                     const cols = row.split(",");
                     if (cols.length < 7) return null;
@@ -483,7 +482,7 @@
                         name: cols[0].trim(),
                         startDate: cols[1].trim(),
                         startTime: cols[2].trim(),
-                        endDate: cols[3].trim() || cols[1].trim(), // 종료일 비어있으면 시작일 사용
+                        endDate: cols[3].trim() || cols[1].trim(), 
                         endTime: cols[4].trim(),
                         location: cols[5].trim(),
                         type: cols[6].trim()
@@ -504,7 +503,6 @@
             
             title.innerText = `${year}. ${String(month).padStart(2, '0')}`;
 
-            // 기존 주차 행(Week Rows) 모두 제거 (헤더 제외)
             const oldRows = calendarBody.querySelectorAll('.week-row');
             oldRows.forEach(r => r.remove());
 
@@ -560,9 +558,7 @@
                     currentDate.setDate(currentDate.getDate() + 1); 
                 }
 
-                // ----------------------------------------------------
-                // 이벤트 배치 (Packing Algorithm)
-                // ----------------------------------------------------
+                // 이벤트 배치 로직
                 const weekStart = weekDates[0].getTime();
                 const weekEnd = weekDates[6].getTime();
                 
@@ -653,43 +649,31 @@
 
                     bar.style.top = (evt.row * 24) + 'px';
                     
-                    // [수정됨] 여유 공간(margin) 계산 로직
-                    // 1일의 너비 %
+                    // 여백 계산
                     const ONE_DAY_PCT = 14.2857; 
-                    // 여유분 (px단위가 아니므로 근사치 %)
-                    // 1% 정도 띄우면 양쪽 합쳐서 2% 여백
-                    const GAP = 0.5; // 좌우 0.5%씩
+                    const GAP = 0.5; // 좌우 0.5%씩 여백
 
-                    // 기본 위치와 너비 (여백 없이)
                     let leftPct = evt.startIndex * ONE_DAY_PCT;
                     let widthPct = evt.span * ONE_DAY_PCT;
 
-                    // 상황별 보정
-                    const isStartInWeek = (evt.sDate >= weekDates[0]); // 이번 주에 시작점이 있는가?
-                    const isEndInWeek = (evt.eDate <= weekDates[6]);   // 이번 주에 끝점이 있는가?
+                    const isStartInWeek = (evt.sDate >= weekDates[0]); 
+                    const isEndInWeek = (evt.eDate <= weekDates[6]);   
 
                     if (isStartInWeek) {
-                        // 시작점이면 왼쪽에 여유
                         leftPct += GAP;
                         widthPct -= GAP;
                     }
                     if (isEndInWeek) {
-                        // 끝점이면 오른쪽에 여유
                         widthPct -= GAP;
                     }
 
                     bar.style.left = leftPct + '%';
                     bar.style.width = widthPct + '%';
 
-                    // 둥근 모서리 처리 (이전 로직 유지 + margin 때문에 조금 수정)
-                    // 이번 주보다 이전에 시작했으면 왼쪽 직각
                     if (!isStartInWeek) {
                         bar.style.borderTopLeftRadius = '0';
                         bar.style.borderBottomLeftRadius = '0';
-                        // 이어짐을 표현하기 위해 왼쪽으로 아주 살짝 더 밀어서 틈을 없앰
-                        // (하지만 GAP이 없으므로 딱 붙어있음)
                     }
-                    // 이번 주보다 이후에 끝나면 오른쪽 직각
                     if (!isEndInWeek) {
                         bar.style.borderTopRightRadius = '0';
                         bar.style.borderBottomRightRadius = '0';
@@ -710,7 +694,7 @@
         }
 
         // ============================================
-        // 상세 모달 로직
+        // [수정됨] 상세 모달 로직
         // ============================================
         function openEventModal(evt) {
             const modal = document.getElementById('event-modal-overlay');
@@ -719,32 +703,63 @@
             const date = document.getElementById('modal-date');
             const time = document.getElementById('modal-time');
             const loc = document.getElementById('modal-location');
+            const liDate = document.getElementById('li-date');
+            const liTime = document.getElementById('li-time');
 
+            // 1. 뱃지
             badge.innerText = evt.type || "기타";
             badge.className = "event-modal-badge"; 
-            if (evt.type.includes('비정기')) {
-                badge.style.backgroundColor = "#e67e22";
-            } else if (evt.type.includes('정기')) {
-                badge.style.backgroundColor = "#27ae60";
-            } else {
-                badge.style.backgroundColor = "#7f8c8d";
-            }
+            if (evt.type.includes('비정기')) badge.style.backgroundColor = "#e67e22";
+            else if (evt.type.includes('정기')) badge.style.backgroundColor = "#27ae60";
+            else badge.style.backgroundColor = "#7f8c8d";
 
+            // 2. 제목
             title.innerText = evt.name;
             
-            const sStr = formatModalDate(evt.startDate);
-            const eStr = formatModalDate(evt.endDate);
-            if (evt.startDate === evt.endDate) date.innerText = sStr;
-            else date.innerText = `${sStr} ~ ${eStr}`;
+            // 3. 일시 및 시각 처리 로직
+            const sDateStr = formatModalDate(evt.startDate);
+            const eDateStr = formatModalDate(evt.endDate);
+            const sTime = evt.startTime ? evt.startTime.trim() : "";
+            const eTime = evt.endTime ? evt.endTime.trim() : "";
 
-            const sTime = evt.startTime || "";
-            const eTime = evt.endTime || "";
-            if(sTime && eTime) time.innerText = `${sTime} ~ ${eTime}`;
-            else if(sTime) time.innerText = sTime + " ~";
-            else if(eTime) time.innerText = "~ " + eTime;
-            else time.innerText = "시간 미정";
+            // "TBC", "TBD", "미정" 등을 체크하는 헬퍼 함수
+            const isInvalidTime = (t) => !t || ["TBC", "TBD", "미정", "TBA"].includes(t.toUpperCase());
+            const hasValidTime = !isInvalidTime(sTime) || !isInvalidTime(eTime);
 
+            // 초기화: 시각 줄 다시 보이기
+            liTime.style.display = "";
+
+            if (evt.startDate !== evt.endDate) {
+                // [2일 이상 일정]
+                liTime.style.display = "none"; // 시각 줄 숨김
+
+                if (hasValidTime) {
+                    // 조건 1: 시간이 유효하면 '일시' 줄에 합침
+                    // 줄바꿈을 위해 inline-block span 사용
+                    const startPart = `${sDateStr} ${isInvalidTime(sTime) ? '' : sTime}`;
+                    const endPart = `${eDateStr} ${isInvalidTime(eTime) ? '' : eTime}`;
+                    date.innerHTML = `<span style="display:inline-block">${startPart} -</span> <span style="display:inline-block">${endPart}</span>`;
+                } else {
+                    // 조건 2: 시간이 없으면 날짜만 표시
+                    date.innerText = `${sDateStr} - ${eDateStr}`;
+                }
+            } else {
+                // [1일 일정] - 기존 로직 유지
+                date.innerText = sDateStr;
+                
+                // 시간 표시
+                if (hasValidTime) {
+                    if(sTime && eTime) time.innerText = `${sTime} ~ ${eTime}`;
+                    else if(sTime) time.innerText = sTime + " ~";
+                    else time.innerText = "~ " + eTime;
+                } else {
+                    time.innerText = "시간 미정";
+                }
+            }
+
+            // 4. 장소
             loc.innerText = evt.location || "장소 미정";
+            
             modal.style.display = "flex";
         }
 
