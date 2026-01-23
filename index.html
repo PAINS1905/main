@@ -214,25 +214,7 @@
         <h1><a href="index.html">Providing Academic INsights for Sports.</a></h1>
     </header>
 
-    <div class="sidebar" id="sidebar">
-        <a href="index.html" style="color: #ab3333; font-weight: bold; background-color: #f0f0f0;">Home</a>
-        
-        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('members-submenu', 'members-arrow')">
-            Members <span id="members-arrow" style="font-size:0.8rem;">▼</span>
-        </a>
-        <div class="submenu" id="members-submenu">
-            <a href="members.html">운영진</a>
-            <a href="attendance.html">출석 현황 확인</a>
-        </div>
-
-        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('support-submenu', 'support-arrow')">
-            지원 <span id="support-arrow" style="font-size:0.8rem;">▼</span>
-        </a>
-        <div class="submenu" id="support-submenu">
-            <a href="javascript:void(0)" onclick="alert('지원 기간이 아닙니다.')">지원 결과 안내</a>
-            <a href="javascript:void(0)" onclick="alert('지원 기간이 아닙니다.')">지원하기</a>
-        </div>
-    </div>
+    <div class="sidebar" id="sidebar"></div>
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <div class="hero">
@@ -339,33 +321,13 @@
         </div>
     </div>
 
-    <script>
-        // ============================================
-        // [1] 사이드바 토글 함수 (햄버거 버튼용)
-        // ============================================
-        function toggleMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-        }
+    <script src="menu.js"></script>
 
-        // ============================================
-        // [2] 드롭다운 토글 함수
-        // ============================================
-        function toggleSubmenu(menuId, arrowId) {
-            const submenu = document.getElementById(menuId);
-            const arrow = document.getElementById(arrowId);
-            
-            // 해당 메뉴의 열림/닫힘 상태를 변경
-            if (submenu.classList.contains('open')) {
-                submenu.classList.remove('open');
-                arrow.innerText = '▼';
-            } else {
-                submenu.classList.add('open');
-                arrow.innerText = '▲';
-            }
-        }
+    <script>
+        // [수정됨] 사이드바 로드 실행 (현재 페이지 'home' 강조)
+        loadSidebar('home');
+
+        // *주의: 기존에 있던 toggleMenu, toggleSubmenu 함수는 menu.js에 있으므로 여기서 삭제했습니다.
 
         // ============================================
         // [기존 코드] 팝업 제어 로직
