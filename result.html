@@ -231,7 +231,9 @@
         </div>
     </div>
 
-    <script src="menu.js"></script>
+    <script>
+        document.write('<script src="menu.js?v=' + new Date().getTime() + '"><\/script>');
+    </script>
 
     <script>
         loadSidebar('result');
@@ -318,6 +320,7 @@
 
 </body>
 </html>
+
 
 
 
