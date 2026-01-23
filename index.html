@@ -85,15 +85,15 @@
         section { padding: 3rem 2rem; max-width: 1000px; margin: 0 auto; }
         h3 { font-size: 1.8rem; color: #2c3e50; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
 
-        /* [5] 달력 스타일 */
+        /* [5] 달력 스타일 (구조 변경됨) */
         .calendar-container {
             width: 100%;
             background: #fff;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             border: 1px solid #eee;
-            overflow: visible; 
             position: relative;
+            overflow: visible;
         }
 
         .calendar-header {
@@ -109,49 +109,32 @@
         }
         
         .btn-today-reset {
-            padding: 5px 12px;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            margin-left: auto; 
-            color: #555;
-            transition: all 0.2s;
+            padding: 5px 12px; background: white; border: 1px solid #ddd;
+            border-radius: 4px; font-size: 0.9rem; cursor: pointer;
+            margin-left: auto; color: #555; transition: all 0.2s;
         }
         .btn-today-reset:hover { background-color: #eee; color: #333; }
 
         .calendar-nav-group {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            position: absolute; 
-            left: 50%;
-            transform: translateX(-50%);
+            display: flex; align-items: center; gap: 15px;
+            position: absolute; left: 50%; transform: translateX(-50%);
         }
 
         .calendar-title {
-            font-family: 'KBO_Dia', sans-serif;
-            font-size: 1.5rem;
-            color: #ab3333;
-            cursor: pointer;
-            position: relative;
+            font-family: 'KBO_Dia', sans-serif; font-size: 1.5rem;
+            color: #ab3333; cursor: pointer; position: relative;
         }
         .calendar-title:hover { text-decoration: underline; }
 
         /* 날짜 선택 팝업 */
         .date-picker {
-            display: none; 
-            position: absolute;
+            display: none; position: absolute;
             top: 100%; left: 50%; transform: translateX(-50%);
             width: 280px; height: 240px;
-            background: white;
-            border: 1px solid #ccc;
+            background: white; border: 1px solid #ccc;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            z-index: 2000;
-            border-radius: 4px;
-            flex-direction: column;
-            text-align: left;
+            z-index: 2000; border-radius: 4px;
+            flex-direction: column; text-align: left;
         }
         .date-picker.active { display: flex; }
 
@@ -169,7 +152,6 @@
         .picker-col::-webkit-scrollbar { width: 6px; }
         .picker-col::-webkit-scrollbar-thumb { background-color: #ddd; border-radius: 3px; }
         .picker-col::-webkit-scrollbar-track { background-color: transparent; }
-
         .picker-item { padding: 8px 15px; cursor: pointer; font-size: 0.9rem; color: #555; }
         .picker-item:hover { background-color: #f5f5f5; }
         .picker-item.selected { background-color: #f0f8ff; color: #ab3333; font-weight: bold; }
@@ -180,101 +162,83 @@
         }
         .calendar-nav-btn:hover { color: #ab3333; }
 
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr); 
-            width: 100%;
-            table-layout: fixed; 
+        /* [수정] 달력 내부 그리드 시스템 변경 */
+        .calendar-body { display: flex; flex-direction: column; width: 100%; }
+        
+        /* 요일 헤더 */
+        .weekday-row {
+            display: grid; grid-template-columns: repeat(7, 1fr);
+            border-bottom: 1px solid #eee; background-color: #fff;
         }
-
         .weekday {
             text-align: center; padding: 10px 0; font-weight: bold;
-            background-color: #fff; border-bottom: 1px solid #eee; color: #555;
+            color: #555;
         }
         .weekday.sun { color: #e74c3c; }
         .weekday.sat { color: #3498db; }
 
-        .day-cell {
-            min-height: 100px; 
-            border-bottom: 1px solid #eee; border-right: 1px solid #eee;
-            padding: 5px; position: relative;
-            background-color: #fff; overflow: hidden; 
-        }
-        .day-cell:nth-child(7n) { border-right: none; }
-        
-        .day-number {
-            display: block; text-align: right; font-size: 0.9rem;
-            color: #333; margin-bottom: 5px;
-        }
-        
-        .day-cell.sun .day-number { color: #e74c3c; }
-        .day-cell.sat .day-number { color: #3498db; }
-        .day-cell.other-month { background-color: #f7f7f7; }
-        .day-cell.other-month .day-number { color: #bbb; }
-        .day-cell.other-month.sun .day-number { color: #f5a9a9; }
-        .day-cell.other-month.sat .day-number { color: #a9d0f5; }
-
-        .day-cell.today { background-color: #fff5f5; }
-        .day-cell.today .day-number { font-weight: bold; color: #ab3333; text-decoration: underline; }
-
-        .event-item {
-            display: block;
-            background-color: #ab3333; color: white;
-            font-size: 0.75rem; padding: 2px 6px;
-            border-radius: 4px; margin-bottom: 3px;
-            cursor: pointer; /* 클릭 가능 표시 */
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            max-width: 100%;
-            transition: opacity 0.2s;
-        }
-        .event-item:hover { opacity: 0.8; }
-        .event-item.irregular { background-color: #e67e22; }
-        .event-item.regular { background-color: #27ae60; }
-        .event-item.etc { background-color: #7f8c8d; }
-
-        /* [추가] 일정 상세 팝업 (모달) 스타일 */
-        .event-modal-overlay {
-            display: none;
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 3000;
-            justify-content: center; align-items: center;
-        }
-        .event-modal {
-            background: white;
-            width: 350px; max-width: 90%;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        /* 주(Week) 단위 행 */
+        .week-row {
             position: relative;
-            animation: fadeIn 0.3s ease;
+            min-height: 100px; /* 최소 높이 */
+            border-bottom: 1px solid #eee;
+            background-color: #fff;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .event-modal-close {
-            position: absolute; top: 15px; right: 15px;
-            font-size: 1.5rem; color: #999; cursor: pointer;
-            line-height: 1;
+        /* 날짜 배경 레이어 (날짜 숫자 표시) */
+        .day-bg-layer {
+            display: grid; grid-template-columns: repeat(7, 1fr);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none; /* 클릭 통과 */
         }
-        .event-modal-close:hover { color: #333; }
+        .day-cell-bg {
+            border-right: 1px solid #eee; padding: 5px;
+            display: flex; justify-content: flex-end;
+        }
+        .day-cell-bg:last-child { border-right: none; }
+        
+        .day-number { font-size: 0.9rem; color: #333; }
+        .day-cell-bg.sun .day-number { color: #e74c3c; }
+        .day-cell-bg.sat .day-number { color: #3498db; }
+        .day-cell-bg.other-month { background-color: #f9f9f9; }
+        .day-cell-bg.other-month .day-number { color: #ccc; }
+        .day-cell-bg.today { background-color: #fff5f5; }
+        .day-cell-bg.today .day-number { font-weight: bold; color: #ab3333; text-decoration: underline; }
 
-        .event-modal-badge {
-            display: inline-block; padding: 5px 10px;
-            border-radius: 20px; font-size: 0.8rem; font-weight: bold; color: white;
-            margin-bottom: 10px;
+        /* 일정 표시 레이어 */
+        .events-layer {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            margin-top: 30px; /* 날짜 숫자 공간 확보 */
+            padding-bottom: 5px;
         }
-        .event-modal-title {
-            font-size: 1.3rem; font-weight: bold; margin-bottom: 15px;
-            color: #333; word-break: keep-all;
+
+        /* [수정] 연속된 일정 바 스타일 */
+        .event-bar {
+            position: absolute; /* JS로 top, left, width 제어 */
+            height: 22px;
+            line-height: 22px;
+            border-radius: 4px;
+            padding: 0 6px;
+            font-size: 0.75rem;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            transition: opacity 0.2s, transform 0.1s;
         }
-        .event-modal-info li {
-            list-style: none; margin-bottom: 8px; font-size: 0.95rem; color: #555;
-        }
-        .event-modal-info strong { color: #333; margin-right: 5px; }
+        .event-bar:hover { opacity: 0.9; transform: scale(1.01); z-index: 10; }
+        
+        .event-bar.irregular { background-color: #e67e22; }
+        .event-bar.regular { background-color: #27ae60; }
+        .event-bar.etc { background-color: #7f8c8d; }
 
         @media (max-width: 600px) {
-            .day-cell { min-height: 80px; font-size: 0.8rem; }
-            .event-item { font-size: 0.7rem; padding: 2px; }
+            .week-row { min-height: 80px; }
+            .event-bar { font-size: 0.7rem; height: 20px; line-height: 20px; }
             .calendar-title { font-size: 1.2rem; }
             .btn-today-reset { font-size: 0.8rem; padding: 4px 8px; }
         }
@@ -295,7 +259,34 @@
             header { justify-content: flex-start; } 
         }
 
-        /* 팝업 (새해 인사 등) */
+        /* 상세 모달 */
+        .event-modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5); z-index: 3000;
+            justify-content: center; align-items: center;
+        }
+        .event-modal {
+            background: white; width: 350px; max-width: 90%;
+            border-radius: 12px; padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2); position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .event-modal-close {
+            position: absolute; top: 15px; right: 15px;
+            font-size: 1.5rem; color: #999; cursor: pointer; line-height: 1;
+        }
+        .event-modal-close:hover { color: #333; }
+        .event-modal-badge {
+            display: inline-block; padding: 5px 10px; border-radius: 20px;
+            font-size: 0.8rem; font-weight: bold; color: white; margin-bottom: 10px;
+        }
+        .event-modal-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; color: #333; word-break: keep-all; }
+        .event-modal-info li { list-style: none; margin-bottom: 8px; font-size: 0.95rem; color: #555; }
+        .event-modal-info strong { color: #333; margin-right: 5px; }
+
+        /* 팝업 (새해 인사) */
         .popup-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.6); z-index: 9999;
@@ -355,7 +346,6 @@
         <h3>일정 안내</h3>
         <div class="calendar-container">
             <div class="calendar-header">
-                
                 <div class="calendar-nav-group">
                     <button class="calendar-nav-btn" onclick="changeMonth(-1)">&#9664;</button>
                     <div class="calendar-title" id="calendar-title" onclick="toggleDatePicker()">2026. 01</div>
@@ -372,20 +362,20 @@
                         </div>
                     </div>
                 </div>
-
                 <button class="btn-today-reset" onclick="goToToday()">오늘</button>
-
             </div>
             
-            <div class="calendar-grid" id="calendar-grid">
-                <div class="weekday sun">일</div>
-                <div class="weekday">월</div>
-                <div class="weekday">화</div>
-                <div class="weekday">수</div>
-                <div class="weekday">목</div>
-                <div class="weekday">금</div>
-                <div class="weekday sat">토</div>
-            </div>
+            <div class="calendar-body" id="calendar-body">
+                <div class="weekday-row">
+                    <div class="weekday sun">일</div>
+                    <div class="weekday">월</div>
+                    <div class="weekday">화</div>
+                    <div class="weekday">수</div>
+                    <div class="weekday">목</div>
+                    <div class="weekday">금</div>
+                    <div class="weekday sat">토</div>
+                </div>
+                </div>
         </div>
     </section>
 
@@ -470,7 +460,7 @@
         }
 
         // ============================================
-        // [수정됨] 달력 로직 (새로운 열 구조 및 기능 반영)
+        // [수정됨] 달력 로직 (Week 단위 렌더링)
         // ============================================
         
         let allEvents = []; 
@@ -487,16 +477,17 @@
                 const data = await response.text();
                 const rows = data.split("\n").map(row => row.trim()).filter(row => row.length > 0);
                 
-                // [수정] 7개 열 데이터 파싱 (A~G)
-                // A:Name, B:Start Date, C:Start Time, D:Finish Date, E:Finish Time, F:Location, G:Type
+                // 데이터 파싱 (A~G열)
                 allEvents = rows.slice(1).map(row => {
+                    // CSV 쉼표 분리 (간단한 처리, 따옴표 내 쉼표는 고려X)
                     const cols = row.split(",");
-                    if (cols.length < 7) return null; // 열 개수 확인
+                    if (cols.length < 7) return null;
+                    
                     return {
                         name: cols[0].trim(),
-                        startDate: cols[1].trim(), // YYYY-MM-DD
+                        startDate: cols[1].trim(),
                         startTime: cols[2].trim(),
-                        endDate: cols[3].trim() || cols[1].trim(), // 종료일 없으면 시작일과 동일
+                        endDate: cols[3].trim() || cols[1].trim(), // 종료일 비어있으면 시작일 사용
                         endTime: cols[4].trim(),
                         location: cols[5].trim(),
                         type: cols[6].trim()
@@ -512,94 +503,227 @@
         }
 
         function renderCalendar(year, month) {
-            const grid = document.getElementById('calendar-grid');
+            const calendarBody = document.getElementById('calendar-body');
             const title = document.getElementById('calendar-title');
             
             title.innerText = `${year}. ${String(month).padStart(2, '0')}`;
 
-            const weekdays = grid.querySelectorAll('.weekday');
-            grid.innerHTML = '';
-            weekdays.forEach(wd => grid.appendChild(wd));
+            // 기존 주차 행(Week Rows) 모두 제거 (헤더 제외)
+            const oldRows = calendarBody.querySelectorAll('.week-row');
+            oldRows.forEach(r => r.remove());
 
+            // ----------------------------------------------------
+            // 1. 날짜 계산 및 주(Week) 단위 데이터 생성
+            // ----------------------------------------------------
             const firstDateOfMonth = new Date(year, month - 1, 1);
             const lastDateOfMonth = new Date(year, month, 0);
-            const startDayIndex = firstDateOfMonth.getDay();
-            const lastDate = lastDateOfMonth.getDate();
-            const endDayIndex = lastDateOfMonth.getDay();
-
+            
+            // 달력 시작 날짜 (지난 달의 날짜 포함)
             const startDate = new Date(firstDateOfMonth);
-            startDate.setDate(startDate.getDate() - startDayIndex);
-            const totalCells = startDayIndex + lastDate + (6 - endDayIndex);
+            startDate.setDate(startDate.getDate() - firstDateOfMonth.getDay()); // 일요일부터 시작
 
-            for (let i = 0; i < totalCells; i++) {
-                const renderDate = new Date(startDate);
-                renderDate.setDate(startDate.getDate() + i);
+            // 달력 종료 날짜 (다음 달의 날짜 포함, 6주 채우거나 월말까지)
+            // 여기서는 마지막 날이 토요일이 될 때까지 채웁니다.
+            const endDate = new Date(lastDateOfMonth);
+            if (endDate.getDay() !== 6) {
+                endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
+            }
 
-                const rYear = renderDate.getFullYear();
-                const rMonth = renderDate.getMonth() + 1; 
-                const rDay = renderDate.getDate();
-                const rDayOfWeek = renderDate.getDay();
+            // 날짜 순회하며 주 단위 생성
+            let currentDate = new Date(startDate);
+            
+            while (currentDate <= endDate) {
+                // 한 주(7일) 처리
+                const weekRow = document.createElement('div');
+                weekRow.className = 'week-row';
 
-                const cell = document.createElement('div');
-                cell.classList.add('day-cell');
+                const dayBgLayer = document.createElement('div');
+                dayBgLayer.className = 'day-bg-layer';
 
-                if (rMonth !== month) cell.classList.add('other-month');
-                if (rDayOfWeek === 0) cell.classList.add('sun');
-                if (rDayOfWeek === 6) cell.classList.add('sat');
+                const eventsLayer = document.createElement('div');
+                eventsLayer.className = 'events-layer';
 
-                // 오늘 날짜
-                if (rYear === todayObj.getFullYear() && 
-                    (rMonth - 1) === todayObj.getMonth() && 
-                    rDay === todayObj.getDate()) {
-                    cell.classList.add('today');
+                let weekDates = []; // 이번 주의 날짜 객체들 (이벤트 배치용)
+
+                // 7일간 배경(날짜 숫자) 생성
+                for (let i = 0; i < 7; i++) {
+                    const d = new Date(currentDate);
+                    weekDates.push(d);
+
+                    const bgCell = document.createElement('div');
+                    bgCell.className = 'day-cell-bg';
+                    
+                    // 날짜 스타일링
+                    if (d.getMonth() + 1 !== month) bgCell.classList.add('other-month');
+                    if (d.getDay() === 0) bgCell.classList.add('sun');
+                    if (d.getDay() === 6) bgCell.classList.add('sat');
+                    
+                    // 오늘 날짜
+                    if (d.getFullYear() === todayObj.getFullYear() &&
+                        d.getMonth() === todayObj.getMonth() &&
+                        d.getDate() === todayObj.getDate()) {
+                        bgCell.classList.add('today');
+                    }
+
+                    const numSpan = document.createElement('span');
+                    numSpan.className = 'day-number';
+                    numSpan.innerText = d.getDate();
+                    
+                    bgCell.appendChild(numSpan);
+                    dayBgLayer.appendChild(bgCell);
+
+                    currentDate.setDate(currentDate.getDate() + 1); // 다음 날로
                 }
 
-                const dayNum = document.createElement('span');
-                dayNum.classList.add('day-number');
-                dayNum.innerText = rDay;
-                cell.appendChild(dayNum);
-
-                // [수정] 날짜 범위(Multi-day) 체크 및 렌더링
-                // 현재 렌더링 중인 날짜(renderDate)가 일정의 시작일과 종료일 사이에 있는지 확인
+                // ----------------------------------------------------
+                // 2. 이벤트 배치 (Packing Algorithm)
+                // ----------------------------------------------------
+                // 이번 주(weekDates[0] ~ weekDates[6])에 겹치는 이벤트 찾기
+                const weekStart = weekDates[0].getTime();
+                const weekEnd = weekDates[6].getTime(); // 시간은 자정 기준일 수 있으니 주의 (여기선 날짜 비교만 하면 됨)
                 
-                // 비교를 위해 시간 성분 제거 (자정 기준)
-                const currentRenderTime = new Date(rYear, rMonth - 1, rDay).getTime();
-
-                allEvents.forEach(evt => {
-                    // 날짜 문자열 파싱 (YYYY-MM-DD -> Date)
+                // 이벤트 필터링
+                let weekEvents = allEvents.filter(evt => {
                     const [sy, sm, sd] = evt.startDate.split('-').map(Number);
-                    const sTime = new Date(sy, sm - 1, sd).getTime();
-
+                    const sTime = new Date(sy, sm-1, sd).getTime();
                     const [ey, em, ed] = evt.endDate.split('-').map(Number);
-                    const eTime = new Date(ey, em - 1, ed).getTime();
+                    const eTime = new Date(ey, em-1, ed).getTime();
 
-                    // 범위 체크
-                    if (currentRenderTime >= sTime && currentRenderTime <= eTime) {
-                        const evtDiv = document.createElement('div');
-                        evtDiv.innerText = evt.name;
-                        evtDiv.classList.add('event-item');
-                        
-                        // 타입별 색상
-                        if (evt.type.includes('비정기')) evtDiv.classList.add('irregular');
-                        else if (evt.type.includes('정기')) evtDiv.classList.add('regular');
-                        else evtDiv.classList.add('etc');
-                        
-                        // [추가] 클릭 시 모달 열기
-                        evtDiv.onclick = (e) => {
-                            e.stopPropagation(); // 셀 클릭 이벤트 방지
-                            openEventModal(evt);
-                        };
+                    // 겹치는지 확인: (이벤트시작 <= 주끝) && (이벤트끝 >= 주시작)
+                    return sTime <= weekEnd && eTime >= weekStart;
+                }).map(evt => {
+                    // 렌더링에 필요한 정보 계산
+                    const [sy, sm, sd] = evt.startDate.split('-').map(Number);
+                    const sDate = new Date(sy, sm-1, sd);
+                    const [ey, em, ed] = evt.endDate.split('-').map(Number);
+                    const eDate = new Date(ey, em-1, ed);
 
-                        cell.appendChild(evtDiv);
+                    // 이번 주에서의 시작 인덱스 (0~6)
+                    let startIndex = 0;
+                    if (sDate > weekDates[0]) {
+                        startIndex = Math.floor((sDate - weekDates[0]) / (1000 * 60 * 60 * 24));
+                    }
+                    
+                    // 이번 주에서의 종료 인덱스 (0~6)
+                    let endIndex = 6;
+                    if (eDate < weekDates[6]) {
+                        endIndex = 6 - Math.floor((weekDates[6] - eDate) / (1000 * 60 * 60 * 24));
+                    }
+
+                    // 기간 계산 (일수)
+                    const span = endIndex - startIndex + 1;
+
+                    return {
+                        original: evt,
+                        startIndex,
+                        endIndex,
+                        span,
+                        sDate,
+                        eDate,
+                        duration: eDate - sDate // 정렬용
+                    };
+                });
+
+                // 정렬: 긴 일정, 시작 빠른 일정 우선 (Tetris 패킹을 위해)
+                weekEvents.sort((a, b) => {
+                    if (a.startIndex !== b.startIndex) return a.startIndex - b.startIndex;
+                    return b.duration - a.duration;
+                });
+
+                // 패킹 (Vertical Slot Allocation)
+                // slots[i] = true/false (i번째 줄의 0~6 요일 점유 상태)
+                let slots = []; // slots[row][col]
+
+                weekEvents.forEach(evt => {
+                    let row = 0;
+                    while (true) {
+                        // 현재 row가 없으면 생성
+                        if (!slots[row]) slots[row] = Array(7).fill(false);
+                        
+                        // 해당 row의 구간이 비어있는지 확인
+                        let isClear = true;
+                        for (let d = evt.startIndex; d <= evt.endIndex; d++) {
+                            if (slots[row][d]) {
+                                isClear = false;
+                                break;
+                            }
+                        }
+
+                        if (isClear) {
+                            // 할당
+                            for (let d = evt.startIndex; d <= evt.endIndex; d++) {
+                                slots[row][d] = true;
+                            }
+                            evt.row = row; // 결정된 행 인덱스
+                            break;
+                        }
+                        row++;
                     }
                 });
 
-                grid.appendChild(cell);
+                // ----------------------------------------------------
+                // 3. 이벤트 DOM 생성
+                // ----------------------------------------------------
+                // 컨테이너 높이 조정 (이벤트가 많으면 늘어남)
+                // 기본 30px(날짜) + (행 개수 * 24px)
+                const maxRow = slots.length; 
+                if (maxRow > 0) {
+                    const minH = 100;
+                    const contentH = 30 + (maxRow * 24) + 10; // 여유분
+                    if (contentH > minH) {
+                        weekRow.style.minHeight = contentH + 'px';
+                    }
+                }
+
+                weekEvents.forEach(evt => {
+                    const bar = document.createElement('div');
+                    bar.innerText = evt.original.name;
+                    bar.className = 'event-bar';
+                    
+                    // 타입별 색상
+                    if (evt.original.type.includes('비정기')) bar.classList.add('irregular');
+                    else if (evt.original.type.includes('정기')) bar.classList.add('regular');
+                    else bar.classList.add('etc');
+
+                    // 위치 지정 (Absolute)
+                    bar.style.top = (evt.row * 24) + 'px'; // events-layer 내에서의 상대 top
+                    bar.style.left = (evt.startIndex * 14.2857) + '%';
+                    bar.style.width = (evt.span * 14.2857) + '%';
+
+                    // 연결된 느낌을 위한 둥근 모서리 처리
+                    // 시작일이 이번 주 시작일보다 전이면 왼쪽 직각
+                    if (evt.sDate < weekDates[0]) {
+                        bar.style.borderTopLeftRadius = '0';
+                        bar.style.borderBottomLeftRadius = '0';
+                        bar.style.borderLeft = 'none'; // 시각적 연결감
+                        bar.style.marginLeft = '-1px'; // 틈새 제거
+                    }
+                    // 종료일이 이번 주 종료일보다 후면 오른쪽 직각
+                    if (evt.eDate > weekDates[6]) {
+                        bar.style.borderTopRightRadius = '0';
+                        bar.style.borderBottomRightRadius = '0';
+                        bar.style.borderRight = 'none';
+                        bar.style.marginRight = '-1px';
+                    }
+
+                    // 클릭 이벤트 (상세 팝업)
+                    bar.onclick = (e) => {
+                        e.stopPropagation();
+                        openEventModal(evt.original);
+                    };
+
+                    eventsLayer.appendChild(bar);
+                });
+
+                // 조립
+                weekRow.appendChild(dayBgLayer);
+                weekRow.appendChild(eventsLayer);
+                calendarBody.appendChild(weekRow);
             }
         }
 
         // ============================================
-        // [추가] 이벤트 상세 모달 로직
+        // 상세 모달 로직
         // ============================================
         function openEventModal(evt) {
             const modal = document.getElementById('event-modal-overlay');
@@ -609,43 +733,34 @@
             const time = document.getElementById('modal-time');
             const loc = document.getElementById('modal-location');
 
-            // 1. 뱃지 설정
+            // 배지
             badge.innerText = evt.type || "기타";
-            badge.className = "event-modal-badge"; // 초기화
-            if (evt.type.includes('비정기')) badge.classList.add('irregular', 'event-item'); 
-            else if (evt.type.includes('정기')) badge.classList.add('regular', 'event-item'); 
-            else badge.classList.add('etc', 'event-item');
-            
-            // 배지는 event-item 스타일을 빌려와서 배경색을 맞춤 (CSS 수정 필요없이 재사용)
-            badge.style.cursor = "default"; 
+            badge.className = "event-modal-badge"; 
+            if (evt.type.includes('비정기')) {
+                badge.style.backgroundColor = "#e67e22";
+            } else if (evt.type.includes('정기')) {
+                badge.style.backgroundColor = "#27ae60";
+            } else {
+                badge.style.backgroundColor = "#7f8c8d";
+            }
 
-            // 2. 내용 설정
             title.innerText = evt.name;
             
-            // 날짜 포맷팅
-            const sDateStr = formatModalDate(evt.startDate);
-            const eDateStr = formatModalDate(evt.endDate);
-            
-            if (evt.startDate === evt.endDate) {
-                date.innerText = sDateStr; // 하루 일정
-            } else {
-                date.innerText = `${sDateStr} ~ ${eDateStr}`; // 기간 일정
-            }
+            // 날짜
+            const sStr = formatModalDate(evt.startDate);
+            const eStr = formatModalDate(evt.endDate);
+            if (evt.startDate === evt.endDate) date.innerText = sStr;
+            else date.innerText = `${sStr} ~ ${eStr}`;
 
-            // 시간 포맷팅
-            if (!evt.startTime && !evt.endTime) {
-                time.innerText = "시간 미정";
-            } else {
-                const sTime = evt.startTime || "";
-                const eTime = evt.endTime || "";
-                if(sTime && eTime) time.innerText = `${sTime} ~ ${eTime}`;
-                else if(sTime) time.innerText = sTime + " ~";
-                else time.innerText = "~ " + eTime;
-            }
+            // 시간
+            const sTime = evt.startTime || "";
+            const eTime = evt.endTime || "";
+            if(sTime && eTime) time.innerText = `${sTime} ~ ${eTime}`;
+            else if(sTime) time.innerText = sTime + " ~";
+            else if(eTime) time.innerText = "~ " + eTime;
+            else time.innerText = "시간 미정";
 
             loc.innerText = evt.location || "장소 미정";
-
-            // 3. 모달 표시
             modal.style.display = "flex";
         }
 
@@ -662,7 +777,7 @@
         }
 
         // ============================================
-        // 기타 유틸리티 (오늘 이동, 월 이동, 팝업 등)
+        // 기타 유틸리티
         // ============================================
         function goToToday() {
             currentYear = todayObj.getFullYear();
@@ -680,7 +795,6 @@
         function toggleDatePicker(e) {
             const picker = document.getElementById('date-picker');
             if(e) e.stopPropagation();
-
             if (picker.classList.contains('active')) {
                 closeDatePicker();
             } else {
