@@ -85,7 +85,7 @@
         section { padding: 3rem 2rem; max-width: 1000px; margin: 0 auto; }
         h3 { font-size: 1.8rem; color: #2c3e50; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
 
-        /* [수정됨] 달력 스타일 */
+        /* [5] 달력 스타일 */
         .calendar-container {
             width: 100%;
             background: #fff;
@@ -105,11 +105,9 @@
             border-bottom: 1px solid #eee;
             position: relative;
             gap: 10px;
-            /* [수정됨] 1. z-index 추가하여 드롭다운이 그리드 위에 오도록 설정 */
             z-index: 50; 
         }
         
-        /* [수정됨] 2. 오늘 버튼 오른쪽 정렬을 위한 마진 변경 */
         .btn-today-reset {
             padding: 5px 12px;
             background: white;
@@ -117,16 +115,12 @@
             border-radius: 4px;
             font-size: 0.9rem;
             cursor: pointer;
-            margin-left: auto; /* 왼쪽 마진을 auto로 설정하여 오른쪽 끝으로 밀어냄 */
+            margin-left: auto; 
             color: #555;
             transition: all 0.2s;
         }
-        .btn-today-reset:hover {
-            background-color: #eee;
-            color: #333;
-        }
+        .btn-today-reset:hover { background-color: #eee; color: #333; }
 
-        /* 중앙 타이틀 영역 (타이틀 + 화살표) */
         .calendar-nav-group {
             display: flex;
             align-items: center;
@@ -143,19 +137,14 @@
             cursor: pointer;
             position: relative;
         }
-        .calendar-title:hover {
-            text-decoration: underline;
-        }
+        .calendar-title:hover { text-decoration: underline; }
 
-        /* 날짜 선택 팝업 스타일 (네이버 캘린더 풍) */
+        /* 날짜 선택 팝업 */
         .date-picker {
             display: none; 
             position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 280px;
-            height: 240px;
+            top: 100%; left: 50%; transform: translateX(-50%);
+            width: 280px; height: 240px;
             background: white;
             border: 1px solid #ccc;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -167,60 +156,27 @@
         .date-picker.active { display: flex; }
 
         .picker-header {
-            padding: 10px 15px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            color: #333;
-            font-size: 0.95rem;
+            padding: 10px 15px; border-bottom: 1px solid #eee;
+            display: flex; justify-content: space-between; align-items: center;
+            font-weight: bold; color: #333; font-size: 0.95rem;
         }
-        .picker-close {
-            cursor: pointer;
-            color: #999;
-            font-size: 1.2rem;
-            line-height: 1;
-        }
+        .picker-close { cursor: pointer; color: #999; font-size: 1.2rem; line-height: 1; }
         .picker-close:hover { color: #333; }
 
-        .picker-body {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-        .picker-col {
-            flex: 1;
-            overflow-y: auto;
-            border-right: 1px solid #eee;
-        }
+        .picker-body { display: flex; flex: 1; overflow: hidden; }
+        .picker-col { flex: 1; overflow-y: auto; border-right: 1px solid #eee; }
         .picker-col:last-child { border-right: none; }
-
         .picker-col::-webkit-scrollbar { width: 6px; }
         .picker-col::-webkit-scrollbar-thumb { background-color: #ddd; border-radius: 3px; }
         .picker-col::-webkit-scrollbar-track { background-color: transparent; }
 
-        .picker-item {
-            padding: 8px 15px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            color: #555;
-        }
+        .picker-item { padding: 8px 15px; cursor: pointer; font-size: 0.9rem; color: #555; }
         .picker-item:hover { background-color: #f5f5f5; }
-        .picker-item.selected {
-            background-color: #f0f8ff; 
-            color: #ab3333;
-            font-weight: bold;
-        }
+        .picker-item.selected { background-color: #f0f8ff; color: #ab3333; font-weight: bold; }
 
         .calendar-nav-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #666;
-            transition: color 0.3s;
-            padding: 0 5px;
+            background: none; border: none; font-size: 1.5rem;
+            cursor: pointer; color: #666; transition: color 0.3s; padding: 0 5px;
         }
         .calendar-nav-btn:hover { color: #ab3333; }
 
@@ -232,66 +188,89 @@
         }
 
         .weekday {
-            text-align: center;
-            padding: 10px 0;
-            font-weight: bold;
-            background-color: #fff;
-            border-bottom: 1px solid #eee;
-            color: #555;
+            text-align: center; padding: 10px 0; font-weight: bold;
+            background-color: #fff; border-bottom: 1px solid #eee; color: #555;
         }
         .weekday.sun { color: #e74c3c; }
         .weekday.sat { color: #3498db; }
 
         .day-cell {
             min-height: 100px; 
-            border-bottom: 1px solid #eee;
-            border-right: 1px solid #eee;
-            padding: 5px;
-            position: relative;
-            background-color: #fff;
-            overflow: hidden; 
+            border-bottom: 1px solid #eee; border-right: 1px solid #eee;
+            padding: 5px; position: relative;
+            background-color: #fff; overflow: hidden; 
         }
         .day-cell:nth-child(7n) { border-right: none; }
         
         .day-number {
-            display: block;
-            text-align: right;
-            font-size: 0.9rem;
-            color: #333;
-            margin-bottom: 5px;
+            display: block; text-align: right; font-size: 0.9rem;
+            color: #333; margin-bottom: 5px;
         }
         
         .day-cell.sun .day-number { color: #e74c3c; }
         .day-cell.sat .day-number { color: #3498db; }
-
         .day-cell.other-month { background-color: #f7f7f7; }
         .day-cell.other-month .day-number { color: #bbb; }
         .day-cell.other-month.sun .day-number { color: #f5a9a9; }
         .day-cell.other-month.sat .day-number { color: #a9d0f5; }
 
         .day-cell.today { background-color: #fff5f5; }
-        .day-cell.today .day-number { 
-            font-weight: bold; color: #ab3333; 
-            text-decoration: underline;
-        }
+        .day-cell.today .day-number { font-weight: bold; color: #ab3333; text-decoration: underline; }
 
         .event-item {
             display: block;
-            background-color: #ab3333;
-            color: white;
-            font-size: 0.75rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-bottom: 3px;
-            cursor: default;
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis;
+            background-color: #ab3333; color: white;
+            font-size: 0.75rem; padding: 2px 6px;
+            border-radius: 4px; margin-bottom: 3px;
+            cursor: pointer; /* 클릭 가능 표시 */
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
             max-width: 100%;
+            transition: opacity 0.2s;
         }
+        .event-item:hover { opacity: 0.8; }
         .event-item.irregular { background-color: #e67e22; }
         .event-item.regular { background-color: #27ae60; }
         .event-item.etc { background-color: #7f8c8d; }
+
+        /* [추가] 일정 상세 팝업 (모달) 스타일 */
+        .event-modal-overlay {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 3000;
+            justify-content: center; align-items: center;
+        }
+        .event-modal {
+            background: white;
+            width: 350px; max-width: 90%;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .event-modal-close {
+            position: absolute; top: 15px; right: 15px;
+            font-size: 1.5rem; color: #999; cursor: pointer;
+            line-height: 1;
+        }
+        .event-modal-close:hover { color: #333; }
+
+        .event-modal-badge {
+            display: inline-block; padding: 5px 10px;
+            border-radius: 20px; font-size: 0.8rem; font-weight: bold; color: white;
+            margin-bottom: 10px;
+        }
+        .event-modal-title {
+            font-size: 1.3rem; font-weight: bold; margin-bottom: 15px;
+            color: #333; word-break: keep-all;
+        }
+        .event-modal-info li {
+            list-style: none; margin-bottom: 8px; font-size: 0.95rem; color: #555;
+        }
+        .event-modal-info strong { color: #333; margin-right: 5px; }
 
         @media (max-width: 600px) {
             .day-cell { min-height: 80px; font-size: 0.8rem; }
@@ -316,7 +295,7 @@
             header { justify-content: flex-start; } 
         }
 
-        /* 팝업 */
+        /* 팝업 (새해 인사 등) */
         .popup-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.6); z-index: 9999;
@@ -388,10 +367,8 @@
                             <span class="picker-close" onclick="closeDatePicker()">&times;</span>
                         </div>
                         <div class="picker-body">
-                            <div class="picker-col" id="picker-years">
-                                </div>
-                            <div class="picker-col" id="picker-months">
-                                </div>
+                            <div class="picker-col" id="picker-years"></div>
+                            <div class="picker-col" id="picker-months"></div>
                         </div>
                     </div>
                 </div>
@@ -445,6 +422,19 @@
         <p>&copy; 2026 PAINS. All rights reserved.</p>
     </footer>
 
+    <div id="event-modal-overlay" class="event-modal-overlay" onclick="closeEventModal()">
+        <div class="event-modal" onclick="event.stopPropagation()">
+            <span class="event-modal-close" onclick="closeEventModal()">&times;</span>
+            <div id="modal-badge" class="event-modal-badge"></div>
+            <div id="modal-title" class="event-modal-title"></div>
+            <ul class="event-modal-info">
+                <li><strong>📅 일시:</strong> <span id="modal-date"></span></li>
+                <li><strong>⏰ 시각:</strong> <span id="modal-time"></span></li>
+                <li><strong>📍 장소:</strong> <span id="modal-location"></span></li>
+            </ul>
+        </div>
+    </div>
+
     <div id="img-popup" class="popup-overlay">
         <div class="popup-content">
             <div class="popup-img-box">
@@ -465,36 +455,28 @@
         loadSidebar('home');
 
         // ============================================
-        // 팝업 로직
+        // 팝업 로직 (새해 인사)
         // ============================================
         document.addEventListener("DOMContentLoaded", function() {
             const popup = document.getElementById('img-popup');
             const hideDate = localStorage.getItem('pains_popup_hide_date');
             const today = new Date().toDateString();
-
-            if (hideDate !== today) {
-                popup.style.display = "flex";
-            }
+            if (hideDate !== today) { popup.style.display = "flex"; }
         });
-
-        function closePopup() {
-            document.getElementById('img-popup').style.display = "none";
-        }
+        function closePopup() { document.getElementById('img-popup').style.display = "none"; }
         function closePopupToday() {
             localStorage.setItem('pains_popup_hide_date', new Date().toDateString());
             closePopup();
         }
 
         // ============================================
-        // 달력 및 팝업 제어 로직
+        // [수정됨] 달력 로직 (새로운 열 구조 및 기능 반영)
         // ============================================
         
         let allEvents = []; 
         let currentYear = new Date().getFullYear();
         let currentMonth = new Date().getMonth() + 1; 
         const todayObj = new Date();
-
-        // 선택 팝업용 임시 변수
         let pickerSelectedYear = currentYear;
 
         const GOOGLESHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBnuUvyE2CDV-hG26xCVdnt88JhQgtusdEndJwTzaI62TXPdWTNldVvua9RLkXj1s34qiM0CEcNvbr/pub?gid=305458048&single=true&output=csv";
@@ -503,18 +485,21 @@
             try {
                 const response = await fetch(GOOGLESHEET_URL);
                 const data = await response.text();
-                
                 const rows = data.split("\n").map(row => row.trim()).filter(row => row.length > 0);
                 
+                // [수정] 7개 열 데이터 파싱 (A~G)
+                // A:Name, B:Start Date, C:Start Time, D:Finish Date, E:Finish Time, F:Location, G:Type
                 allEvents = rows.slice(1).map(row => {
                     const cols = row.split(",");
-                    if (cols.length < 5) return null;
+                    if (cols.length < 7) return null; // 열 개수 확인
                     return {
                         name: cols[0].trim(),
-                        date: cols[1].trim(), // YYYY-MM-DD
-                        time: cols[2].trim(),
-                        location: cols[3].trim(),
-                        type: cols[4].trim()
+                        startDate: cols[1].trim(), // YYYY-MM-DD
+                        startTime: cols[2].trim(),
+                        endDate: cols[3].trim() || cols[1].trim(), // 종료일 없으면 시작일과 동일
+                        endTime: cols[4].trim(),
+                        location: cols[5].trim(),
+                        type: cols[6].trim()
                     };
                 }).filter(event => event !== null); 
 
@@ -558,12 +543,11 @@
                 const cell = document.createElement('div');
                 cell.classList.add('day-cell');
 
-                if (rMonth !== month) {
-                    cell.classList.add('other-month');
-                }
+                if (rMonth !== month) cell.classList.add('other-month');
                 if (rDayOfWeek === 0) cell.classList.add('sun');
                 if (rDayOfWeek === 6) cell.classList.add('sat');
 
+                // 오늘 날짜
                 if (rYear === todayObj.getFullYear() && 
                     (rMonth - 1) === todayObj.getMonth() && 
                     rDay === todayObj.getDate()) {
@@ -575,27 +559,111 @@
                 dayNum.innerText = rDay;
                 cell.appendChild(dayNum);
 
-                const dateStr = `${rYear}-${String(rMonth).padStart(2,'0')}-${String(rDay).padStart(2,'0')}`;
+                // [수정] 날짜 범위(Multi-day) 체크 및 렌더링
+                // 현재 렌더링 중인 날짜(renderDate)가 일정의 시작일과 종료일 사이에 있는지 확인
                 
-                const dayEvents = allEvents.filter(e => e.date === dateStr);
-                dayEvents.forEach(evt => {
-                    const evtDiv = document.createElement('div');
-                    evtDiv.innerText = evt.name;
-                    evtDiv.classList.add('event-item');
-                    
-                    if (evt.type.includes('비정기')) evtDiv.classList.add('irregular');
-                    else if (evt.type.includes('정기')) evtDiv.classList.add('regular');
-                    else evtDiv.classList.add('etc');
-                    
-                    evtDiv.title = evt.name; 
-                    cell.appendChild(evtDiv);
+                // 비교를 위해 시간 성분 제거 (자정 기준)
+                const currentRenderTime = new Date(rYear, rMonth - 1, rDay).getTime();
+
+                allEvents.forEach(evt => {
+                    // 날짜 문자열 파싱 (YYYY-MM-DD -> Date)
+                    const [sy, sm, sd] = evt.startDate.split('-').map(Number);
+                    const sTime = new Date(sy, sm - 1, sd).getTime();
+
+                    const [ey, em, ed] = evt.endDate.split('-').map(Number);
+                    const eTime = new Date(ey, em - 1, ed).getTime();
+
+                    // 범위 체크
+                    if (currentRenderTime >= sTime && currentRenderTime <= eTime) {
+                        const evtDiv = document.createElement('div');
+                        evtDiv.innerText = evt.name;
+                        evtDiv.classList.add('event-item');
+                        
+                        // 타입별 색상
+                        if (evt.type.includes('비정기')) evtDiv.classList.add('irregular');
+                        else if (evt.type.includes('정기')) evtDiv.classList.add('regular');
+                        else evtDiv.classList.add('etc');
+                        
+                        // [추가] 클릭 시 모달 열기
+                        evtDiv.onclick = (e) => {
+                            e.stopPropagation(); // 셀 클릭 이벤트 방지
+                            openEventModal(evt);
+                        };
+
+                        cell.appendChild(evtDiv);
+                    }
                 });
 
                 grid.appendChild(cell);
             }
         }
 
-        // '오늘'로 이동
+        // ============================================
+        // [추가] 이벤트 상세 모달 로직
+        // ============================================
+        function openEventModal(evt) {
+            const modal = document.getElementById('event-modal-overlay');
+            const badge = document.getElementById('modal-badge');
+            const title = document.getElementById('modal-title');
+            const date = document.getElementById('modal-date');
+            const time = document.getElementById('modal-time');
+            const loc = document.getElementById('modal-location');
+
+            // 1. 뱃지 설정
+            badge.innerText = evt.type || "기타";
+            badge.className = "event-modal-badge"; // 초기화
+            if (evt.type.includes('비정기')) badge.classList.add('irregular', 'event-item'); 
+            else if (evt.type.includes('정기')) badge.classList.add('regular', 'event-item'); 
+            else badge.classList.add('etc', 'event-item');
+            
+            // 배지는 event-item 스타일을 빌려와서 배경색을 맞춤 (CSS 수정 필요없이 재사용)
+            badge.style.cursor = "default"; 
+
+            // 2. 내용 설정
+            title.innerText = evt.name;
+            
+            // 날짜 포맷팅
+            const sDateStr = formatModalDate(evt.startDate);
+            const eDateStr = formatModalDate(evt.endDate);
+            
+            if (evt.startDate === evt.endDate) {
+                date.innerText = sDateStr; // 하루 일정
+            } else {
+                date.innerText = `${sDateStr} ~ ${eDateStr}`; // 기간 일정
+            }
+
+            // 시간 포맷팅
+            if (!evt.startTime && !evt.endTime) {
+                time.innerText = "시간 미정";
+            } else {
+                const sTime = evt.startTime || "";
+                const eTime = evt.endTime || "";
+                if(sTime && eTime) time.innerText = `${sTime} ~ ${eTime}`;
+                else if(sTime) time.innerText = sTime + " ~";
+                else time.innerText = "~ " + eTime;
+            }
+
+            loc.innerText = evt.location || "장소 미정";
+
+            // 3. 모달 표시
+            modal.style.display = "flex";
+        }
+
+        function closeEventModal() {
+            document.getElementById('event-modal-overlay').style.display = "none";
+        }
+
+        function formatModalDate(dateStr) {
+            if (!dateStr) return "";
+            const [y, m, d] = dateStr.split('-');
+            const date = new Date(y, m - 1, d);
+            const days = ['일', '월', '화', '수', '목', '금', '토'];
+            return `${y}. ${m}. ${d}. (${days[date.getDay()]})`;
+        }
+
+        // ============================================
+        // 기타 유틸리티 (오늘 이동, 월 이동, 팝업 등)
+        // ============================================
         function goToToday() {
             currentYear = todayObj.getFullYear();
             currentMonth = todayObj.getMonth() + 1;
@@ -604,20 +672,11 @@
 
         function changeMonth(step) {
             currentMonth += step;
-            if (currentMonth < 1) {
-                currentMonth = 12;
-                currentYear--;
-            } else if (currentMonth > 12) {
-                currentMonth = 1;
-                currentYear++;
-            }
+            if (currentMonth < 1) { currentMonth = 12; currentYear--; } 
+            else if (currentMonth > 12) { currentMonth = 1; currentYear++; }
             renderCalendar(currentYear, currentMonth);
         }
 
-        // ============================================
-        // 날짜 선택 팝업 (네이버 스타일) 제어
-        // ============================================
-        
         function toggleDatePicker(e) {
             const picker = document.getElementById('date-picker');
             if(e) e.stopPropagation();
@@ -650,26 +709,15 @@
             const yearCol = document.getElementById('picker-years');
             const monthCol = document.getElementById('picker-months');
             
-            yearCol.innerHTML = '';
-            monthCol.innerHTML = '';
-
-            const startYear = 2020;
-            const endYear = 2030;
+            yearCol.innerHTML = ''; monthCol.innerHTML = '';
             
-            for (let y = startYear; y <= endYear; y++) {
+            for (let y = 2020; y <= 2030; y++) {
                 const div = document.createElement('div');
-                div.className = 'picker-item';
-                div.innerText = y + '년';
+                div.className = 'picker-item'; div.innerText = y + '년';
                 if (y === pickerSelectedYear) div.classList.add('selected');
-                
-                div.onclick = (e) => {
-                    e.stopPropagation();
-                    pickerSelectedYear = y; 
-                    renderPickerContent(); 
-                };
+                div.onclick = (e) => { e.stopPropagation(); pickerSelectedYear = y; renderPickerContent(); };
                 yearCol.appendChild(div);
             }
-
             setTimeout(() => {
                 const selectedEl = yearCol.querySelector('.selected');
                 if(selectedEl) selectedEl.scrollIntoView({block: "center"});
@@ -677,19 +725,9 @@
 
             for (let m = 1; m <= 12; m++) {
                 const div = document.createElement('div');
-                div.className = 'picker-item';
-                div.innerText = m + '월';
-                if (pickerSelectedYear === currentYear && m === currentMonth) {
-                   div.classList.add('selected');
-                }
-
-                div.onclick = (e) => {
-                    e.stopPropagation();
-                    currentYear = pickerSelectedYear;
-                    currentMonth = m;
-                    renderCalendar(currentYear, currentMonth);
-                    closeDatePicker();
-                };
+                div.className = 'picker-item'; div.innerText = m + '월';
+                if (pickerSelectedYear === currentYear && m === currentMonth) div.classList.add('selected');
+                div.onclick = (e) => { e.stopPropagation(); currentYear = pickerSelectedYear; currentMonth = m; renderCalendar(currentYear, currentMonth); closeDatePicker(); };
                 monthCol.appendChild(div);
             }
         }
