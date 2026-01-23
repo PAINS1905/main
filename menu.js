@@ -11,6 +11,7 @@ function loadSidebar(currentPage) {
         <div class="submenu" id="members-submenu">
             <a href="members.html" id="link-members">운영진</a>
             <a href="attendance.html" id="link-attendance">출석 현황 확인</a>
+            <a href="fee.html" id="link-fee">회비 내역 조회</a>
         </div>
 
         <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('support-submenu', 'support-arrow')">
