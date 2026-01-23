@@ -151,7 +151,7 @@
             <h3>📝 결석계 제출</h3>
             <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">
                 <strong>3주 내 예정된 정기활동</strong>에 대해서만 제출 가능합니다.<br>
-                21일(3주) 전 자정부터 제출이 가능하며, 활동 당일에는 제출이 불가합니다.<br>
+                21일 전부터 활동 전날까지만 제출이 가능하며, 당일에는 제출이 불가합니다.<br>
                 결석계 제출 현황이나, 정상 제출 여부에 대한 자세한 사항은 운영진에게 문의바랍니다.
             </p>
 
@@ -235,7 +235,7 @@
         }
 
         // ============================================
-        // 2. 일정 불러오기
+        // 2. 일정 불러오기 (수정됨: G열 구조 및 날짜 제한 반영)
         // ============================================
         async function loadUpcomingEvents() {
             const container = document.getElementById('event-list-container');
@@ -245,41 +245,53 @@
                 const data = await response.text();
                 const rows = data.split("\n").map(row => row.trim()).filter(row => row.length > 0);
                 
+                // 오늘 날짜 구하기 (KST 기준, 시분초 0으로 초기화)
                 const now = new Date();
                 const kstOffset = 9 * 60 * 60 * 1000;
-                const today = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + kstOffset);
+                // 로컬 시간 문제 방지를 위해, 현재 클라이언트 시간에 offset 보정 (필요시)
+                // 여기서는 안전하게 브라우저 로컬 시간을 '오늘 자정'으로 맞춥니다.
+                const today = new Date();
                 today.setHours(0,0,0,0); 
                 
-                // [수정] 7일 -> 21일로 범위 확대
-                const nextWeek = new Date(today);
-                nextWeek.setDate(today.getDate() + 21); 
-
                 let availableEvents = [];
 
+                // CSV 데이터 파싱 (1행부터 시작)
                 for(let i=1; i<rows.length; i++) {
                     const cols = rows[i].split(",");
-                    if(cols.length < 5) continue;
+                    if(cols.length < 7) continue; // 열 개수 확인 (A~G 최소 7개)
 
+                    // A:Name, B:Start Date, C:Start Time, ... , G:Type
                     const eventName = cols[0].trim();
-                    const dateStr = cols[1].trim(); 
-                    const type = cols[4].trim(); 
+                    const dateStr = cols[1].trim(); // Start Date (YYYY-MM-DD)
+                    const type = cols[6].trim();    // Type은 G열 (인덱스 6)
 
-                    const eventDate = new Date(dateStr);
-                    eventDate.setHours(0,0,0,0); 
+                    // 날짜 파싱 (YYYY-MM-DD -> Date 객체)
+                    const [y, m, d] = dateStr.split('-').map(Number);
+                    const eventDate = new Date(y, m - 1, d); // 월은 0부터 시작
+                    eventDate.setHours(0,0,0,0);
                     
-                    if(type.includes("정기") && eventDate > today && eventDate <= nextWeek) {
+                    // 날짜 차이 계산 (일 단위)
+                    const diffTime = eventDate.getTime() - today.getTime();
+                    const diffDays = Math.round(diffTime / (1000 * 3600 * 24));
+
+                    // 조건 확인:
+                    // 1. "정기" 활동일 것
+                    // 2. 활동 당일(diffDays=0) 제출 불가 -> diffDays >= 1
+                    // 3. 21일 전부터 가능 -> diffDays <= 21
+                    if(type.includes("정기") && diffDays >= 1 && diffDays <= 21) {
                         availableEvents.push({ date: eventDate, dateStr: dateStr, name: eventName });
                     }
                 }
 
+                // 날짜순 정렬
                 availableEvents.sort((a, b) => a.date - b.date);
 
                 if(availableEvents.length === 0) {
-                    // [수정] 안내 텍스트 변경
                     container.innerHTML = '<div class="no-event">제출 가능한 정기활동이 없습니다.<br>(활동 21일 전부터 전날까지만 가능합니다)</div>';
                 } else {
                     let html = "";
                     availableEvents.forEach(evt => {
+                        // 값 형식: "일정이름 (YYYY-MM-DD)" -> 제출 로직에서 파싱함
                         const valueStr = `${evt.name} (${evt.dateStr})`;
                         html += `
                             <label class="event-item">
@@ -389,7 +401,3 @@
 
 </body>
 </html>
-
-
-
-
