@@ -229,10 +229,10 @@
         }
         .event-bar:hover { opacity: 0.9; transform: scale(1.01); z-index: 10; }
         
-        /* [수정] 색상 클래스 정의 */
+        /* 색상 클래스 정의 */
         .event-bar.holiday { background-color: #e74c3c; } /* 공휴일 (붉은색) */
         .event-bar.academic { background-color: #3498db; } /* 학사일정 (푸른색) */
-        .event-bar.recruiting { background-color: #0abde3; } /* 리크루팅 (하늘색 - Cyan 계열) */
+        .event-bar.recruiting { background-color: #0abde3; } /* 리크루팅 (하늘색) */
         .event-bar.irregular { background-color: #e67e22; } /* 비정기활동 (주황색) */
         .event-bar.regular { background-color: #27ae60; } /* 정기활동 (초록색) */
         .event-bar.etc { background-color: #7f8c8d; } /* 그 외 (회색) */
@@ -285,21 +285,20 @@
         }
         .event-modal-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; color: #333; word-break: keep-all; }
         
-        /* [수정됨] 상세 정보 리스트 스타일 (Flexbox 및 너비 조정) */
+        /* 상세 정보 리스트 스타일 */
         .event-modal-info { padding: 0; margin: 0; }
         .event-modal-info li { 
             list-style: none; margin-bottom: 8px; font-size: 0.95rem; color: #555;
-            display: flex; /* Flexbox 활성화 (좌우 배치) */
+            display: flex; /* Flexbox 활성화 */
             align-items: flex-start; /* 상단 정렬 */
         }
         .event-modal-info strong { 
             color: #333; 
             margin-right: 10px; 
             white-space: nowrap; 
-            width: 75px; /* 이모지 포함한 라벨의 넉넉한 너비 확보 (겹침 방지) */
-            flex-shrink: 0; /* 라벨 너비 고정 */
+            width: 75px; 
+            flex-shrink: 0;
         }
-        /* span(내용)은 자동으로 남은 공간 차지하며 줄바꿈 시 들여쓰기 효과 */
 
         /* 팝업 (새해 인사) */
         .popup-overlay {
@@ -435,7 +434,7 @@
             <ul class="event-modal-info">
                 <li id="li-date"><strong>📅 일시:</strong> <span id="modal-date"></span></li>
                 <li id="li-time"><strong>⏰ 시각:</strong> <span id="modal-time"></span></li>
-                <li><strong>📍 장소:</strong> <span id="modal-location"></span></li>
+                <li id="li-location"><strong>📍 장소:</strong> <span id="modal-location"></span></li>
             </ul>
         </div>
     </div>
@@ -661,7 +660,7 @@
                     bar.innerText = evt.original.name;
                     bar.className = 'event-bar';
                     
-                    // [수정] 달력 바 색상 조건 ('리크루팅' 추가)
+                    // 색상 조건
                     if (evt.original.type.includes('공휴일')) bar.classList.add('holiday');
                     else if (evt.original.type.includes('학사일정')) bar.classList.add('academic');
                     else if (evt.original.type.includes('리크루팅')) bar.classList.add('recruiting');
@@ -726,8 +725,9 @@
             const loc = document.getElementById('modal-location');
             const liDate = document.getElementById('li-date');
             const liTime = document.getElementById('li-time');
+            const liLocation = document.getElementById('li-location'); // [수정] 장소 li 요소 가져오기
 
-            // 1. 뱃지 [수정] 색상 조건 추가 ('리크루팅' 추가)
+            // 1. 뱃지
             badge.innerText = evt.type || "기타";
             badge.className = "event-modal-badge"; 
             
@@ -750,33 +750,47 @@
             const isInvalidTime = (t) => !t || ["TBC", "TBD", "미정", "TBA"].includes(t.toUpperCase());
             const hasValidTime = !isInvalidTime(sTime) || !isInvalidTime(eTime);
 
-            liTime.style.display = "";
+            // [수정] 기본적으로 시간 행은 숨김 (필요할 때만 킴)
+            liTime.style.display = "none"; 
 
             if (evt.startDate !== evt.endDate) {
                 // [2일 이상 일정]
-                liTime.style.display = "none"; 
+                // 시간 행은 숨김 상태 유지
 
+                // [수정] 날짜 포맷: 시작일 - (줄바꿈) 종료일
+                let startPart = sDateStr;
+                let endPart = eDateStr;
+
+                // 시간이 유효하면 날짜 뒤에 시간도 붙임
                 if (hasValidTime) {
-                    const startPart = `${sDateStr} ${isInvalidTime(sTime) ? '' : sTime}`;
-                    const endPart = `${eDateStr} ${isInvalidTime(eTime) ? '' : eTime}`;
-                    date.innerHTML = `<span style="display:inline-block">${startPart} -</span> <span style="display:inline-block">${endPart}</span>`;
-                } else {
-                    date.innerText = `${sDateStr} - ${eDateStr}`;
+                     startPart += ` ${isInvalidTime(sTime) ? '' : sTime}`;
+                     endPart += ` ${isInvalidTime(eTime) ? '' : eTime}`;
                 }
+
+                // 하이픈 뒤에 <br> 추가
+                date.innerHTML = `${startPart} -<br>${endPart}`;
+
             } else {
                 // [1일 일정]
                 date.innerText = sDateStr;
+
+                // [수정] 시간이 있을 때만 시간 행 표시
                 if (hasValidTime) {
+                    liTime.style.display = "flex"; // Show
                     if(sTime && eTime) time.innerText = `${sTime} ~ ${eTime}`;
                     else if(sTime) time.innerText = sTime + " ~";
                     else time.innerText = "~ " + eTime;
-                } else {
-                    time.innerText = "시간 미정";
                 }
+                // 시간이 없으면 liTime.style.display = "none" 상태 유지
             }
 
-            // 4. 장소
-            loc.innerText = evt.location || "장소 미정";
+            // 4. 장소 처리 [수정] 데이터 없으면 행 숨김
+            if (evt.location && evt.location.trim() !== "") {
+                liLocation.style.display = "flex";
+                loc.innerText = evt.location;
+            } else {
+                liLocation.style.display = "none";
+            }
             
             modal.style.display = "flex";
         }
