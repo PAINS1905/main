@@ -203,6 +203,9 @@
         .day-cell-bg.today { background-color: #fff5f5; }
         .day-cell-bg.today .day-number { font-weight: bold; color: #ab3333; text-decoration: underline; }
 
+        /* 공휴일 스타일 (일요일과 동일한 빨간색, 우선순위 높음) */
+        .day-cell-bg.holiday .day-number { color: #e74c3c !important; }
+
         /* 일정 표시 레이어 */
         .events-layer {
             position: relative;
@@ -230,12 +233,12 @@
         .event-bar:hover { opacity: 0.9; transform: scale(1.01); z-index: 10; }
         
         /* 색상 클래스 정의 */
-        .event-bar.holiday { background-color: #e74c3c; } /* 공휴일 (붉은색) */
-        .event-bar.academic { background-color: #3498db; } /* 학사일정 (푸른색) */
-        .event-bar.recruiting { background-color: #0abde3; } /* 리크루팅 (하늘색) */
-        .event-bar.irregular { background-color: #e67e22; } /* 비정기활동 (주황색) */
-        .event-bar.regular { background-color: #27ae60; } /* 정기활동 (초록색) */
-        .event-bar.etc { background-color: #7f8c8d; } /* 그 외 (회색) */
+        .event-bar.holiday { background-color: #e74c3c; }
+        .event-bar.academic { background-color: #3498db; }
+        .event-bar.recruiting { background-color: #0abde3; }
+        .event-bar.irregular { background-color: #e67e22; }
+        .event-bar.regular { background-color: #27ae60; }
+        .event-bar.etc { background-color: #7f8c8d; }
 
         @media (max-width: 600px) {
             .week-row { min-height: 80px; }
@@ -474,6 +477,128 @@
         }
 
         // ============================================
+        // 공휴일 계산 로직 (2020~2040 데이터 확장)
+        // ============================================
+        function getKoreanHolidays(year) {
+            const holidays = new Set();
+            
+            // 1. 양력 고정 공휴일
+            const solarHolidays = [
+                '01-01', '03-01', '05-05', '06-06', '08-15', '10-03', '10-09', '12-25'
+            ];
+            solarHolidays.forEach(date => holidays.add(`${year}-${date}`));
+
+            // 2. 음력 명절 및 부처님오신날 (양력 변환 데이터: 2020~2040)
+            const lunarMap = {
+                2020: { seol: '01-25', buddha: '04-30', chuseok: '10-01' },
+                2021: { seol: '02-12', buddha: '05-19', chuseok: '09-21' },
+                2022: { seol: '02-01', buddha: '05-08', chuseok: '09-10' },
+                2023: { seol: '01-22', buddha: '05-27', chuseok: '09-29' },
+                2024: { seol: '02-10', buddha: '05-15', chuseok: '09-17' },
+                2025: { seol: '01-29', buddha: '05-05', chuseok: '10-06' },
+                2026: { seol: '02-17', buddha: '05-24', chuseok: '09-25' },
+                2027: { seol: '02-07', buddha: '05-13', chuseok: '09-15' },
+                2028: { seol: '01-27', buddha: '05-02', chuseok: '10-03' },
+                2029: { seol: '02-13', buddha: '05-20', chuseok: '09-22' },
+                2030: { seol: '02-03', buddha: '05-09', chuseok: '09-12' },
+                2031: { seol: '01-23', buddha: '05-28', chuseok: '10-01' },
+                2032: { seol: '02-11', buddha: '05-16', chuseok: '09-19' },
+                2033: { seol: '01-31', buddha: '05-06', chuseok: '10-07' },
+                2034: { seol: '02-19', buddha: '05-25', chuseok: '09-27' },
+                2035: { seol: '02-08', buddha: '05-15', chuseok: '09-16' },
+                2036: { seol: '01-28', buddha: '05-02', chuseok: '10-04' },
+                2037: { seol: '02-15', buddha: '05-22', chuseok: '09-24' },
+                2038: { seol: '02-04', buddha: '05-11', chuseok: '09-13' },
+                2039: { seol: '01-24', buddha: '05-02', chuseok: '10-02' },
+                2040: { seol: '02-12', buddha: '05-18', chuseok: '09-21' }
+            };
+
+            if (lunarMap[year]) {
+                const map = lunarMap[year];
+                
+                // 설날 (전날, 당일, 다음날)
+                const seol = new Date(`${year}-${map.seol}`);
+                [ -1, 0, 1 ].forEach(offset => {
+                    const d = new Date(seol);
+                    d.setDate(d.getDate() + offset);
+                    holidays.add(getFmtDate(d));
+                });
+
+                // 부처님오신날
+                holidays.add(`${year}-${map.buddha}`);
+
+                // 추석 (전날, 당일, 다음날)
+                const chuseok = new Date(`${year}-${map.chuseok}`);
+                [ -1, 0, 1 ].forEach(offset => {
+                    const d = new Date(chuseok);
+                    d.setDate(d.getDate() + offset);
+                    holidays.add(getFmtDate(d));
+                });
+            }
+
+            // 3. 대체공휴일 계산
+            let sortedHolidays = Array.from(holidays).sort();
+            
+            sortedHolidays.forEach(dateStr => {
+                const dateParts = dateStr.split('-');
+                const md = `${dateParts[1]}-${dateParts[2]}`; // MM-DD
+                const dateObj = new Date(dateStr);
+                const day = dateObj.getDay(); // 0:일, 6:토
+
+                let isSubstituteTarget = false;
+                
+                // 그룹 A: 토/일 겹치면 대체 (어린이날, 3.1, 8.15, 10.3, 10.9, 12.25, 부처님오신날)
+                const groupA = ['03-01', '05-05', '08-15', '10-03', '10-09', '12-25'];
+                if (lunarMap[year] && md === lunarMap[year].buddha) isSubstituteTarget = true;
+                if (groupA.includes(md)) isSubstituteTarget = true;
+
+                if (isSubstituteTarget && (day === 0 || day === 6)) {
+                    addSubstitute(dateObj, holidays);
+                }
+
+                // 그룹 B: 일요일만 겹치면 대체 (설날, 추석 연휴)
+                if (lunarMap[year]) {
+                    const seolMain = new Date(`${year}-${lunarMap[year].seol}`);
+                    const chuseokMain = new Date(`${year}-${lunarMap[year].chuseok}`);
+                    
+                    if (isNearDate(dateObj, seolMain) || isNearDate(dateObj, chuseokMain)) {
+                        if (day === 0) { 
+                            addSubstitute(dateObj, holidays);
+                        }
+                    }
+                }
+            });
+
+            return holidays;
+        }
+
+        // 날짜가 기준일의 전후 1일 범위 내인지 확인 (설/추석 연휴 판별용)
+        function isNearDate(target, center) {
+            const diff = (target - center) / (1000 * 60 * 60 * 24);
+            return Math.abs(diff) <= 1.1; // 오차 감안
+        }
+
+        // 대체공휴일 추가 함수 (다음 비공휴일 찾기)
+        function addSubstitute(fromDate, holidaySet) {
+            let nextDate = new Date(fromDate);
+            while (true) {
+                nextDate.setDate(nextDate.getDate() + 1);
+                const nextStr = getFmtDate(nextDate);
+                if (!holidaySet.has(nextStr)) {
+                    holidaySet.add(nextStr);
+                    break;
+                }
+            }
+        }
+
+        function getFmtDate(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        // ============================================
         // 달력 로직
         // ============================================
         
@@ -523,6 +648,9 @@
             const oldRows = calendarBody.querySelectorAll('.week-row');
             oldRows.forEach(r => r.remove());
 
+            // [수정] 해당 연도의 공휴일 목록 가져오기
+            const holidaySet = getKoreanHolidays(year);
+
             const firstDateOfMonth = new Date(year, month - 1, 1);
             const lastDateOfMonth = new Date(year, month, 0);
             
@@ -559,6 +687,12 @@
                     if (d.getDay() === 0) bgCell.classList.add('sun');
                     if (d.getDay() === 6) bgCell.classList.add('sat');
                     
+                    // [수정] 공휴일 체크
+                    const dateStr = getFmtDate(d);
+                    if (holidaySet.has(dateStr)) {
+                        bgCell.classList.add('holiday');
+                    }
+
                     if (d.getFullYear() === todayObj.getFullYear() &&
                         d.getMonth() === todayObj.getMonth() &&
                         d.getDate() === todayObj.getDate()) {
@@ -725,7 +859,7 @@
             const loc = document.getElementById('modal-location');
             const liDate = document.getElementById('li-date');
             const liTime = document.getElementById('li-time');
-            const liLocation = document.getElementById('li-location'); // [수정] 장소 li 요소 가져오기
+            const liLocation = document.getElementById('li-location'); 
 
             // 1. 뱃지
             badge.innerText = evt.type || "기타";
@@ -750,41 +884,32 @@
             const isInvalidTime = (t) => !t || ["TBC", "TBD", "미정", "TBA"].includes(t.toUpperCase());
             const hasValidTime = !isInvalidTime(sTime) || !isInvalidTime(eTime);
 
-            // [수정] 기본적으로 시간 행은 숨김 (필요할 때만 킴)
             liTime.style.display = "none"; 
 
             if (evt.startDate !== evt.endDate) {
                 // [2일 이상 일정]
-                // 시간 행은 숨김 상태 유지
-
-                // [수정] 날짜 포맷: 시작일 - (줄바꿈) 종료일
                 let startPart = sDateStr;
                 let endPart = eDateStr;
 
-                // 시간이 유효하면 날짜 뒤에 시간도 붙임
                 if (hasValidTime) {
                      startPart += ` ${isInvalidTime(sTime) ? '' : sTime}`;
                      endPart += ` ${isInvalidTime(eTime) ? '' : eTime}`;
                 }
-
-                // 하이픈 뒤에 <br> 추가
                 date.innerHTML = `${startPart} -<br>${endPart}`;
 
             } else {
                 // [1일 일정]
                 date.innerText = sDateStr;
 
-                // [수정] 시간이 있을 때만 시간 행 표시
                 if (hasValidTime) {
-                    liTime.style.display = "flex"; // Show
+                    liTime.style.display = "flex"; 
                     if(sTime && eTime) time.innerText = `${sTime} ~ ${eTime}`;
                     else if(sTime) time.innerText = sTime + " ~";
                     else time.innerText = "~ " + eTime;
                 }
-                // 시간이 없으면 liTime.style.display = "none" 상태 유지
             }
 
-            // 4. 장소 처리 [수정] 데이터 없으면 행 숨김
+            // 4. 장소 처리
             if (evt.location && evt.location.trim() !== "") {
                 liLocation.style.display = "flex";
                 loc.innerText = evt.location;
