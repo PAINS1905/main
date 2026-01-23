@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAINS - 회비 내역 조회</title>
+    <style>
+        /* [1] 폰트 및 공통 스타일 (기존 유지) */
+        @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'SCDream'; src: url('SCDream5.otf'); font-weight: normal; font-style: normal; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'SCDream', sans-serif; line-height: 1.6; color: #333; background-color: #fdfdfd; }
+        h1, h2, h3 { font-family: 'KBO_Dia', sans-serif; }
+
+        /* [2] 헤더 */
+        header { 
+            background-color: #cf8b8b; color: white; padding: 1rem 2rem; 
+            display: flex; align-items: center; gap: 20px; position: relative; z-index: 1000; 
+        }
+        .hamburger-btn { display: flex; flex-direction: column; justify-content: space-between; width: 24px; height: 18px; cursor: pointer; z-index: 1100; }
+        .hamburger-btn span { display: block; width: 100%; height: 2px; background-color: white; border-radius: 3px; transition: all 0.3s ease; }
+        header h1 { font-size: 1.5rem; font-weight: bold; margin: 0; }
+        header h1 a { text-decoration: none; color: white; }
+        header nav { display: none; }
+
+        /* [3] 사이드바 스타일 */
+        .sidebar { position: fixed; top: 0; left: -300px; width: 260px; height: 100vh; background-color: white; box-shadow: 2px 0 10px rgba(0,0,0,0.1); transition: left 0.3s ease; z-index: 1050; padding-top: 80px; display: flex; flex-direction: column; overflow-y: auto; }
+        .sidebar.active { left: 0; }
+        .sidebar a { padding: 15px 30px; text-decoration: none; color: #333; font-size: 1.1rem; font-weight: 500; border-bottom: 1px solid #f9f9f9; transition: background 0.2s, color 0.2s; display: block; }
+        .sidebar a:hover { background-color: #fafafa; color: #ab3333; font-weight: bold; }
+        .sidebar a.menu-toggle { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .submenu { display: none; background-color: #f8f8f8; border-bottom: 1px solid #eee; }
+        .submenu.open { display: block; }
+        .submenu a { padding-left: 50px; font-size: 1rem; color: #666; border-bottom: none; }
+        .submenu a:hover { color: #ab3333; background-color: #f0f0f0; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: none; z-index: 1040; }
+        .overlay.active { display: block; }
+
+        /* [4] 메인 컨텐츠 스타일 */
+        .container { max-width: 800px; margin: 4rem auto; padding: 0 1.5rem; }
+        
+        .section-card {
+            background: white; border-radius: 12px; padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; margin-bottom: 2rem;
+        }
+        .section-card h3 { color: #ab3333; font-size: 1.5rem; margin-bottom: 1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
+        
+        /* 입력 폼 스타일 */
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
+        .input-group input { 
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; font-family: 'SCDream', sans-serif; 
+        }
+        
+        .btn-check { 
+            width: 100%; padding: 12px; background-color: #ab3333; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; 
+        }
+        .btn-check:hover { background-color: #8f2a2a; }
+
+        /* [NEW] 회비 내역 테이블 스타일 */
+        #fee-area { display: none; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .fee-table-wrapper { overflow-x: auto; margin-top: 20px; }
+        .fee-table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        .fee-table th { background-color: #ab3333; color: white; padding: 12px; text-align: center; font-weight: bold; white-space: nowrap; }
+        .fee-table td { padding: 12px; border-bottom: 1px solid #eee; color: #333; }
+        .fee-table tr:last-child td { border-bottom: none; }
+        .fee-table tr:hover { background-color: #f9f9f9; }
+        
+        /* 테이블 열 별 스타일 */
+        .td-date { text-align: center; color: #666; font-size: 0.9rem; width: 15%; }
+        .td-desc { text-align: left; font-weight: bold; width: 45%; }
+        .td-amount { text-align: right; color: #e74c3c; font-weight: bold; width: 20%; }
+        .td-balance { text-align: right; color: #27ae60; font-weight: bold; width: 20%; }
+
+        .msg-welcome { font-size: 1.1rem; margin-bottom: 20px; color: #333; }
+        .msg-welcome strong { color: #ab3333; }
+
+        /* 푸터 */
+        footer { background-color: #333; color: white; text-align: center; padding: 3rem 2rem 2rem; margin-top: 2rem; font-size: 0.8rem; }
+        .footer-icons { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; }
+        .icon-btn { display: flex; justify-content: center; align-items: center; width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); border-radius: 12px; transition: all 0.3s ease; }
+        .icon-btn:hover { background-color: #ab3333; transform: translateY(-3px); }
+        .icon-btn img { width: 24px; height: 24px; object-fit: contain; }
+
+        @media (max-width: 600px) { 
+            .container { margin-top: 2rem; } 
+            header { justify-content: flex-start; }
+            /* 모바일에서 테이블 글씨 크기 조정 */
+            .fee-table th, .fee-table td { font-size: 0.85rem; padding: 10px 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="hamburger-btn" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </div>
+        <h1><a href="index.html">PAINS Accounting</a></h1>
+    </header>
+
+    <div class="sidebar" id="sidebar"></div>
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+    <div class="container">
+        
+        <div class="section-card" id="auth-section">
+            <h3>🔒 부원 인증</h3>
+            <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">
+                회비 내역은 PAINS 부원만 열람 가능합니다.<br>
+                학번과 이름을 입력해주세요.
+            </p>
+            
+            <div class="input-group">
+                <label>학번</label>
+                <input type="text" id="check-id" placeholder="예: 2024123456">
+            </div>
+            <div class="input-group">
+                <label>이름</label>
+                <input type="text" id="check-name" placeholder="예: 홍길동">
+            </div>
+            
+            <button class="btn-check" onclick="checkMember()" id="btn-auth">조회하기</button>
+        </div>
+
+        <div class="section-card" id="fee-area">
+            <h3>💸 회비 입출금 내역</h3>
+            <p class="msg-welcome"><span id="user-name-display"></span>님, 환영합니다.</p>
+            
+            <div class="fee-table-wrapper">
+                <table class="fee-table">
+                    <thead>
+                        <tr>
+                            <th>일자</th>
+                            <th>내용</th>
+                            <th>금액</th>
+                            <th>잔액</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fee-tbody">
+                        <tr><td colspan="4" style="text-align:center;">내역을 불러오는 중...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="footer-icons">
+            <a href="https://www.instagram.com/ku_pains" target="_blank" class="icon-btn" title="Instagram"><img src="instagram.png" alt="Instagram"></a>
+            <a href="https://www.notion.so/painsports/PAINS-a9294ba2a44b4ea6a53f0d5ae069749e" target="_blank" class="icon-btn" title="Notion"><img src="notion.png" alt="Notion"></a>
+            <a href="https://blog.naver.com/painsports" target="_blank" class="icon-btn" title="Blog"><img src="naver_blog.png" alt="NaverBlog"></a>
+        </div>
+        <p>&copy; 2026 PAINS. All rights reserved.</p>
+    </footer>
+
+    <script src="menu.js"></script>
+    <script>
+        loadSidebar('attendance'); // 'attendance' 탭 활성화 (임의 지정)
+
+        // ============================================================
+        // [설정] URL
+        // 1. GAS_URL: 부원 인증용 (기존 attendance.html과 동일한 URL 사용)
+        // 2. FEE_SHEET_CSV_URL: 회비 내역 파일 (새로운 파일의 CSV 링크)
+        // ============================================================
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxL7shd9op70ZSSuEYe3Iod6wSoRfQ_UKLs7DU1TdOAWoFr1Xr-d8ZDzBBQ_Iq1kEivPg/exec";
+        
+        // [중요] 여기에 '회비 내역' 엑셀 파일의 CSV 배포 링크를 넣어주세요!
+        const FEE_SHEET_CSV_URL = "여기에_새로운_회비_파일의_CSV_링크를_넣어주세요"; 
+
+        // ============================================
+        // 1. 부원 인증 함수
+        // ============================================
+        async function checkMember() {
+            const idInput = document.getElementById('check-id');
+            const nameInput = document.getElementById('check-name');
+            const id = idInput.value.trim();
+            const name = nameInput.value.trim();
+            
+            if (!id || !name) { alert("학번과 이름을 모두 입력해주세요."); return; }
+
+            const btn = document.getElementById('btn-auth');
+            const originalText = btn.innerText;
+            
+            btn.disabled = true;
+            btn.innerText = "확인 중...";
+            
+            try {
+                // 기존 GAS API를 활용하여 멤버인지 확인 (GET 요청)
+                // doGet 함수는 {result: "success" or "fail", ...} 을 반환함
+                const response = await fetch(`${GAS_URL}?id=${id}&name=${name}`);
+                const data = await response.json();
+
+                if (data.result === "success") {
+                    // 인증 성공 처리
+                    document.getElementById('user-name-display').innerHTML = `<strong>${name}</strong>`;
+                    document.getElementById('auth-section').style.display = 'none'; // 인증창 숨김
+                    document.getElementById('fee-area').style.display = 'block';    // 회비창 보임
+                    
+                    // 회비 내역 로딩 시작
+                    fetchAndRenderFees();
+                } else {
+                    alert("일치하는 부원 정보가 없습니다.\n(등록된 부원만 열람 가능합니다)");
+                }
+            } catch (error) {
+                console.error("Auth Error:", error);
+                alert("인증 중 오류가 발생했습니다.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = originalText;
+            }
+        }
+
+        // ============================================
+        // 2. CSV 데이터 파싱 및 렌더링
+        // ============================================
+        async function fetchAndRenderFees() {
+            const tbody = document.getElementById('fee-tbody');
+            
+            try {
+                const response = await fetch(FEE_SHEET_CSV_URL);
+                const textData = await response.text();
+                
+                // 줄바꿈으로 행 분리
+                const rows = textData.split("\n");
+                
+                // 데이터가 없을 경우
+                if (rows.length <= 1) { 
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">내역이 없습니다.</td></tr>';
+                    return;
+                }
+
+                let html = "";
+                
+                // 1행(헤더) 제외하고 반복 (i=1부터 시작)
+                for (let i = 1; i < rows.length; i++) {
+                    const rowText = rows[i].trim();
+                    if (!rowText) continue;
+
+                    // [핵심] CSV 파싱 (따옴표 안에 있는 쉼표는 무시하도록 처리)
+                    // 예: "9월 4일", "내용", "₩100,000", "₩500,000", "비고"
+                    const cols = parseCSVLine(rowText);
+
+                    // 데이터 구조: A(날짜), B(내용), C(금액), D(잔액), E(비고)
+                    if (cols.length < 4) continue;
+
+                    const date = cols[0];
+                    const desc = cols[1];
+                    const amount = cols[2];
+                    const balance = cols[3];
+                    // const note = cols[4]; // 비고는 표시 안 함
+
+                    html += `
+                        <tr>
+                            <td class="td-date">${date}</td>
+                            <td class="td-desc">${desc}</td>
+                            <td class="td-amount">${amount}</td>
+                            <td class="td-balance">${balance}</td>
+                        </tr>
+                    `;
+                }
+
+                tbody.innerHTML = html;
+
+            } catch (error) {
+                console.error("Fee Load Error:", error);
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red; padding:20px;">내역을 불러오는데 실패했습니다.</td></tr>';
+            }
+        }
+
+        // [보조 함수] CSV 한 줄을 올바르게 자르는 함수
+        // (금액에 쉼표 "100,000" 가 있어도 깨지지 않게 함)
+        function parseCSVLine(text) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes; // 따옴표 시작/종료 토글
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim()); // 쉼표고, 따옴표 안이 아니면 -> 데이터 끊기
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current.trim()); // 마지막 데이터 추가
+            
+            // 따옴표 제거 (예: "100,000" -> 100,000)
+            return result.map(val => val.replace(/^"|"$/g, ''));
+        }
+
+    </script>
+
+</body>
+</html>
