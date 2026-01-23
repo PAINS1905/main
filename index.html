@@ -92,23 +92,126 @@
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             border: 1px solid #eee;
-            overflow: hidden;
+            overflow: visible; /* 팝업이 잘리지 않도록 visible로 변경 */
+            position: relative;
         }
 
         .calendar-header {
             display: flex;
-            justify-content: space-between;
+            justify-content: center; /* 중앙 정렬로 변경하되 gap으로 조정 */
             align-items: center;
             background-color: #f9f9f9;
             padding: 15px 20px;
             border-bottom: 1px solid #eee;
+            position: relative;
+            gap: 10px;
         }
         
+        /* [추가] 오늘 버튼 스타일 */
+        .btn-today-reset {
+            padding: 5px 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-right: auto; /* 왼쪽 끝으로 밀기 위해 */
+            color: #555;
+            transition: all 0.2s;
+        }
+        .btn-today-reset:hover {
+            background-color: #eee;
+            color: #333;
+        }
+
+        /* 중앙 타이틀 영역 (타이틀 + 화살표) */
+        .calendar-nav-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: absolute; /* 절대 위치로 중앙 고정 */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
         .calendar-title {
             font-family: 'KBO_Dia', sans-serif;
             font-size: 1.5rem;
             color: #ab3333;
+            cursor: pointer; /* 클릭 가능 표시 */
+            position: relative;
         }
+        .calendar-title:hover {
+            text-decoration: underline;
+        }
+
+        /* [추가] 날짜 선택 팝업 스타일 (네이버 캘린더 풍) */
+        .date-picker {
+            display: none; /* 기본 숨김 */
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px;
+            height: 240px;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 2000;
+            border-radius: 4px;
+            flex-direction: column;
+            text-align: left;
+        }
+        .date-picker.active { display: flex; }
+
+        .picker-header {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            color: #333;
+            font-size: 0.95rem;
+        }
+        .picker-close {
+            cursor: pointer;
+            color: #999;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+        .picker-close:hover { color: #333; }
+
+        .picker-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        .picker-col {
+            flex: 1;
+            overflow-y: auto;
+            border-right: 1px solid #eee;
+        }
+        .picker-col:last-child { border-right: none; }
+
+        /* 스크롤바 스타일링 */
+        .picker-col::-webkit-scrollbar { width: 6px; }
+        .picker-col::-webkit-scrollbar-thumb { background-color: #ddd; border-radius: 3px; }
+        .picker-col::-webkit-scrollbar-track { background-color: transparent; }
+
+        .picker-item {
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        .picker-item:hover { background-color: #f5f5f5; }
+        .picker-item.selected {
+            background-color: #f0f8ff; /* 연한 파랑 */
+            color: #ab3333;
+            font-weight: bold;
+        }
+
 
         .calendar-nav-btn {
             background: none;
@@ -117,7 +220,7 @@
             cursor: pointer;
             color: #666;
             transition: color 0.3s;
-            padding: 0 10px;
+            padding: 0 5px;
         }
         .calendar-nav-btn:hover { color: #ab3333; }
 
@@ -146,7 +249,7 @@
             padding: 5px;
             position: relative;
             background-color: #fff;
-            overflow: hidden; /* 내용이 넘치면 숨김 */
+            overflow: hidden; 
         }
         .day-cell:nth-child(7n) { border-right: none; }
         
@@ -158,29 +261,20 @@
             margin-bottom: 5px;
         }
         
-        /* 토/일 색상 처리 */
         .day-cell.sun .day-number { color: #e74c3c; }
         .day-cell.sat .day-number { color: #3498db; }
 
-        /* [수정됨] 이전/다음 달 날짜 스타일 */
-        .day-cell.other-month { 
-            background-color: #f7f7f7; /* 배경색 회색조 */
-        }
-        .day-cell.other-month .day-number {
-            color: #bbb; /* 날짜 숫자 흐리게 */
-        }
-        /* 이전/다음 달이라도 토/일 색상은 약간 흐리게 유지 */
+        .day-cell.other-month { background-color: #f7f7f7; }
+        .day-cell.other-month .day-number { color: #bbb; }
         .day-cell.other-month.sun .day-number { color: #f5a9a9; }
         .day-cell.other-month.sat .day-number { color: #a9d0f5; }
 
-        /* 오늘 날짜 */
         .day-cell.today { background-color: #fff5f5; }
         .day-cell.today .day-number { 
             font-weight: bold; color: #ab3333; 
             text-decoration: underline;
         }
 
-        /* [수정됨] 일정 이벤트 스타일 (말줄임표 적용) */
         .event-item {
             display: block;
             background-color: #ab3333;
@@ -190,8 +284,6 @@
             border-radius: 4px;
             margin-bottom: 3px;
             cursor: default;
-            
-            /* 핵심: 한 줄 말줄임표 처리 */
             white-space: nowrap; 
             overflow: hidden; 
             text-overflow: ellipsis;
@@ -205,6 +297,7 @@
             .day-cell { min-height: 80px; font-size: 0.8rem; }
             .event-item { font-size: 0.7rem; padding: 2px; }
             .calendar-title { font-size: 1.2rem; }
+            .btn-today-reset { font-size: 0.8rem; padding: 4px 8px; }
         }
 
         .activities { display: flex; gap: 20px; flex-wrap: wrap; }
@@ -283,10 +376,28 @@
         <h3>일정 안내</h3>
         <div class="calendar-container">
             <div class="calendar-header">
-                <button class="calendar-nav-btn" onclick="changeMonth(-1)">&#9664;</button>
-                <div class="calendar-title" id="calendar-title">2026. 01</div>
-                <button class="calendar-nav-btn" onclick="changeMonth(1)">&#9654;</button>
+                <button class="btn-today-reset" onclick="goToToday()">오늘</button>
+                
+                <div class="calendar-nav-group">
+                    <button class="calendar-nav-btn" onclick="changeMonth(-1)">&#9664;</button>
+                    <div class="calendar-title" id="calendar-title" onclick="toggleDatePicker()">2026. 01</div>
+                    <button class="calendar-nav-btn" onclick="changeMonth(1)">&#9654;</button>
+
+                    <div class="date-picker" id="date-picker">
+                        <div class="picker-header">
+                            <span>직접 선택</span>
+                            <span class="picker-close" onclick="closeDatePicker()">&times;</span>
+                        </div>
+                        <div class="picker-body">
+                            <div class="picker-col" id="picker-years">
+                                </div>
+                            <div class="picker-col" id="picker-months">
+                                </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            
             <div class="calendar-grid" id="calendar-grid">
                 <div class="weekday sun">일</div>
                 <div class="weekday">월</div>
@@ -295,10 +406,9 @@
                 <div class="weekday">목</div>
                 <div class="weekday">금</div>
                 <div class="weekday sat">토</div>
-                </div>
+            </div>
         </div>
     </section>
-
 
     <section>
         <h3>Our Activities</h3>
@@ -374,13 +484,16 @@
         }
 
         // ============================================
-        // [수정됨] 달력 로직
+        // 달력 및 팝업 제어 로직
         // ============================================
         
         let allEvents = []; 
         let currentYear = new Date().getFullYear();
         let currentMonth = new Date().getMonth() + 1; 
         const todayObj = new Date();
+
+        // 선택 팝업용 임시 변수
+        let pickerSelectedYear = currentYear;
 
         const GOOGLESHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBnuUvyE2CDV-hG26xCVdnt88JhQgtusdEndJwTzaI62TXPdWTNldVvua9RLkXj1s34qiM0CEcNvbr/pub?gid=305458048&single=true&output=csv";
 
@@ -422,63 +535,45 @@
             grid.innerHTML = '';
             weekdays.forEach(wd => grid.appendChild(wd));
 
-            // 날짜 계산을 위한 Date 객체 생성 (Month는 0-11)
             const firstDateOfMonth = new Date(year, month - 1, 1);
             const lastDateOfMonth = new Date(year, month, 0);
-
-            // 1일의 요일 (0:일 ~ 6:토)
             const startDayIndex = firstDateOfMonth.getDay();
-            // 이 달의 마지막 날짜 (예: 28, 30, 31)
             const lastDate = lastDateOfMonth.getDate();
-            // 마지막 날의 요일
             const endDayIndex = lastDateOfMonth.getDay();
 
-            // 총 필요한 칸 수 계산 (앞쪽 빈칸 + 이번달 날짜 + 뒤쪽 빈칸)
-            // 보통 달력은 5주 혹은 6주. 여기서는 뒤쪽 빈칸을 토요일까지 채움.
-            // 시작일 기준: 이전 달 날짜부터 채우기 위해 시작 날짜를 조정
             const startDate = new Date(firstDateOfMonth);
             startDate.setDate(startDate.getDate() - startDayIndex);
-
-            // 종료일 기준: 이번 달 마지막 날이 토요일(6)이 아니면, 다음달 날짜를 토요일까지 추가
-            // 총 셀 개수 = startDayIndex + lastDate + (6 - endDayIndex)
             const totalCells = startDayIndex + lastDate + (6 - endDayIndex);
 
             for (let i = 0; i < totalCells; i++) {
-                // startDate에서 i일 만큼 더한 날짜 계산
                 const renderDate = new Date(startDate);
                 renderDate.setDate(startDate.getDate() + i);
 
                 const rYear = renderDate.getFullYear();
-                const rMonth = renderDate.getMonth() + 1; // 1-12
+                const rMonth = renderDate.getMonth() + 1; 
                 const rDay = renderDate.getDate();
                 const rDayOfWeek = renderDate.getDay();
 
                 const cell = document.createElement('div');
                 cell.classList.add('day-cell');
 
-                // 이번 달이 아닌 경우 클래스 추가
                 if (rMonth !== month) {
                     cell.classList.add('other-month');
                 }
-
-                // 요일별 색상 (CSS 클래스)
                 if (rDayOfWeek === 0) cell.classList.add('sun');
                 if (rDayOfWeek === 6) cell.classList.add('sat');
 
-                // 오늘 날짜 표시
                 if (rYear === todayObj.getFullYear() && 
                     (rMonth - 1) === todayObj.getMonth() && 
                     rDay === todayObj.getDate()) {
                     cell.classList.add('today');
                 }
 
-                // 날짜 숫자
                 const dayNum = document.createElement('span');
                 dayNum.classList.add('day-number');
                 dayNum.innerText = rDay;
                 cell.appendChild(dayNum);
 
-                // 이벤트 매핑
                 const dateStr = `${rYear}-${String(rMonth).padStart(2,'0')}-${String(rDay).padStart(2,'0')}`;
                 
                 const dayEvents = allEvents.filter(e => e.date === dateStr);
@@ -491,14 +586,19 @@
                     else if (evt.type.includes('정기')) evtDiv.classList.add('regular');
                     else evtDiv.classList.add('etc');
                     
-                    // 툴팁 효과 (마우스 올리면 전체 이름 보이기)
                     evtDiv.title = evt.name; 
-
                     cell.appendChild(evtDiv);
                 });
 
                 grid.appendChild(cell);
             }
+        }
+
+        // [기능 1] '오늘'로 이동
+        function goToToday() {
+            currentYear = todayObj.getFullYear();
+            currentMonth = todayObj.getMonth() + 1;
+            renderCalendar(currentYear, currentMonth);
         }
 
         function changeMonth(step) {
@@ -513,9 +613,97 @@
             renderCalendar(currentYear, currentMonth);
         }
 
+        // ============================================
+        // [기능 2] 날짜 선택 팝업 (네이버 스타일) 제어
+        // ============================================
+        
+        function toggleDatePicker(e) {
+            const picker = document.getElementById('date-picker');
+            // 이벤트 전파 방지 (버블링으로 바로 닫히는 것 방지)
+            if(e) e.stopPropagation();
+
+            if (picker.classList.contains('active')) {
+                closeDatePicker();
+            } else {
+                pickerSelectedYear = currentYear; // 팝업 열 때 현재 보고 있는 연도로 초기화
+                renderPickerContent();
+                picker.classList.add('active');
+                
+                // 외부 클릭 시 닫기
+                document.addEventListener('click', closeDatePickerOutside);
+            }
+        }
+
+        function closeDatePicker() {
+            const picker = document.getElementById('date-picker');
+            picker.classList.remove('active');
+            document.removeEventListener('click', closeDatePickerOutside);
+        }
+
+        function closeDatePickerOutside(event) {
+            const picker = document.getElementById('date-picker');
+            const title = document.getElementById('calendar-title');
+            if (!picker.contains(event.target) && !title.contains(event.target)) {
+                closeDatePicker();
+            }
+        }
+
+        function renderPickerContent() {
+            const yearCol = document.getElementById('picker-years');
+            const monthCol = document.getElementById('picker-months');
+            
+            yearCol.innerHTML = '';
+            monthCol.innerHTML = '';
+
+            // 연도 리스트 생성 (2020 ~ 2030)
+            const startYear = 2020;
+            const endYear = 2030;
+            
+            for (let y = startYear; y <= endYear; y++) {
+                const div = document.createElement('div');
+                div.className = 'picker-item';
+                div.innerText = y + '년';
+                if (y === pickerSelectedYear) div.classList.add('selected');
+                
+                div.onclick = (e) => {
+                    e.stopPropagation();
+                    pickerSelectedYear = y; // 연도만 선택하고 팝업 유지
+                    renderPickerContent(); // 다시 그려서 선택 효과 갱신
+                };
+                yearCol.appendChild(div);
+            }
+
+            // 해당 연도가 보이도록 스크롤 이동
+            setTimeout(() => {
+                const selectedEl = yearCol.querySelector('.selected');
+                if(selectedEl) selectedEl.scrollIntoView({block: "center"});
+            }, 0);
+
+            // 월 리스트 생성 (1 ~ 12)
+            for (let m = 1; m <= 12; m++) {
+                const div = document.createElement('div');
+                div.className = 'picker-item';
+                div.innerText = m + '월';
+                // 현재 보고 있는 달력의 월이 아니라, 사용자가 '선택'하려는 월을 강조하고 싶다면 로직 추가 가능
+                // 여기서는 단순히 현재 달력의 월과 같으면 표시 (단, 연도도 같아야 함)
+                if (pickerSelectedYear === currentYear && m === currentMonth) {
+                   div.classList.add('selected');
+                }
+
+                div.onclick = (e) => {
+                    e.stopPropagation();
+                    // 월 클릭 시 최종 이동
+                    currentYear = pickerSelectedYear;
+                    currentMonth = m;
+                    renderCalendar(currentYear, currentMonth);
+                    closeDatePicker();
+                };
+                monthCol.appendChild(div);
+            }
+        }
+
         fetchAndInitCalendar();
     </script>
 
 </body>
 </html>
-
