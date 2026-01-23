@@ -92,22 +92,24 @@
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             border: 1px solid #eee;
-            overflow: visible; /* 팝업이 잘리지 않도록 visible로 변경 */
+            overflow: visible; 
             position: relative;
         }
 
         .calendar-header {
             display: flex;
-            justify-content: center; /* 중앙 정렬로 변경하되 gap으로 조정 */
+            justify-content: center; 
             align-items: center;
             background-color: #f9f9f9;
             padding: 15px 20px;
             border-bottom: 1px solid #eee;
             position: relative;
             gap: 10px;
+            /* [수정됨] 1. z-index 추가하여 드롭다운이 그리드 위에 오도록 설정 */
+            z-index: 50; 
         }
         
-        /* [추가] 오늘 버튼 스타일 */
+        /* [수정됨] 2. 오늘 버튼 오른쪽 정렬을 위한 마진 변경 */
         .btn-today-reset {
             padding: 5px 12px;
             background: white;
@@ -115,7 +117,7 @@
             border-radius: 4px;
             font-size: 0.9rem;
             cursor: pointer;
-            margin-right: auto; /* 왼쪽 끝으로 밀기 위해 */
+            margin-left: auto; /* 왼쪽 마진을 auto로 설정하여 오른쪽 끝으로 밀어냄 */
             color: #555;
             transition: all 0.2s;
         }
@@ -129,7 +131,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            position: absolute; /* 절대 위치로 중앙 고정 */
+            position: absolute; 
             left: 50%;
             transform: translateX(-50%);
         }
@@ -138,16 +140,16 @@
             font-family: 'KBO_Dia', sans-serif;
             font-size: 1.5rem;
             color: #ab3333;
-            cursor: pointer; /* 클릭 가능 표시 */
+            cursor: pointer;
             position: relative;
         }
         .calendar-title:hover {
             text-decoration: underline;
         }
 
-        /* [추가] 날짜 선택 팝업 스타일 (네이버 캘린더 풍) */
+        /* 날짜 선택 팝업 스타일 (네이버 캘린더 풍) */
         .date-picker {
-            display: none; /* 기본 숨김 */
+            display: none; 
             position: absolute;
             top: 100%;
             left: 50%;
@@ -194,7 +196,6 @@
         }
         .picker-col:last-child { border-right: none; }
 
-        /* 스크롤바 스타일링 */
         .picker-col::-webkit-scrollbar { width: 6px; }
         .picker-col::-webkit-scrollbar-thumb { background-color: #ddd; border-radius: 3px; }
         .picker-col::-webkit-scrollbar-track { background-color: transparent; }
@@ -207,11 +208,10 @@
         }
         .picker-item:hover { background-color: #f5f5f5; }
         .picker-item.selected {
-            background-color: #f0f8ff; /* 연한 파랑 */
+            background-color: #f0f8ff; 
             color: #ab3333;
             font-weight: bold;
         }
-
 
         .calendar-nav-btn {
             background: none;
@@ -226,9 +226,9 @@
 
         .calendar-grid {
             display: grid;
-            grid-template-columns: repeat(7, 1fr); /* 7열 균등 분할 */
+            grid-template-columns: repeat(7, 1fr); 
             width: 100%;
-            table-layout: fixed; /* 레이아웃 고정 */
+            table-layout: fixed; 
         }
 
         .weekday {
@@ -376,7 +376,6 @@
         <h3>일정 안내</h3>
         <div class="calendar-container">
             <div class="calendar-header">
-                <button class="btn-today-reset" onclick="goToToday()">오늘</button>
                 
                 <div class="calendar-nav-group">
                     <button class="calendar-nav-btn" onclick="changeMonth(-1)">&#9664;</button>
@@ -396,6 +395,9 @@
                         </div>
                     </div>
                 </div>
+
+                <button class="btn-today-reset" onclick="goToToday()">오늘</button>
+
             </div>
             
             <div class="calendar-grid" id="calendar-grid">
@@ -530,7 +532,6 @@
             
             title.innerText = `${year}. ${String(month).padStart(2, '0')}`;
 
-            // 기존 셀 지우기 (헤더 제외)
             const weekdays = grid.querySelectorAll('.weekday');
             grid.innerHTML = '';
             weekdays.forEach(wd => grid.appendChild(wd));
@@ -594,7 +595,7 @@
             }
         }
 
-        // [기능 1] '오늘'로 이동
+        // '오늘'로 이동
         function goToToday() {
             currentYear = todayObj.getFullYear();
             currentMonth = todayObj.getMonth() + 1;
@@ -614,22 +615,19 @@
         }
 
         // ============================================
-        // [기능 2] 날짜 선택 팝업 (네이버 스타일) 제어
+        // 날짜 선택 팝업 (네이버 스타일) 제어
         // ============================================
         
         function toggleDatePicker(e) {
             const picker = document.getElementById('date-picker');
-            // 이벤트 전파 방지 (버블링으로 바로 닫히는 것 방지)
             if(e) e.stopPropagation();
 
             if (picker.classList.contains('active')) {
                 closeDatePicker();
             } else {
-                pickerSelectedYear = currentYear; // 팝업 열 때 현재 보고 있는 연도로 초기화
+                pickerSelectedYear = currentYear; 
                 renderPickerContent();
                 picker.classList.add('active');
-                
-                // 외부 클릭 시 닫기
                 document.addEventListener('click', closeDatePickerOutside);
             }
         }
@@ -655,7 +653,6 @@
             yearCol.innerHTML = '';
             monthCol.innerHTML = '';
 
-            // 연도 리스트 생성 (2020 ~ 2030)
             const startYear = 2020;
             const endYear = 2030;
             
@@ -667,32 +664,27 @@
                 
                 div.onclick = (e) => {
                     e.stopPropagation();
-                    pickerSelectedYear = y; // 연도만 선택하고 팝업 유지
-                    renderPickerContent(); // 다시 그려서 선택 효과 갱신
+                    pickerSelectedYear = y; 
+                    renderPickerContent(); 
                 };
                 yearCol.appendChild(div);
             }
 
-            // 해당 연도가 보이도록 스크롤 이동
             setTimeout(() => {
                 const selectedEl = yearCol.querySelector('.selected');
                 if(selectedEl) selectedEl.scrollIntoView({block: "center"});
             }, 0);
 
-            // 월 리스트 생성 (1 ~ 12)
             for (let m = 1; m <= 12; m++) {
                 const div = document.createElement('div');
                 div.className = 'picker-item';
                 div.innerText = m + '월';
-                // 현재 보고 있는 달력의 월이 아니라, 사용자가 '선택'하려는 월을 강조하고 싶다면 로직 추가 가능
-                // 여기서는 단순히 현재 달력의 월과 같으면 표시 (단, 연도도 같아야 함)
                 if (pickerSelectedYear === currentYear && m === currentMonth) {
                    div.classList.add('selected');
                 }
 
                 div.onclick = (e) => {
                     e.stopPropagation();
-                    // 월 클릭 시 최종 이동
                     currentYear = pickerSelectedYear;
                     currentMonth = m;
                     renderCalendar(currentYear, currentMonth);
