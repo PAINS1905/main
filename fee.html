@@ -178,7 +178,10 @@
         <p>&copy; 2026 PAINS. All rights reserved.</p>
     </footer>
 
-    <script src="menu.js?v=' + new Date().getTime() + '"></script>
+    <script>
+        document.write('<script src="menu.js?v=' + new Date().getTime() + '"><\/script>');
+    </script>
+    
     <script>
         loadSidebar('fee');
 
