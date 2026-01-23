@@ -280,8 +280,19 @@
             font-size: 0.8rem; font-weight: bold; color: white; margin-bottom: 10px;
         }
         .event-modal-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; color: #333; word-break: keep-all; }
-        .event-modal-info li { list-style: none; margin-bottom: 8px; font-size: 0.95rem; color: #555; }
-        .event-modal-info strong { color: #333; margin-right: 5px; }
+        
+        /* [수정됨] 상세 정보 리스트 스타일 (Flexbox 적용) */
+        .event-modal-info { padding: 0; margin: 0; }
+        .event-modal-info li { 
+            list-style: none; margin-bottom: 8px; font-size: 0.95rem; color: #555;
+            display: flex; /* Flexbox 활성화 */
+            align-items: flex-start; /* 상단 정렬 */
+        }
+        .event-modal-info strong { 
+            color: #333; margin-right: 8px; white-space: nowrap; /* 라벨 줄바꿈 방지 */
+            min-width: 45px; /* 라벨 최소 너비 확보 */
+        }
+        /* 내용을 담는 span은 자동으로 나머지 공간을 차지함 */
 
         /* 팝업 (새해 인사) */
         .popup-overlay {
@@ -649,9 +660,8 @@
 
                     bar.style.top = (evt.row * 24) + 'px';
                     
-                    // 여백 계산
                     const ONE_DAY_PCT = 14.2857; 
-                    const GAP = 0.5; // 좌우 0.5%씩 여백
+                    const GAP = 0.5; 
 
                     let leftPct = evt.startIndex * ONE_DAY_PCT;
                     let widthPct = evt.span * ONE_DAY_PCT;
@@ -722,32 +732,25 @@
             const sTime = evt.startTime ? evt.startTime.trim() : "";
             const eTime = evt.endTime ? evt.endTime.trim() : "";
 
-            // "TBC", "TBD", "미정" 등을 체크하는 헬퍼 함수
             const isInvalidTime = (t) => !t || ["TBC", "TBD", "미정", "TBA"].includes(t.toUpperCase());
             const hasValidTime = !isInvalidTime(sTime) || !isInvalidTime(eTime);
 
-            // 초기화: 시각 줄 다시 보이기
             liTime.style.display = "";
 
             if (evt.startDate !== evt.endDate) {
                 // [2일 이상 일정]
-                liTime.style.display = "none"; // 시각 줄 숨김
+                liTime.style.display = "none"; 
 
                 if (hasValidTime) {
-                    // 조건 1: 시간이 유효하면 '일시' 줄에 합침
-                    // 줄바꿈을 위해 inline-block span 사용
                     const startPart = `${sDateStr} ${isInvalidTime(sTime) ? '' : sTime}`;
                     const endPart = `${eDateStr} ${isInvalidTime(eTime) ? '' : eTime}`;
                     date.innerHTML = `<span style="display:inline-block">${startPart} -</span> <span style="display:inline-block">${endPart}</span>`;
                 } else {
-                    // 조건 2: 시간이 없으면 날짜만 표시
                     date.innerText = `${sDateStr} - ${eDateStr}`;
                 }
             } else {
-                // [1일 일정] - 기존 로직 유지
+                // [1일 일정]
                 date.innerText = sDateStr;
-                
-                // 시간 표시
                 if (hasValidTime) {
                     if(sTime && eTime) time.innerText = `${sTime} ~ ${eTime}`;
                     else if(sTime) time.innerText = sTime + " ~";
