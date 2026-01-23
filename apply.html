@@ -211,28 +211,10 @@
             <span></span>
             <span></span>
         </div>
-        <h1><a href="index.html">Providing Academic INsights for Sports.</a></h1>
+        <h1><a href="index.html">PAINS 신입부원 모집</a></h1>
     </header>
 
-    <div class="sidebar" id="sidebar">
-        <a href="index.html">Home</a>
-        
-        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('members-submenu', 'members-arrow')">
-            Members <span id="members-arrow" style="font-size:0.8rem;">▼</span>
-        </a>
-        <div class="submenu" id="members-submenu">
-            <a href="members.html">운영진</a>
-            <a href="attendance.html">출석 현황 확인</a>
-        </div>
-
-        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('support-submenu', 'support-arrow')">
-            지원 <span id="support-arrow" style="font-size:0.8rem;">▲</span>
-        </a>
-        <div class="submenu open" id="support-submenu">
-            <a href="result.html">지원 결과 안내</a>
-            <a href="apply.html" style="color: #ab3333; font-weight: bold; background-color: #f0f0f0;">지원하기</a>
-        </div>
-    </div>
+    <div class="sidebar" id="sidebar"></div>
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <div class="hero-apply">
@@ -438,29 +420,13 @@
         <p>&copy; 2026 PAINS. All rights reserved.</p>
     </footer>
 
-    <script>
-        // [1] 사이드바 토글 함수 (수정됨)
-        function toggleMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-        }
+    <script src="menu.js"></script>
 
-        // [2] 지원 메뉴 드롭다운 토글 함수 (수정됨: ID 받아서 처리)
-        function toggleSubmenu(menuId, arrowId) {
-            const submenu = document.getElementById(menuId);
-            const arrow = document.getElementById(arrowId);
-            
-            // 클래스 on/off
-            if (submenu.classList.contains('open')) {
-                submenu.classList.remove('open');
-                arrow.innerText = '▼';
-            } else {
-                submenu.classList.add('open');
-                arrow.innerText = '▲';
-            }
-        }
+    <script>
+        // [수정됨] 사이드바 로드 ('apply' 메뉴 강조)
+        loadSidebar('apply');
+
+        // *주의: toggleMenu, toggleSubmenu 등 중복 함수는 삭제됨.
 
         // ============================
         // 1. 성별 분포 (단일 막대 비율 그래프)
@@ -584,8 +550,3 @@
 
 </body>
 </html>
-
-
-
-
-
