@@ -151,6 +151,13 @@
         .timeline-date { font-weight: bold; color: #ab3333; margin-bottom: 5px; display: block; }
         .timeline-title { font-weight: bold; font-size: 1.1rem; }
 
+        /* [추가됨] 투트랙(좌우 분할) 스타일 */
+        .track-wrapper { display: flex; gap: 20px; }
+        .track-col { flex: 1; }
+        .track-col:first-child { border-right: 1px solid #eee; padding-right: 20px; }
+        .track-col:last-child { padding-left: 10px; }
+        .track-label { font-size: 0.85rem; color: #555; background-color:#eee; padding:2px 8px; border-radius:4px; display:inline-block; margin-bottom: 8px; font-weight: bold; }
+
         /* 부서 소개 카드 */
         .dept-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; }
         .dept-card { flex: 1; min-width: 250px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 4px solid #cf8b8b; transition: transform 0.2s; }
@@ -200,6 +207,11 @@
             .chart-container-wrapper { flex-direction: column; }
             .dept-container { flex-direction: column; }
             .activity-container { grid-template-columns: 1fr; } 
+            
+            /* [추가됨] 모바일에서 투트랙 세로 배치 */
+            .track-wrapper { flex-direction: column; gap: 15px; }
+            .track-col:first-child { border-right: none; border-bottom: 1px solid #eee; padding-right: 0; padding-bottom: 15px; }
+            .track-col:last-child { padding-left: 0; }
         }
     </style>
 </head>
@@ -310,7 +322,7 @@
 
     <section>
         <h3>🏢 부서 운영</h3>
-        <p style="margin-bottom: 20px;">모든 부원들은 아래 3개 부서 중 하나에 소속되어 활동할 수 있습니다. 일반부원으로도 활동 가능하지만, 참여를 적극 권장합니다!</p>
+        <p style="margin-bottom: 20px;">모든 부원들은 아래 3개 부서 중 하나에 소속되어 활동할 수 있습니다.</p>
         <div class="dept-container">
             <div class="dept-card">
                 <h4>📅 기획부</h4>
@@ -332,31 +344,78 @@
         <div class="timeline">
             <div class="timeline-item">
                 <div class="timeline-content">
-                    <span class="timeline-date">2026. 02. 09 (월) - 2026. 02. 22 (일)</span>
-                    <span class="timeline-title">서류 신청 마감</span>
+                    <div class="track-wrapper">
+                        <div class="track-col">
+                            <span class="track-label">1차 모집</span><br>
+                            <span class="timeline-date">2026. 02. 09 (월) - 2026. 02. 22 (일)</span>
+                            <span class="timeline-title">서류 신청 마감</span>
+                        </div>
+                        <div class="track-col">
+                            <span class="track-label">2차 모집</span><br>
+                            <span class="timeline-date">2026. 02. 09 (월) - 2026. 02. 22 (일)</span>
+                            <span class="timeline-title">서류 신청 마감</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+
             <div class="timeline-item">
                 <div class="timeline-content">
-                    <span class="timeline-date">2026. 02. 24 (화) 중</span>
-                    <span class="timeline-title">서류 합격자 발표</span>
-                    <p style="font-size:0.9rem; color:#666;">홈페이지 안내</p>
+                    <div class="track-wrapper">
+                        <div class="track-col">
+                            <span class="track-label">1차 모집</span><br>
+                            <span class="timeline-date">2026. 02. 24 (화) 중</span>
+                            <span class="timeline-title">서류 합격자 발표</span>
+                            <p style="font-size:0.9rem; color:#666;">홈페이지 안내</p>
+                        </div>
+                        <div class="track-col">
+                            <span class="track-label">2차 모집</span><br>
+                            <span class="timeline-date">2026. 02. 24 (화) 중</span>
+                            <span class="timeline-title">서류 합격자 발표</span>
+                            <p style="font-size:0.9rem; color:#666;">홈페이지 안내</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+
             <div class="timeline-item">
                 <div class="timeline-content">
-                    <span class="timeline-date">2026. 02. 26 (목) - 2026. 03. 01 (일)</span>
-                    <span class="timeline-title">면접 진행</span>
-                    <p style="font-size:0.9rem; color:#666;">기간 중 일정 협의</p>
+                    <div class="track-wrapper">
+                        <div class="track-col">
+                            <span class="track-label">1차 모집</span><br>
+                            <span class="timeline-date">2026. 02. 26 (목) - 2026. 03. 01 (일)</span>
+                            <span class="timeline-title">면접 진행</span>
+                            <p style="font-size:0.9rem; color:#666;">기간 중 일정 협의</p>
+                        </div>
+                        <div class="track-col">
+                            <span class="track-label">2차 모집</span><br>
+                            <span class="timeline-date">2026. 02. 26 (목) - 2026. 03. 01 (일)</span>
+                            <span class="timeline-title">면접 진행</span>
+                            <p style="font-size:0.9rem; color:#666;">기간 중 일정 협의</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+
             <div class="timeline-item">
-                <div class="timeline-content" style="border-left-color: #cf8b8b;">
-                    <span class="timeline-date" style="color: #cf8b8b;">2026. 03. 05 (목) 중</span>
-                    <span class="timeline-title">최종 선발 공지</span>
-                    <p style="font-size:0.9rem; color:#666;">개별 통보</p>
+                <div class="timeline-content">
+                    <div class="track-wrapper">
+                        <div class="track-col">
+                            <span class="track-label">1차 모집</span><br>
+                            <span class="timeline-date">2026. 03. 05 (목) 중</span>
+                            <span class="timeline-title">최종 선발 공지</span>
+                            <p style="font-size:0.9rem; color:#666;">개별 통보</p>
+                        </div>
+                        <div class="track-col">
+                            <span class="track-label">2차 모집</span><br>
+                            <span class="timeline-date">2026. 03. 05 (목) 중</span>
+                            <span class="timeline-title">최종 선발 공지</span>
+                            <p style="font-size:0.9rem; color:#666;">개별 통보</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+
             <div class="timeline-item">
                 <div class="timeline-content" style="background-color: #ab3333; color: white;">
                     <span class="timeline-date" style="color: #ffffff;">2026. 03. 16 (월) 19:00</span>
@@ -550,4 +609,3 @@
 
 </body>
 </html>
-
