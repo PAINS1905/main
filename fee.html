@@ -3,22 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAINS - 회비 내역 조회</title>
+    <title>Providing Academic INsights for Sports.</title>
     <style>
-        /* [스타일은 기존과 동일하므로 생략하지 않고 전체 다 드립니다] */
+        /* [1] 폰트 및 공통 스타일 */
         @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); font-weight: normal; font-style: normal; }
         @font-face { font-family: 'SCDream'; src: url('SCDream5.otf'); font-weight: normal; font-style: normal; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'SCDream', sans-serif; line-height: 1.6; color: #333; background-color: #fdfdfd; }
+        
+        /* [수정됨] body를 Flex 컨테이너로 만들어서 푸터를 아래로 밀어냄 */
+        body { 
+            font-family: 'SCDream', sans-serif; 
+            line-height: 1.6; 
+            color: #333; 
+            background-color: #fdfdfd;
+            
+            /* 핵심 코드 시작 */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* 최소 높이를 화면 전체로 설정 */
+            /* 핵심 코드 끝 */
+        }
+
         h1, h2, h3 { font-family: 'KBO_Dia', sans-serif; }
 
-        header { background-color: #cf8b8b; color: white; padding: 1rem 2rem; display: flex; align-items: center; gap: 20px; position: relative; z-index: 1000; }
+        /* [2] 헤더 */
+        header { 
+            background-color: #cf8b8b; color: white; padding: 1rem 2rem; 
+            display: flex; align-items: center; gap: 20px; position: relative; z-index: 1000; 
+        }
         .hamburger-btn { display: flex; flex-direction: column; justify-content: space-between; width: 24px; height: 18px; cursor: pointer; z-index: 1100; }
         .hamburger-btn span { display: block; width: 100%; height: 2px; background-color: white; border-radius: 3px; transition: all 0.3s ease; }
         header h1 { font-size: 1.5rem; font-weight: bold; margin: 0; }
         header h1 a { text-decoration: none; color: white; }
         header nav { display: none; }
 
+        /* [3] 사이드바 스타일 */
         .sidebar { position: fixed; top: 0; left: -300px; width: 260px; height: 100vh; background-color: white; box-shadow: 2px 0 10px rgba(0,0,0,0.1); transition: left 0.3s ease; z-index: 1050; padding-top: 80px; display: flex; flex-direction: column; overflow-y: auto; }
         .sidebar.active { left: 0; }
         .sidebar a { padding: 15px 30px; text-decoration: none; color: #333; font-size: 1.1rem; font-weight: 500; border-bottom: 1px solid #f9f9f9; transition: background 0.2s, color 0.2s; display: block; }
@@ -31,17 +50,37 @@
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: none; z-index: 1040; }
         .overlay.active { display: block; }
 
-        .container { max-width: 800px; margin: 4rem auto; padding: 0 1.5rem; }
-        .section-card { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; margin-bottom: 2rem; }
+        /* [4] 메인 컨텐츠 스타일 */
+        /* [수정됨] flex: 1을 주어서 남은 공간을 모두 차지하게 함 */
+        .container { 
+            max-width: 800px; 
+            margin: 4rem auto; 
+            padding: 0 1.5rem; 
+            
+            /* 핵심 코드 시작 */
+            flex: 1; 
+            width: 100%; /* 가로폭 확보 */
+            /* 핵심 코드 끝 */
+        }
+        
+        .section-card {
+            background: white; border-radius: 12px; padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; margin-bottom: 2rem;
+        }
         .section-card h3 { color: #ab3333; font-size: 1.5rem; margin-bottom: 1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
         
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
-        .input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; font-family: 'SCDream', sans-serif; }
+        .input-group input { 
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; font-family: 'SCDream', sans-serif; 
+        }
         
-        .btn-check { width: 100%; padding: 12px; background-color: #ab3333; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+        .btn-check { 
+            width: 100%; padding: 12px; background-color: #ab3333; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; 
+        }
         .btn-check:hover { background-color: #8f2a2a; }
 
+        /* 회비 내역 테이블 스타일 */
         #fee-area { display: none; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -60,6 +99,7 @@
         .msg-welcome { font-size: 1.1rem; margin-bottom: 20px; color: #333; }
         .msg-welcome strong { color: #ab3333; }
 
+        /* 푸터 (이제 자동으로 맨 아래로 밀려납니다) */
         footer { background-color: #333; color: white; text-align: center; padding: 3rem 2rem 2rem; margin-top: 2rem; font-size: 0.8rem; }
         .footer-icons { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; }
         .icon-btn { display: flex; justify-content: center; align-items: center; width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); border-radius: 12px; transition: all 0.3s ease; }
@@ -79,7 +119,7 @@
         <div class="hamburger-btn" onclick="toggleMenu()">
             <span></span><span></span><span></span>
         </div>
-        <h1><a href="index.html">Providing Academic INsights for Sports.</a></h1>
+        <h1><a href="index.html">PAINS Accounting</a></h1>
     </header>
 
     <div class="sidebar" id="sidebar"></div>
@@ -142,7 +182,6 @@
     <script>
         loadSidebar('fee');
 
-        // [주의] attendance.html과 똑같은 URL이어야 합니다.
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7shd9op70ZSSuEYe3Iod6wSoRfQ_UKLs7DU1TdOAWoFr1Xr-d8ZDzBBQ_Iq1kEivPg/exec";
 
         async function checkMemberAndFees() {
@@ -160,7 +199,6 @@
             btn.innerText = "확인 중...";
             
             try {
-                // type=fee 파라미터를 추가하여 보냅니다.
                 const response = await fetch(`${SCRIPT_URL}?id=${id}&name=${name}&type=fee`);
                 const data = await response.json();
 
