@@ -85,7 +85,7 @@
         section { padding: 3rem 2rem; max-width: 1000px; margin: 0 auto; }
         h3 { font-size: 1.8rem; color: #2c3e50; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
 
-        /* [5] 달력 스타일 (구조 변경됨) */
+        /* [5] 달력 스타일 */
         .calendar-container {
             width: 100%;
             background: #fff;
@@ -162,10 +162,9 @@
         }
         .calendar-nav-btn:hover { color: #ab3333; }
 
-        /* [수정] 달력 내부 그리드 시스템 변경 */
+        /* 달력 내부 그리드 시스템 */
         .calendar-body { display: flex; flex-direction: column; width: 100%; }
         
-        /* 요일 헤더 */
         .weekday-row {
             display: grid; grid-template-columns: repeat(7, 1fr);
             border-bottom: 1px solid #eee; background-color: #fff;
@@ -177,19 +176,18 @@
         .weekday.sun { color: #e74c3c; }
         .weekday.sat { color: #3498db; }
 
-        /* 주(Week) 단위 행 */
         .week-row {
             position: relative;
-            min-height: 100px; /* 최소 높이 */
+            min-height: 100px;
             border-bottom: 1px solid #eee;
             background-color: #fff;
         }
 
-        /* 날짜 배경 레이어 (날짜 숫자 표시) */
+        /* 날짜 배경 레이어 */
         .day-bg-layer {
             display: grid; grid-template-columns: repeat(7, 1fr);
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; pointer-events: none; /* 클릭 통과 */
+            z-index: 1; pointer-events: none;
         }
         .day-cell-bg {
             border-right: 1px solid #eee; padding: 5px;
@@ -210,13 +208,12 @@
             position: relative;
             z-index: 2;
             width: 100%;
-            margin-top: 30px; /* 날짜 숫자 공간 확보 */
+            margin-top: 30px; 
             padding-bottom: 5px;
         }
 
-        /* [수정] 연속된 일정 바 스타일 */
         .event-bar {
-            position: absolute; /* JS로 top, left, width 제어 */
+            position: absolute; 
             height: 22px;
             line-height: 22px;
             border-radius: 4px;
@@ -460,7 +457,7 @@
         }
 
         // ============================================
-        // [수정됨] 달력 로직 (Week 단위 렌더링)
+        // [수정됨] 달력 로직 (Week 단위 렌더링 + 여백 추가)
         // ============================================
         
         let allEvents = []; 
@@ -479,7 +476,6 @@
                 
                 // 데이터 파싱 (A~G열)
                 allEvents = rows.slice(1).map(row => {
-                    // CSV 쉼표 분리 (간단한 처리, 따옴표 내 쉼표는 고려X)
                     const cols = row.split(",");
                     if (cols.length < 7) return null;
                     
@@ -512,28 +508,20 @@
             const oldRows = calendarBody.querySelectorAll('.week-row');
             oldRows.forEach(r => r.remove());
 
-            // ----------------------------------------------------
-            // 1. 날짜 계산 및 주(Week) 단위 데이터 생성
-            // ----------------------------------------------------
             const firstDateOfMonth = new Date(year, month - 1, 1);
             const lastDateOfMonth = new Date(year, month, 0);
             
-            // 달력 시작 날짜 (지난 달의 날짜 포함)
             const startDate = new Date(firstDateOfMonth);
-            startDate.setDate(startDate.getDate() - firstDateOfMonth.getDay()); // 일요일부터 시작
+            startDate.setDate(startDate.getDate() - firstDateOfMonth.getDay()); 
 
-            // 달력 종료 날짜 (다음 달의 날짜 포함, 6주 채우거나 월말까지)
-            // 여기서는 마지막 날이 토요일이 될 때까지 채웁니다.
             const endDate = new Date(lastDateOfMonth);
             if (endDate.getDay() !== 6) {
                 endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
             }
 
-            // 날짜 순회하며 주 단위 생성
             let currentDate = new Date(startDate);
             
             while (currentDate <= endDate) {
-                // 한 주(7일) 처리
                 const weekRow = document.createElement('div');
                 weekRow.className = 'week-row';
 
@@ -543,9 +531,8 @@
                 const eventsLayer = document.createElement('div');
                 eventsLayer.className = 'events-layer';
 
-                let weekDates = []; // 이번 주의 날짜 객체들 (이벤트 배치용)
+                let weekDates = []; 
 
-                // 7일간 배경(날짜 숫자) 생성
                 for (let i = 0; i < 7; i++) {
                     const d = new Date(currentDate);
                     weekDates.push(d);
@@ -553,12 +540,10 @@
                     const bgCell = document.createElement('div');
                     bgCell.className = 'day-cell-bg';
                     
-                    // 날짜 스타일링
                     if (d.getMonth() + 1 !== month) bgCell.classList.add('other-month');
                     if (d.getDay() === 0) bgCell.classList.add('sun');
                     if (d.getDay() === 6) bgCell.classList.add('sat');
                     
-                    // 오늘 날짜
                     if (d.getFullYear() === todayObj.getFullYear() &&
                         d.getMonth() === todayObj.getMonth() &&
                         d.getDate() === todayObj.getDate()) {
@@ -572,45 +557,38 @@
                     bgCell.appendChild(numSpan);
                     dayBgLayer.appendChild(bgCell);
 
-                    currentDate.setDate(currentDate.getDate() + 1); // 다음 날로
+                    currentDate.setDate(currentDate.getDate() + 1); 
                 }
 
                 // ----------------------------------------------------
-                // 2. 이벤트 배치 (Packing Algorithm)
+                // 이벤트 배치 (Packing Algorithm)
                 // ----------------------------------------------------
-                // 이번 주(weekDates[0] ~ weekDates[6])에 겹치는 이벤트 찾기
                 const weekStart = weekDates[0].getTime();
-                const weekEnd = weekDates[6].getTime(); // 시간은 자정 기준일 수 있으니 주의 (여기선 날짜 비교만 하면 됨)
+                const weekEnd = weekDates[6].getTime();
                 
-                // 이벤트 필터링
                 let weekEvents = allEvents.filter(evt => {
                     const [sy, sm, sd] = evt.startDate.split('-').map(Number);
                     const sTime = new Date(sy, sm-1, sd).getTime();
                     const [ey, em, ed] = evt.endDate.split('-').map(Number);
                     const eTime = new Date(ey, em-1, ed).getTime();
 
-                    // 겹치는지 확인: (이벤트시작 <= 주끝) && (이벤트끝 >= 주시작)
                     return sTime <= weekEnd && eTime >= weekStart;
                 }).map(evt => {
-                    // 렌더링에 필요한 정보 계산
                     const [sy, sm, sd] = evt.startDate.split('-').map(Number);
                     const sDate = new Date(sy, sm-1, sd);
                     const [ey, em, ed] = evt.endDate.split('-').map(Number);
                     const eDate = new Date(ey, em-1, ed);
 
-                    // 이번 주에서의 시작 인덱스 (0~6)
                     let startIndex = 0;
                     if (sDate > weekDates[0]) {
                         startIndex = Math.floor((sDate - weekDates[0]) / (1000 * 60 * 60 * 24));
                     }
                     
-                    // 이번 주에서의 종료 인덱스 (0~6)
                     let endIndex = 6;
                     if (eDate < weekDates[6]) {
                         endIndex = 6 - Math.floor((weekDates[6] - eDate) / (1000 * 60 * 60 * 24));
                     }
 
-                    // 기간 계산 (일수)
                     const span = endIndex - startIndex + 1;
 
                     return {
@@ -620,27 +598,22 @@
                         span,
                         sDate,
                         eDate,
-                        duration: eDate - sDate // 정렬용
+                        duration: eDate - sDate 
                     };
                 });
 
-                // 정렬: 긴 일정, 시작 빠른 일정 우선 (Tetris 패킹을 위해)
                 weekEvents.sort((a, b) => {
                     if (a.startIndex !== b.startIndex) return a.startIndex - b.startIndex;
                     return b.duration - a.duration;
                 });
 
-                // 패킹 (Vertical Slot Allocation)
-                // slots[i] = true/false (i번째 줄의 0~6 요일 점유 상태)
-                let slots = []; // slots[row][col]
+                let slots = []; 
 
                 weekEvents.forEach(evt => {
                     let row = 0;
                     while (true) {
-                        // 현재 row가 없으면 생성
                         if (!slots[row]) slots[row] = Array(7).fill(false);
                         
-                        // 해당 row의 구간이 비어있는지 확인
                         let isClear = true;
                         for (let d = evt.startIndex; d <= evt.endIndex; d++) {
                             if (slots[row][d]) {
@@ -650,26 +623,20 @@
                         }
 
                         if (isClear) {
-                            // 할당
                             for (let d = evt.startIndex; d <= evt.endIndex; d++) {
                                 slots[row][d] = true;
                             }
-                            evt.row = row; // 결정된 행 인덱스
+                            evt.row = row; 
                             break;
                         }
                         row++;
                     }
                 });
 
-                // ----------------------------------------------------
-                // 3. 이벤트 DOM 생성
-                // ----------------------------------------------------
-                // 컨테이너 높이 조정 (이벤트가 많으면 늘어남)
-                // 기본 30px(날짜) + (행 개수 * 24px)
                 const maxRow = slots.length; 
                 if (maxRow > 0) {
                     const minH = 100;
-                    const contentH = 30 + (maxRow * 24) + 10; // 여유분
+                    const contentH = 30 + (maxRow * 24) + 10; 
                     if (contentH > minH) {
                         weekRow.style.minHeight = contentH + 'px';
                     }
@@ -680,33 +647,54 @@
                     bar.innerText = evt.original.name;
                     bar.className = 'event-bar';
                     
-                    // 타입별 색상
                     if (evt.original.type.includes('비정기')) bar.classList.add('irregular');
                     else if (evt.original.type.includes('정기')) bar.classList.add('regular');
                     else bar.classList.add('etc');
 
-                    // 위치 지정 (Absolute)
-                    bar.style.top = (evt.row * 24) + 'px'; // events-layer 내에서의 상대 top
-                    bar.style.left = (evt.startIndex * 14.2857) + '%';
-                    bar.style.width = (evt.span * 14.2857) + '%';
+                    bar.style.top = (evt.row * 24) + 'px';
+                    
+                    // [수정됨] 여유 공간(margin) 계산 로직
+                    // 1일의 너비 %
+                    const ONE_DAY_PCT = 14.2857; 
+                    // 여유분 (px단위가 아니므로 근사치 %)
+                    // 1% 정도 띄우면 양쪽 합쳐서 2% 여백
+                    const GAP = 0.5; // 좌우 0.5%씩
 
-                    // 연결된 느낌을 위한 둥근 모서리 처리
-                    // 시작일이 이번 주 시작일보다 전이면 왼쪽 직각
-                    if (evt.sDate < weekDates[0]) {
+                    // 기본 위치와 너비 (여백 없이)
+                    let leftPct = evt.startIndex * ONE_DAY_PCT;
+                    let widthPct = evt.span * ONE_DAY_PCT;
+
+                    // 상황별 보정
+                    const isStartInWeek = (evt.sDate >= weekDates[0]); // 이번 주에 시작점이 있는가?
+                    const isEndInWeek = (evt.eDate <= weekDates[6]);   // 이번 주에 끝점이 있는가?
+
+                    if (isStartInWeek) {
+                        // 시작점이면 왼쪽에 여유
+                        leftPct += GAP;
+                        widthPct -= GAP;
+                    }
+                    if (isEndInWeek) {
+                        // 끝점이면 오른쪽에 여유
+                        widthPct -= GAP;
+                    }
+
+                    bar.style.left = leftPct + '%';
+                    bar.style.width = widthPct + '%';
+
+                    // 둥근 모서리 처리 (이전 로직 유지 + margin 때문에 조금 수정)
+                    // 이번 주보다 이전에 시작했으면 왼쪽 직각
+                    if (!isStartInWeek) {
                         bar.style.borderTopLeftRadius = '0';
                         bar.style.borderBottomLeftRadius = '0';
-                        bar.style.borderLeft = 'none'; // 시각적 연결감
-                        bar.style.marginLeft = '-1px'; // 틈새 제거
+                        // 이어짐을 표현하기 위해 왼쪽으로 아주 살짝 더 밀어서 틈을 없앰
+                        // (하지만 GAP이 없으므로 딱 붙어있음)
                     }
-                    // 종료일이 이번 주 종료일보다 후면 오른쪽 직각
-                    if (evt.eDate > weekDates[6]) {
+                    // 이번 주보다 이후에 끝나면 오른쪽 직각
+                    if (!isEndInWeek) {
                         bar.style.borderTopRightRadius = '0';
                         bar.style.borderBottomRightRadius = '0';
-                        bar.style.borderRight = 'none';
-                        bar.style.marginRight = '-1px';
                     }
 
-                    // 클릭 이벤트 (상세 팝업)
                     bar.onclick = (e) => {
                         e.stopPropagation();
                         openEventModal(evt.original);
@@ -715,7 +703,6 @@
                     eventsLayer.appendChild(bar);
                 });
 
-                // 조립
                 weekRow.appendChild(dayBgLayer);
                 weekRow.appendChild(eventsLayer);
                 calendarBody.appendChild(weekRow);
@@ -733,7 +720,6 @@
             const time = document.getElementById('modal-time');
             const loc = document.getElementById('modal-location');
 
-            // 배지
             badge.innerText = evt.type || "기타";
             badge.className = "event-modal-badge"; 
             if (evt.type.includes('비정기')) {
@@ -746,13 +732,11 @@
 
             title.innerText = evt.name;
             
-            // 날짜
             const sStr = formatModalDate(evt.startDate);
             const eStr = formatModalDate(evt.endDate);
             if (evt.startDate === evt.endDate) date.innerText = sStr;
             else date.innerText = `${sStr} ~ ${eStr}`;
 
-            // 시간
             const sTime = evt.startTime || "";
             const eTime = evt.endTime || "";
             if(sTime && eTime) time.innerText = `${sTime} ~ ${eTime}`;
