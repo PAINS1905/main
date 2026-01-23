@@ -229,9 +229,10 @@
         }
         .event-bar:hover { opacity: 0.9; transform: scale(1.01); z-index: 10; }
         
-        /* [수정] 색상 클래스 추가 */
+        /* [수정] 색상 클래스 정의 */
         .event-bar.holiday { background-color: #e74c3c; } /* 공휴일 (붉은색) */
         .event-bar.academic { background-color: #3498db; } /* 학사일정 (푸른색) */
+        .event-bar.recruiting { background-color: #0abde3; } /* 리크루팅 (하늘색 - Cyan 계열) */
         .event-bar.irregular { background-color: #e67e22; } /* 비정기활동 (주황색) */
         .event-bar.regular { background-color: #27ae60; } /* 정기활동 (초록색) */
         .event-bar.etc { background-color: #7f8c8d; } /* 그 외 (회색) */
@@ -660,9 +661,10 @@
                     bar.innerText = evt.original.name;
                     bar.className = 'event-bar';
                     
-                    // [수정] 달력 바 색상 조건 추가
+                    // [수정] 달력 바 색상 조건 ('리크루팅' 추가)
                     if (evt.original.type.includes('공휴일')) bar.classList.add('holiday');
                     else if (evt.original.type.includes('학사일정')) bar.classList.add('academic');
+                    else if (evt.original.type.includes('리크루팅')) bar.classList.add('recruiting');
                     else if (evt.original.type.includes('비정기')) bar.classList.add('irregular');
                     else if (evt.original.type.includes('정기')) bar.classList.add('regular');
                     else bar.classList.add('etc');
@@ -725,12 +727,13 @@
             const liDate = document.getElementById('li-date');
             const liTime = document.getElementById('li-time');
 
-            // 1. 뱃지 [수정] 색상 조건 추가
+            // 1. 뱃지 [수정] 색상 조건 추가 ('리크루팅' 추가)
             badge.innerText = evt.type || "기타";
             badge.className = "event-modal-badge"; 
             
             if (evt.type.includes('공휴일')) badge.style.backgroundColor = "#e74c3c";
             else if (evt.type.includes('학사일정')) badge.style.backgroundColor = "#3498db";
+            else if (evt.type.includes('리크루팅')) badge.style.backgroundColor = "#0abde3";
             else if (evt.type.includes('비정기')) badge.style.backgroundColor = "#e67e22";
             else if (evt.type.includes('정기')) badge.style.backgroundColor = "#27ae60";
             else badge.style.backgroundColor = "#7f8c8d";
