@@ -22,7 +22,7 @@ function loadSidebar(currentPage) {
             지원 <span id="support-arrow" style="font-size:0.8rem; transition: transform 0.3s; display:inline-block;">▼</span>
         </a>
         <div class="submenu" id="support-submenu">
-            <a href="javascript:void(0)" onclick="alert('지원 기간이 아닙니다.')" id="link-apply">지원하기</a>
+            <a href="javascript:void(0)" onclick="alert('지원 기간이 아닙니다. 11기 1차 지원은 2월 9일 월요일부터 가능합니다.')" id="link-apply">지원하기</a>
             <a href="javascript:void(0)" onclick="alert('지원 기간이 아닙니다.')" id="link-result">지원 결과 안내</a>
         </div>
     `;
