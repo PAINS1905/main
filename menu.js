@@ -1,16 +1,16 @@
-/* menu.js - v2.1 (메뉴 닫기 버그 수정 완료) */
+/* menu.js - v2.2 (화살표 방향 문제 해결) */
 
 // ============================================================
 // [1] 사이드바 로드 및 초기화
 // ============================================================
 function loadSidebar(currentPage) {
-    console.log("PAINS Menu v2.1 Loaded");
+    console.log("PAINS Menu v2.2 Loaded");
 
     const sidebarHTML = `
         <a href="index.html" id="link-home">Home</a>
         
         <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('members-submenu', 'members-arrow')">
-            Members <span id="members-arrow" style="font-size:0.8rem; transition: transform 0.3s;">▼</span>
+            Members <span id="members-arrow" style="font-size:0.8rem; transition: transform 0.3s; display:inline-block;">▼</span>
         </a>
         <div class="submenu" id="members-submenu">
             <a href="members.html" id="link-members">운영진</a>
@@ -19,7 +19,7 @@ function loadSidebar(currentPage) {
         </div>
 
         <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('support-submenu', 'support-arrow')">
-            지원 <span id="support-arrow" style="font-size:0.8rem; transition: transform 0.3s;">▼</span>
+            지원 <span id="support-arrow" style="font-size:0.8rem; transition: transform 0.3s; display:inline-block;">▼</span>
         </a>
         <div class="submenu" id="support-submenu">
             <a href="javascript:void(0)" onclick="alert('지원 기간이 아닙니다.')" id="link-result">지원 결과 안내</a>
@@ -46,15 +46,15 @@ function loadSidebar(currentPage) {
 
             const parentSubmenu = targetLink.closest('.submenu');
             if (parentSubmenu) {
-                // [수정됨] 강제 스타일(style.xxx)을 제거하고 클래스(.open)만 추가합니다.
-                // 이제 토글 버튼을 누르면 CSS에 의해 정상적으로 닫힙니다.
+                // 메뉴 열기
                 parentSubmenu.classList.add('open');
                 
+                // 화살표 회전 처리
                 const toggleBtn = parentSubmenu.previousElementSibling; 
                 if(toggleBtn) {
                     const arrowSpan = toggleBtn.querySelector('span');
                     if(arrowSpan) {
-                        arrowSpan.innerText = '▲';
+                        // [수정됨] 글자는 바꾸지 않고 회전만 시킵니다.
                         arrowSpan.style.transform = 'rotate(180deg)';
                     }
                 }
@@ -89,7 +89,7 @@ function initGlobalStyles() {
         /* [2] 부드러운 서브메뉴 애니메이션 스타일 */
         .submenu {
             display: block !important; 
-            max-height: 0; /* 기본 상태: 닫힘 */
+            max-height: 0; 
             overflow: hidden;
             opacity: 0;
             transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
@@ -98,7 +98,7 @@ function initGlobalStyles() {
         }
         
         .submenu.open {
-            max-height: 1000px; /* 충분히 큰 값으로 설정하여 열림 효과 */
+            max-height: 1000px; 
             opacity: 1;
             border-bottom: 1px solid #eee !important;
         }
@@ -148,17 +148,17 @@ function toggleSubmenu(menuId, arrowId) {
     const arrow = document.getElementById(arrowId);
     
     if (submenu.classList.contains('open')) {
-        // 닫기
+        // [닫기]
         submenu.classList.remove('open');
         if(arrow) {
-            arrow.innerText = '▼';
+            // 0도로 복귀 (▼ 모양 유지)
             arrow.style.transform = 'rotate(0deg)';
         }
     } else {
-        // 열기
+        // [열기]
         submenu.classList.add('open');
         if(arrow) {
-            arrow.innerText = '▲';
+            // 180도 회전 (▼가 뒤집혀서 ▲처럼 보임)
             arrow.style.transform = 'rotate(180deg)';
         }
     }
