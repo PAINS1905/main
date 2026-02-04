@@ -1,10 +1,10 @@
-/* menu.js - v2.2 (화살표 방향 문제 해결) */
+/* menu.js - v2.3 (지원 메뉴 순서 변경 완료) */
 
 // ============================================================
 // [1] 사이드바 로드 및 초기화
 // ============================================================
 function loadSidebar(currentPage) {
-    console.log("PAINS Menu v2.2 Loaded");
+    console.log("PAINS Menu v2.3 Loaded");
 
     const sidebarHTML = `
         <a href="index.html" id="link-home">Home</a>
@@ -22,8 +22,8 @@ function loadSidebar(currentPage) {
             지원 <span id="support-arrow" style="font-size:0.8rem; transition: transform 0.3s; display:inline-block;">▼</span>
         </a>
         <div class="submenu" id="support-submenu">
-            <a href="javascript:void(0)" onclick="alert('지원 기간이 아닙니다.')" id="link-result">지원 결과 안내</a>
             <a href="javascript:void(0)" onclick="alert('지원 기간이 아닙니다.')" id="link-apply">지원하기</a>
+            <a href="javascript:void(0)" onclick="alert('지원 기간이 아닙니다.')" id="link-result">지원 결과 안내</a>
         </div>
     `;
 
@@ -54,7 +54,6 @@ function loadSidebar(currentPage) {
                 if(toggleBtn) {
                     const arrowSpan = toggleBtn.querySelector('span');
                     if(arrowSpan) {
-                        // [수정됨] 글자는 바꾸지 않고 회전만 시킵니다.
                         arrowSpan.style.transform = 'rotate(180deg)';
                     }
                 }
@@ -151,14 +150,12 @@ function toggleSubmenu(menuId, arrowId) {
         // [닫기]
         submenu.classList.remove('open');
         if(arrow) {
-            // 0도로 복귀 (▼ 모양 유지)
             arrow.style.transform = 'rotate(0deg)';
         }
     } else {
         // [열기]
         submenu.classList.add('open');
         if(arrow) {
-            // 180도 회전 (▼가 뒤집혀서 ▲처럼 보임)
             arrow.style.transform = 'rotate(180deg)';
         }
     }
