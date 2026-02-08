@@ -23,10 +23,14 @@
         body { font-family: 'SCDream', sans-serif; line-height: 1.6; color: #333; }
         h1, h3 { font-family: 'KBO_Dia', sans-serif; }
         
-        /* [수정됨] 강조 문구 붉은색 통일 & 링크 스타일 */
+        /* [수정됨] 강조 문구 붉은색 통일 & 링크 스타일 (밑줄 제거) */
         strong { color: #ab3333; }
-        .inline-link { text-decoration: none; color: inherit; cursor: pointer; }
-        .inline-link:hover { text-decoration: underline; }
+        .inline-link { 
+            text-decoration: none; 
+            color: inherit; 
+            cursor: pointer; /* 커서는 손가락 모양으로 */
+        }
+        /* hover 시 밑줄 생기는 스타일 삭제됨 */
 
         /* ============================ */
         /* [2] 레이아웃 및 헤더         */
@@ -428,7 +432,9 @@
                 <p>선후배 및 부원 간 교류 활동, MT, 스포츠 경기 단체 관람 등 다양한 친목 활동을 진행하고 있습니다.</p>
             </div>
         </div>
-        <p>더 자세한 활동은 <a href="apply.html" class="inline-link"><strong>11기 지원하기 페이지</strong></a>와 <a href="https://www.instagram.com/ku_pains" target="_blank" class="inline-link"><strong>PAINS 공식 인스타그램 계정</strong></a>을 참고해주세요!</p>
+        <p style="margin-top: 30px; text-align: center;">
+            더 자세한 활동은 <a href="apply.html" class="inline-link"><strong>11기 지원하기 페이지</strong></a>와 <a href="https://www.instagram.com/ku_pains" target="_blank" class="inline-link"><strong>PAINS 공식 인스타그램 계정</strong></a>을 참고해주세요!
+        </p>
     </section>
 
     <footer>
