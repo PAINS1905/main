@@ -22,6 +22,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'SCDream', sans-serif; line-height: 1.6; color: #333; }
         h1, h3 { font-family: 'KBO_Dia', sans-serif; }
+        
+        /* [수정됨] 강조 문구 붉은색 통일 & 링크 스타일 */
+        strong { color: #ab3333; }
+        .inline-link { text-decoration: none; color: inherit; cursor: pointer; }
+        .inline-link:hover { text-decoration: underline; }
 
         /* ============================ */
         /* [2] 레이아웃 및 헤더         */
@@ -203,7 +208,7 @@
         .day-cell-bg.today { background-color: #fff5f5; }
         .day-cell-bg.today .day-number { font-weight: bold; color: #ab3333; text-decoration: underline; }
 
-        /* 공휴일 스타일 (일요일과 동일한 빨간색, 우선순위 높음) */
+        /* 공휴일 스타일 */
         .day-cell-bg.holiday .day-number { color: #e74c3c !important; }
 
         /* 일정 표시 레이어 */
@@ -423,7 +428,7 @@
                 <p>선후배 및 부원 간 교류 활동, MT, 스포츠 경기 단체 관람 등 다양한 친목 활동을 진행하고 있습니다.</p>
             </div>
         </div>
-        <p>더 자세한 활동은 <strong>11기 지원하기 페이지</strong>와 <strong>PAINS 공식 인스타그램 계정</strong>을 참고해주세요!</p>
+        <p>더 자세한 활동은 <a href="apply.html" class="inline-link"><strong>11기 지원하기 페이지</strong></a>와 <a href="https://www.instagram.com/ku_pains" target="_blank" class="inline-link"><strong>PAINS 공식 인스타그램 계정</strong></a>을 참고해주세요!</p>
     </section>
 
     <footer>
@@ -1019,5 +1024,3 @@
 
 </body>
 </html>
-
-
