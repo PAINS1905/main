@@ -101,10 +101,17 @@
             font-size: 1.1rem; font-weight: 500; border-bottom: 1px solid #f9f9f9; display: block; 
         }
         .sidebar a:hover { background-color: #fafafa; color: #ab3333; font-weight: bold; }
+
+        /* [★] 수정됨: 메뉴 토글 버튼 (삼각형) 오른쪽 정렬 추가 */
+        .sidebar a.menu-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
         
-        /* [★] 수정됨: 서브메뉴 들여쓰기 스타일 복구 */
+        /* 서브메뉴 들여쓰기 스타일 */
         .submenu a {
-            padding-left: 50px !important; /* 들여쓰기 강제 적용 */
+            padding-left: 50px !important;
             font-size: 0.95rem;
             color: #666;
             background-color: #f8f8f8;
