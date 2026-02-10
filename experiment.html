@@ -13,22 +13,20 @@
         @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); font-weight: normal; font-style: normal; }
         @font-face { font-family: 'SCDream'; src: url('SCDream5.otf'); font-weight: normal; font-style: normal; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; /* 부드러운 스크롤 이동 */ }
         body { font-family: 'SCDream', sans-serif; line-height: 1.6; color: #333; background-color: #fdfdfd; position: relative; }
         h1, h2, h3, h4 { font-family: 'KBO_Dia', sans-serif; }
         
         /* ============================ */
-        /* [★] 추가된 배너 스타일         */
+        /* [★] 배너 스타일 (수정됨)      */
         /* ============================ */
-        
-        /* 공통: 스크롤 이동 동작 */
-        html { scroll-behavior: smooth; }
 
         /* 1. 좌측 윙배너 (Sticky Wing) */
         .left-wing {
             width: 160px;
-            position: fixed; /* 화면 기준 고정 (넓은 화면용) */
+            position: fixed; /* 화면 기준 고정 */
             top: 150px;
-            left: calc(50% - 650px); /* 본문(900px)보다 더 왼쪽으로 배치 */
+            left: calc(50% - 650px); /* 본문(900px)보다 왼쪽 여백에 배치 */
             z-index: 900;
         }
         .wing-box {
@@ -43,32 +41,9 @@
         .wing-box ul { list-style: none; }
         .wing-box li { padding: 8px 0; border-bottom: 1px solid #eee; cursor: pointer; font-size: 13px; transition: 0.2s;}
         .wing-box li:last-child { border-bottom: none; }
-        .wing-box li:hover { color: #ab3333; font-weight: bold; }
+        .wing-box li:hover { color: #ab3333; font-weight: bold; padding-left: 5px; /* 호버 시 살짝 오른쪽 이동 효과 */ }
 
-        /* 2. 우측 플로팅 배너 (Fixed Floating) */
-        .right-floating {
-            position: fixed;
-            top: 200px;
-            right: 30px;
-            width: 100px;
-            z-index: 900;
-        }
-        .quick-menu {
-            background: #fff;
-            border: 2px solid #ab3333;
-            border-radius: 10px;
-            overflow: hidden;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(171, 51, 51, 0.2);
-            cursor: pointer;
-        }
-        .quick-header { background: #ab3333; color: white; padding: 8px 0; font-weight: bold; font-size: 13px; }
-        .quick-item { padding: 10px 5px; border-bottom: 1px solid #eee; transition: 0.2s; }
-        .quick-item:hover { background-color: #f9f9f9; font-weight: bold; color: #ab3333; }
-        .quick-text { font-size: 12px; font-weight: bold; display: block; }
-        .quick-icon { font-size: 20px; display: block; margin-bottom: 3px; }
-
-        /* 3. 하단 고정 배너 (Bottom Sticky) */
+        /* 2. 하단 고정 배너 (Bottom Sticky) */
         .bottom-banner {
             position: fixed;
             bottom: 0;
@@ -97,12 +72,11 @@
             font-size: 14px;
         }
 
-        /* 모바일 대응: 화면이 좁아지면 좌/우 배너 숨김 */
+        /* 모바일 대응: 화면이 좁아지면 윙배너 숨김 */
         @media (max-width: 1300px) {
             .left-wing { display: none; }
         }
-        @media (max-width: 900px) {
-            .right-floating { display: none; }
+        @media (max-width: 768px) {
             .bottom-banner { padding: 10px; flex-direction: column; gap: 5px; }
             .banner-text { font-size: 14px; }
         }
@@ -122,7 +96,6 @@
             z-index: 1000;
         }
         
-        /* 햄버거 버튼 스타일 */
         .hamburger-btn {
             display: flex;
             flex-direction: column;
@@ -145,7 +118,6 @@
         header h1 a { text-decoration: none; color: white; }
         header nav { display: none; } 
 
-        /* 사이드바 스타일 */
         .sidebar {
             position: fixed;
             top: 0;
@@ -162,48 +134,8 @@
             overflow-y: auto;
         }
         .sidebar.active { left: 0; }
-
-        .sidebar a {
-            padding: 15px 30px;
-            text-decoration: none;
-            color: #333;
-            font-size: 1.1rem;
-            font-weight: 500;
-            border-bottom: 1px solid #f9f9f9;
-            transition: background 0.2s, color 0.2s;
-            display: block;
-        }
-        .sidebar a:hover {
-            background-color: #fafafa;
-            color: #ab3333;
-            font-weight: bold;
-        }
-
-        /* 드롭다운 메뉴 스타일 */
-        .sidebar a.menu-toggle {
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .submenu {
-            display: none; 
-            background-color: #f8f8f8;
-            border-bottom: 1px solid #eee;
-        }
-        .submenu.open { display: block; }
-        .submenu a {
-            padding-left: 50px; 
-            font-size: 1rem;
-            color: #666;
-            border-bottom: none;
-        }
-        .submenu a:hover {
-            color: #ab3333;
-            background-color: #f0f0f0;
-        }
-
-        /* 오버레이 */
+        .sidebar a { padding: 15px 30px; text-decoration: none; color: #333; font-size: 1.1rem; font-weight: 500; border-bottom: 1px solid #f9f9f9; display: block; }
+        
         .overlay {
             position: fixed;
             top: 0;
@@ -218,23 +150,21 @@
 
 
         /* ============================ */
-        /* [3] 기존 섹션 스타일 유지     */
+        /* [3] 기존 섹션 스타일          */
         /* ============================ */
-        section { padding: 3rem 2rem; max-width: 900px; margin: 0 auto; }
+        section { padding: 3rem 2rem; max-width: 900px; margin: 0 auto; scroll-margin-top: 80px; /* 헤더 높이 고려 */ }
         h3 { font-size: 1.8rem; color: #2c3e50; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         p { margin-bottom: 10px; }
         strong { color: #ab3333; }
-        footer { background-color: #333; color: white; text-align: center; padding: 3rem 2rem 5rem; /* 하단 배너 공간 확보 */ margin-top: 2rem; font-size: 0.8rem; }
+        footer { background-color: #333; color: white; text-align: center; padding: 3rem 2rem 5rem; margin-top: 2rem; font-size: 0.8rem; }
         .footer-icons { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; }
-        .icon-btn { display: flex; justify-content: center; align-items: center; width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); border-radius: 12px; transition: all 0.3s ease; }
-        .icon-btn:hover { background-color: #ab3333; transform: translateY(-3px); }
+        .icon-btn { display: flex; justify-content: center; align-items: center; width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); border-radius: 12px; }
         .icon-btn img { width: 24px; height: 24px; object-fit: contain; }
 
         .hero-apply { background-color: #ab3333; color: white; text-align: center; padding: 4rem 1rem; }
         .hero-apply h2 { font-size: 2.5rem; margin-bottom: 15px; }
-        .hero-apply p { font-size: 1.2rem; opacity: 0.9; }
-
-        /* 타임라인 */
+        
+        /* 타임라인 스타일 */
         .timeline { position: relative; max-width: 100%; margin: 0 auto; padding: 20px 0; }
         .timeline::after { content: ''; position: absolute; width: 3px; background-color: #eee; top: 50px; bottom: 0; left: 20px; margin-left: -1.5px; }
         .timeline-item { padding: 10px 20px 20px 50px; position: relative; background-color: inherit; width: 100%; }
@@ -242,57 +172,35 @@
         .timeline-content { padding: 15px; background-color: white; position: relative; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 4px solid #ab3333; }
         .timeline-date { font-weight: bold; color: #ab3333; margin-bottom: 5px; display: block; }
         .timeline-title { font-weight: bold; font-size: 1.1rem; }
-
-        /* 투트랙(좌우 분할) 및 헤더 스타일 */
         .track-wrapper { display: flex; gap: 20px; }
         .track-col { flex: 1; }
         .track-col:first-child { border-right: 1px solid #eee; padding-right: 20px; }
         .track-col:last-child { padding-left: 10px; }
-        
         .timeline-header { display: flex; gap: 20px; padding-left: 50px; margin-bottom: 10px; }
         .header-col { flex: 1; text-align: center; background-color: #eee; padding: 8px; border-radius: 8px; font-weight: bold; color: #555; }
-        
         .track-label { display: none; font-size: 0.85rem; color: #555; background-color:#eee; padding:2px 8px; border-radius:4px; margin-bottom: 8px; font-weight: bold; }
 
-        /* 부서 소개 카드 */
+        /* 카드 및 기타 요소 */
         .dept-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; }
-        .dept-card { flex: 1; min-width: 250px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 4px solid #cf8b8b; transition: transform 0.2s; }
-        .dept-card:hover { transform: translateY(-5px); }
+        .dept-card { flex: 1; min-width: 250px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 4px solid #cf8b8b; }
         .dept-card h4 { color: #ab3333; margin-bottom: 10px; font-size: 1.2rem; }
-        .dept-card p { font-size: 0.95rem; color: #555; margin: 0; word-break: keep-all; }
-
-        /* 활동 톺아보기 카드 */
+        
         .activity-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 20px; }
-        .activity-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: transform 0.3s; border: 1px solid #eee; }
-        .activity-card:hover { transform: translateY(-5px); }
+        .activity-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee; }
         .activity-img-wrapper { width: 100%; height: 200px; background-color: #f0f0f0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .activity-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
-        .activity-card:hover img { transform: scale(1.05); }
+        .activity-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
         .activity-text { padding: 20px; }
         .activity-text h4 { color: #ab3333; margin-bottom: 10px; font-size: 1.2rem; }
-        .activity-text p { font-size: 0.95rem; color: #555; margin: 0; line-height: 1.5; word-break: keep-all; }
 
-        /* 체크리스트 */
         .check-list { list-style: none; padding: 0; }
         .check-list li { position: relative; padding-left: 25px; margin-bottom: 10px; font-size: 1rem; color: #444; }
         .check-list li::before { content: '✔'; position: absolute; left: 0; top: 0; color: #ab3333; font-weight: bold; }
 
-        /* 차트 컨테이너 */
         .chart-container-wrapper { display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; margin-top: 30px; }
         .chart-box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; display: flex; flex-direction: column; }
         .chart-box.full-width { flex: 0 0 100%; height: 180px; }
         .chart-box.half-width { flex: 1 1 calc(50% - 20px); height: 400px; min-width: 300px; }
-        .chart-box canvas { flex: 1; width: 100% !important; height: 100% !important; max-height: 300px; }
-        .chart-box h4 { margin-bottom: 15px; color: #ab3333; font-size: 1.1rem; }
-
-        /* 모바일 대응 */
-        @media (max-width: 768px) {
-            header { justify-content: flex-start; }
-            section { padding: 3rem 1rem; }
-            .chart-box.half-width { flex: 0 0 100%; min-width: 0; height: 480px; max-height: 480px; display: flex; flex-direction: column; justify-content: center; }
-            .chart-box.half-width canvas { max-height: 300px !important; width: 100% !important; margin: 0 auto; }
-        }
-
+        
         /* 지원하기 버튼 */
         .apply-cta { text-align: center; padding: 5rem 2rem; background-color: #f9f9f9; border-top: 1px solid #eee; }
         .btn-apply-big { display: inline-block; background-color: #ab3333; color: white; padding: 18px 50px; border-radius: 40px; font-size: 1.4rem; font-weight: bold; text-decoration: none; transition: background 0.3s, transform 0.2s; box-shadow: 0 8px 20px rgba(171, 51, 51, 0.3); }
@@ -303,10 +211,8 @@
             .chart-container-wrapper { flex-direction: column; }
             .dept-container { flex-direction: column; }
             .activity-container { grid-template-columns: 1fr; } 
-            
             .timeline-header { display: none; }
             .track-label { display: inline-block; }
-
             .track-wrapper { flex-direction: column; gap: 15px; }
             .track-col:first-child { border-right: none; border-bottom: 1px solid #eee; padding-right: 0; padding-bottom: 15px; }
             .track-col:last-child { padding-left: 0; }
@@ -315,36 +221,23 @@
 </head>
 <body>
 
-    <aside class="left-wing" onclick="scrollToApply()">
+    <aside class="left-wing">
         <div class="wing-box">
             <h3>📌 QUICK MENU</h3>
             <ul>
-                <li>모집 개요</li>
-                <li>동아리 소개</li>
-                <li>활동 일정</li>
-                <li>회비 안내</li>
-                <li>문의하기</li>
-                <li style="color: #ab3333; font-weight: bold;">지원하기 &gt;</li>
+                <li onclick="scrollToId('sec-overview')">모집 개요</li>
+                <li onclick="scrollToId('sec-intro')">동아리 소개</li>
+                <li onclick="scrollToId('sec-recruit')">모집 일정</li>
+                <li onclick="scrollToId('sec-activity')">활동 일정</li>
+                <li onclick="scrollToId('sec-fee')">회비 안내</li>
+                <li onclick="scrollToId('sec-contact')">문의하기</li>
+                <li style="color: #ab3333; font-weight: bold;" onclick="scrollToId('apply-target')">지원하기 &gt;</li>
             </ul>
         </div>
     </aside>
 
-    <div class="right-floating" onclick="scrollToApply()">
-        <div class="quick-menu">
-            <div class="quick-header">11기 모집</div>
-            <div class="quick-item">
-                <span class="quick-icon">📝</span>
-                <span class="quick-text">지원하기</span>
-            </div>
-            <div class="quick-item">
-                <span class="quick-icon">💬</span>
-                <span class="quick-text">문의하기</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="bottom-banner" onclick="scrollToApply()">
-        <span class="banner-text">🔥 PAINS 11기 신입부원 지원하기</span>
+    <div class="bottom-banner" onclick="scrollToId('apply-target')">
+        <span class="banner-text">🔥 PAINS 11기 신입부원 모집 마감 임박!</span>
         <button class="banner-btn">지금 지원하기 &gt;</button>
     </div>
 
@@ -365,7 +258,7 @@
         <p>고려대학교 교내 유일 스포츠 통계분석 동아리 PAINS가 11기 신입부원을 모집합니다.</p>
     </div>
 
-    <section>
+    <section id="sec-overview">
         <h3>📢 모집 개요</h3>
         <p>
             스포츠 통계분석 동아리 PAINS가 <strong>2026년을 함께할 11기 신입 부원</strong>을 모집합니다!<br>
@@ -375,7 +268,7 @@
         </p>
     </section>
 
-    <section>
+    <section id="sec-intro">
         <h3>🎯 동아리 소개</h3>
         <p style="margin-bottom: 20px;">
             현재 PAINS는 45명의 부원들이 하나의 관심사를 깊이 나누며 활동하고 있습니다. <br>
@@ -470,7 +363,7 @@
         </div>
     </section>
 
-    <section>
+    <section id="sec-recruit">
         <h3>📅 모집 일정</h3>
         
         <div class="timeline-header">
@@ -563,7 +456,7 @@
         </div>
     </section>
 
-    <section style="background-color: #fafafa;">
+    <section id="sec-activity" style="background-color: #fafafa;">
         <div style="margin-bottom: 40px;">
             <h3>✅ 지원 자격</h3>
             <ul class="check-list">
@@ -597,7 +490,7 @@
         </div>
     </section>
 
-    <section>
+    <section id="sec-fee">
         <h3>💸 회비 안내</h3>
         <p style="font-size: 1.1rem; color: #ab3333; font-weight: bold;">학기 당 3만~3만 5천원 (추후 확정)</p>
         <p style="font-size: 0.95rem; color: #666; background: #eee; padding: 15px; border-radius: 8px;">
@@ -606,7 +499,7 @@
         </p>
     </section>
 
-    <section style="padding-bottom: 2rem;">
+    <section id="sec-contact" style="padding-bottom: 2rem;">
         <h3 style="text-align: center;">📞 문의사항</h3>
         <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; text-align: center;">
             <div style="flex: 1; min-width: 250px; background: #f9f9f9; padding: 15px; border-radius: 8px;">
@@ -646,10 +539,11 @@
     </script>
     
     <script>
-        function scrollToApply() {
-            const element = document.getElementById("apply-target");
+        function scrollToId(id) {
+            const element = document.getElementById(id);
             if(element) {
-                element.scrollIntoView({ behavior: "smooth", block: "center" });
+                // 부드럽게 중앙으로 이동, 상단 여백 고려
+                element.scrollIntoView({ behavior: "smooth", block: "start" });
             }
         }
     </script>
