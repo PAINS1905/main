@@ -13,7 +13,7 @@
         @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); font-weight: normal; font-style: normal; }
         @font-face { font-family: 'SCDream'; src: url('SCDream5.otf'); font-weight: normal; font-style: normal; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; /* 부드러운 스크롤 이동 */ }
+        html { scroll-behavior: smooth; }
         body { font-family: 'SCDream', sans-serif; line-height: 1.6; color: #333; background-color: #fdfdfd; position: relative; }
         h1, h2, h3, h4 { font-family: 'KBO_Dia', sans-serif; }
         
@@ -23,10 +23,10 @@
 
         /* 1. 좌측 윙배너 (Sticky Wing) */
         .left-wing {
-            width: 160px;
-            position: fixed; /* 화면 기준 고정 */
+            width: 170px; /* 글자 길이에 맞춰 너비 약간 증가 */
+            position: fixed;
             top: 150px;
-            left: calc(50% - 650px); /* 본문(900px)보다 왼쪽 여백에 배치 */
+            left: calc(50% - 660px); /* 본문보다 왼쪽 */
             z-index: 900;
         }
         .wing-box {
@@ -37,13 +37,42 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             border-top: 3px solid #ab3333;
         }
-        .wing-box h3 { font-size: 15px; margin-bottom: 10px; color: #ab3333; }
+        .wing-box h3 { 
+            font-size: 15px; 
+            margin-bottom: 10px; 
+            color: #ab3333; 
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 8px;
+        }
         .wing-box ul { list-style: none; }
-        .wing-box li { padding: 8px 0; border-bottom: 1px solid #eee; cursor: pointer; font-size: 13px; transition: 0.2s;}
+        .wing-box li { 
+            padding: 8px 0; 
+            border-bottom: 1px solid #eee; 
+            cursor: pointer; 
+            font-size: 13px; 
+            transition: all 0.2s ease;
+            color: #666;
+        }
         .wing-box li:last-child { border-bottom: none; }
-        .wing-box li:hover { color: #ab3333; font-weight: bold; padding-left: 5px; /* 호버 시 살짝 오른쪽 이동 효과 */ }
+        
+        /* [★] 활성화(Active) 상태 스타일 */
+        /* 스크롤 위치에 따라 자바스크립트가 이 클래스를 붙였다 뗐다 합니다. */
+        .wing-box li.active {
+            color: #ab3333;
+            font-weight: bold;
+            padding-left: 5px; /* 강조 효과 */
+        }
+        .wing-box li.active::after {
+            content: ' >'; /* 활성화 시 화살표 생성 */
+        }
+        
+        /* 호버 효과 (활성화 안 된 것도 마우스 올리면 반응) */
+        .wing-box li:hover { 
+            color: #ab3333; 
+        }
 
-        /* 2. 하단 고정 배너 (Bottom Sticky) */
+        /* 2. 하단 고정 배너 */
         .bottom-banner {
             position: fixed;
             bottom: 0;
@@ -72,7 +101,7 @@
             font-size: 14px;
         }
 
-        /* 모바일 대응: 화면이 좁아지면 윙배너 숨김 */
+        /* 모바일 대응 */
         @media (max-width: 1300px) {
             .left-wing { display: none; }
         }
@@ -95,7 +124,6 @@
             position: relative;
             z-index: 1000;
         }
-        
         .hamburger-btn {
             display: flex;
             flex-direction: column;
@@ -113,7 +141,6 @@
             border-radius: 3px;
             transition: all 0.3s ease;
         }
-
         header h1 { font-size: 1.5rem; font-weight: bold; margin: 0; }
         header h1 a { text-decoration: none; color: white; }
         header nav { display: none; } 
@@ -150,9 +177,9 @@
 
 
         /* ============================ */
-        /* [3] 기존 섹션 스타일          */
+        /* [3] 본문 스타일               */
         /* ============================ */
-        section { padding: 3rem 2rem; max-width: 900px; margin: 0 auto; scroll-margin-top: 80px; /* 헤더 높이 고려 */ }
+        section { padding: 3rem 2rem; max-width: 900px; margin: 0 auto; scroll-margin-top: 80px; /* 헤더 공간 확보 */ }
         h3 { font-size: 1.8rem; color: #2c3e50; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         p { margin-bottom: 10px; }
         strong { color: #ab3333; }
@@ -164,7 +191,7 @@
         .hero-apply { background-color: #ab3333; color: white; text-align: center; padding: 4rem 1rem; }
         .hero-apply h2 { font-size: 2.5rem; margin-bottom: 15px; }
         
-        /* 타임라인 스타일 */
+        /* 타임라인 */
         .timeline { position: relative; max-width: 100%; margin: 0 auto; padding: 20px 0; }
         .timeline::after { content: ''; position: absolute; width: 3px; background-color: #eee; top: 50px; bottom: 0; left: 20px; margin-left: -1.5px; }
         .timeline-item { padding: 10px 20px 20px 50px; position: relative; background-color: inherit; width: 100%; }
@@ -180,7 +207,7 @@
         .header-col { flex: 1; text-align: center; background-color: #eee; padding: 8px; border-radius: 8px; font-weight: bold; color: #555; }
         .track-label { display: none; font-size: 0.85rem; color: #555; background-color:#eee; padding:2px 8px; border-radius:4px; margin-bottom: 8px; font-weight: bold; }
 
-        /* 카드 및 기타 요소 */
+        /* 기타 요소 */
         .dept-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; }
         .dept-card { flex: 1; min-width: 250px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 4px solid #cf8b8b; }
         .dept-card h4 { color: #ab3333; margin-bottom: 10px; font-size: 1.2rem; }
@@ -225,13 +252,13 @@
         <div class="wing-box">
             <h3>11기 신입부원 모집</h3>
             <ul>
-                <li onclick="scrollToId('sec-overview')">모집 개요</li>
-                <li onclick="scrollToId('sec-intro')">동아리 소개</li>
-                <li onclick="scrollToId('sec-recruit')">모집 일정</li>
-                <li onclick="scrollToId('sec-activity')">활동 일정</li>
-                <li onclick="scrollToId('sec-fee')">회비 안내</li>
-                <li onclick="scrollToId('sec-contact')">문의하기</li>
-                <li style="color: #ab3333; font-weight: bold;" onclick="scrollToId('apply-target')">지원하기 &gt;</li>
+                <li data-target="sec-overview" onclick="scrollToId('sec-overview')">모집 개요</li>
+                <li data-target="sec-intro" onclick="scrollToId('sec-intro')">동아리 소개</li>
+                <li data-target="sec-recruit" onclick="scrollToId('sec-recruit')">모집 일정</li>
+                <li data-target="sec-activity" onclick="scrollToId('sec-activity')">활동 일정</li>
+                <li data-target="sec-fee" onclick="scrollToId('sec-fee')">회비 안내</li>
+                <li data-target="sec-contact" onclick="scrollToId('sec-contact')">문의하기</li>
+                <li data-target="apply-target" onclick="scrollToId('apply-target')">지원하기</li>
             </ul>
         </div>
     </aside>
@@ -542,18 +569,52 @@
         function scrollToId(id) {
             const element = document.getElementById(id);
             if(element) {
-                // 부드럽게 중앙으로 이동, 상단 여백 고려
                 element.scrollIntoView({ behavior: "smooth", block: "start" });
             }
         }
+
+        // [★] 스크롤 감지 및 메뉴 활성화 (ScrollSpy)
+        document.addEventListener("DOMContentLoaded", function() {
+            const sections = [
+                "sec-overview", "sec-intro", "sec-recruit", 
+                "sec-activity", "sec-fee", "sec-contact", "apply-target"
+            ];
+            const menuItems = document.querySelectorAll(".wing-box li");
+
+            window.addEventListener("scroll", () => {
+                let current = "";
+                const scrollPos = window.scrollY + 200; // 헤더 높이 등을 고려한 오프셋
+
+                sections.forEach(sectionId => {
+                    const section = document.getElementById(sectionId);
+                    if (section) {
+                        const sectionTop = section.offsetTop;
+                        const sectionHeight = section.offsetHeight;
+                        if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                            current = sectionId;
+                        }
+                    }
+                });
+
+                // 페이지 끝에 도달하면 무조건 마지막 '지원하기' 활성화
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50) {
+                    current = "apply-target";
+                }
+
+                menuItems.forEach(li => {
+                    li.classList.remove("active");
+                    if (li.getAttribute("data-target") === current) {
+                        li.classList.add("active");
+                    }
+                });
+            });
+        });
     </script>
 
     <script>
-        // loadSidebar('apply'); // 이 부분은 menu.js가 있어야 작동하므로 일단 주석 처리하지 않음
+        // loadSidebar('apply'); 
 
-        // ============================
         // 1. 성별 분포
-        // ============================
         const ctxGender = document.getElementById('skillsChart').getContext('2d');
         new Chart(ctxGender, {
             type: 'bar',
@@ -571,9 +632,7 @@
             }
         });
 
-        // ============================
         // 2. 전공 분포
-        // ============================
         const ctxMajor = document.getElementById('majorChart').getContext('2d');
         const rawLabels = ['데이터과학과', '통계학과', '중어중문학과', '경제학과', '언어학과', '컴퓨터학과', '경영학과', '행정학과', '화학과', '사회학과', '국제학부', '영어영문학과', '기계공학부', '화공생명공학과', '스마트보안학부', '미디어학부', '교육학과', '산업경영공학부', '보건환경융합과학부', '불어불문학과', '체육교육과', '한문학', '서어서문학과'];
         const rawData = [6, 6, 4, 3, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
@@ -593,9 +652,7 @@
             options: { responsive: true, maintainAspectRatio: false, layout: { padding: 10 }, plugins: { legend: { position: window.innerWidth < 600 ? 'bottom' : 'right', labels: { color: '#333', boxWidth: 12, font: { size: 11 } } } } }
         });
 
-        // ============================
         // 3. 학번 분포
-        // ============================
         const ctxId = document.getElementById('idChart').getContext('2d');
         new Chart(ctxId, {
             type: 'bar',
