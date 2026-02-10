@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대구FC 배너 디자인 예시</title>
+    <style>
+        /* 기본 초기화 및 스타일 */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 메인 레이아웃 (중앙 정렬) */
+        .container {
+            display: flex;
+            width: 1200px; /* 윙배너를 위해 넓은 폭 확보 */
+            margin: 0 auto;
+            padding-top: 20px;
+            gap: 20px;
+            position: relative; /* 자식 요소의 기준점 */
+        }
+
+        /* --- 1. 좌측 윙배너 (Sticky 방식) --- */
+        /* 특징: 부모 요소(container) 안에서 스크롤을 따라다님 */
+        .left-wing {
+            width: 180px;
+            height: fit-content; /* 내용물만큼만 높이 차지 */
+            position: sticky; /* 스크롤 따라오기 핵심 속성 */
+            top: 20px; /* 상단에서 20px 떨어진 곳에 자석처럼 붙음 */
+        }
+
+        .category-box {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .category-box h3 { font-size: 16px; margin-bottom: 10px; color: #0087D1; }
+        .category-box ul { list-style: none; }
+        .category-box li { padding: 8px 0; border-bottom: 1px solid #eee; cursor: pointer; }
+        .category-box li:last-child { border-bottom: none; }
+        .category-box li:hover { color: #0087D1; font-weight: bold; }
+
+
+        /* --- 메인 콘텐츠 영역 --- */
+        .main-content {
+            flex: 1; /* 남은 공간 다 차지 */
+            background: white;
+            min-height: 2000px; /* 스크롤을 만들기 위한 강제 높이 */
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .news-item { margin-bottom: 40px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .news-title { font-size: 24px; margin-bottom: 10px; color: #1a1a1a; }
+        .news-meta { color: #888; font-size: 14px; margin-bottom: 15px; }
+
+
+        /* --- 2. 우측 플로팅 배너 (Fixed 방식) --- */
+        /* 특징: 레이아웃 무시하고 화면(Viewport) 기준으로 둥둥 떠있음 */
+        .right-floating {
+            position: fixed; /* 화면 기준 절대 고정 */
+            top: 150px;
+            right: 50px; /* 화면 오른쪽 끝에서 50px 거리 */
+            width: 120px;
+            z-index: 100; /* 다른 요소보다 위에 뜨도록 */
+        }
+
+        .quick-menu {
+            background: #fff;
+            border: 2px solid #0087D1; /* 대구FC 스카이블루 */
+            border-radius: 10px;
+            overflow: hidden;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,135,209, 0.2);
+        }
+        .quick-header {
+            background: #0087D1;
+            color: white;
+            padding: 10px 0;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .quick-item {
+            padding: 15px 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .quick-item:hover { background-color: #f9f9f9; }
+        .quick-icon { font-size: 24px; margin-bottom: 5px; display: block; }
+        .quick-text { font-size: 12px; font-weight: bold; color: #333; }
+        .top-btn {
+            background: #333;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+
+        /* --- 3. 하단 고정 배너 (Fixed Bottom) --- */
+        .bottom-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(90deg, #0087D1, #00498c);
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            z-index: 999;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+        .banner-text { font-size: 18px; font-weight: bold; }
+        .banner-btn {
+            background: #fff;
+            color: #00498c;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .banner-btn:hover { transform: scale(1.05); }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <aside class="left-wing">
+            <div class="category-box">
+                <h3>⚽ 대구FC 리그</h3>
+                <ul>
+                    <li>K리그1 순위</li>
+                    <li>선수단 기록</li>
+                    <li>경기 일정/결과</li>
+                    <li>구단 뉴스</li>
+                    <li>DGB대구은행파크</li>
+                </ul>
+            </div>
+            <div class="category-box" style="margin-top: 15px;">
+                <h3>📢 공지사항</h3>
+                <p style="font-size:13px; color:#666; margin-top:5px;">
+                    홈경기 예매 일정 변경 안내...
+                </p>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <h1 style="color:#00498c; margin-bottom: 20px;">DaeGu FC Weekly News</h1>
+            
+            <div class="news-item">
+                <h2 class="news-title">세징야, '이달의 선수상' 도전... 팬 투표 시작</h2>
+                <p class="news-meta">2026.02.10 | 구단 사무국</p>
+                <p>대구의 심장 세징야 선수가 이번 달 눈부신 활약을 바탕으로 K리그 '이달의 선수상' 후보에 올랐습니다. 팬 여러분의 많은 투표 부탁드립니다. (스크롤을 내려 배너들의 움직임을 확인해보세요.)</p>
+                <div style="background:#eee; height: 300px; margin-top:10px; display:flex; align-items:center; justify-content:center; color:#999;">이미지 영역</div>
+            </div>
+
+            <div class="news-item">
+                <h2 class="news-title">다음 홈경기 'SKY BLUE DAY' 개최 안내</h2>
+                <p class="news-meta">2026.02.09 | 마케팅팀</p>
+                <p>오는 주말 열리는 홈경기에서는 입장 관중 전원에게 스카이블루 응원 타월을 증정합니다. 대구은행파크를 하늘빛으로 물들여주세요!</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. ... (내용 생략) ...</p>
+                <div style="background:#eee; height: 300px; margin-top:10px; display:flex; align-items:center; justify-content:center; color:#999;">이미지 영역</div>
+            </div>
+
+            <div class="news-item">
+                <h2 class="news-title">유소년 클럽 공개 테스트 진행</h2>
+                <p class="news-meta">2026.02.08 | 유소년팀</p>
+                <p>미래의 대구FC를 이끌어갈 유소년 선수들을 모집합니다. 자세한 내용은 하단 배너를 참고하세요.</p>
+                <p>스크롤 테스트용 텍스트입니다. 계속 내려보세요. 왼쪽 윙배너는 따라오고, 오른쪽 퀵메뉴는 항상 떠 있습니다.</p>
+                <div style="background:#eee; height: 300px; margin-top:10px; display:flex; align-items:center; justify-content:center; color:#999;">이미지 영역</div>
+            </div>
+             <div class="news-item">
+                <h2 class="news-title">대팍의 열기, 매진 임박!</h2>
+                <p class="news-meta">2026.02.08 | 티켓팀</p>
+                <p>이번 주말 경기 티켓이 거의 매진되었습니다. 예매를 서두르세요!</p>
+                <br><br><br><br><br><br><br><br><br>
+                <p>여기가 콘텐츠의 끝입니다.</p>
+            </div>
+        </main>
+
+        <div style="width: 120px;"></div>
+
+    </div>
+
+    <div class="right-floating">
+        <div class="quick-menu">
+            <div class="quick-header">QUICK</div>
+            <div class="quick-item">
+                <span class="quick-icon">🎫</span>
+                <span class="quick-text">티켓 예매</span>
+            </div>
+            <div class="quick-item">
+                <span class="quick-icon">👕</span>
+                <span class="quick-text">스토어</span>
+            </div>
+            <div class="quick-item">
+                <span class="quick-icon">📅</span>
+                <span class="quick-text">경기 일정</span>
+            </div>
+            <div class="top-btn" onclick="window.scrollTo(0,0)">TOP ▲</div>
+        </div>
+    </div>
+
+    <div class="bottom-banner">
+        <span class="banner-text">🔥 이번 주말 홈경기! 대구 vs 울산 티켓 예매 오픈!</span>
+        <button class="banner-btn">예매하러 가기 &gt;</button>
+    </div>
+
+</body>
+</html>
