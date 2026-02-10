@@ -18,12 +18,12 @@
         h1, h2, h3, h4 { font-family: 'KBO_Dia', sans-serif; }
         
         /* ============================ */
-        /* [★] 배너 스타일 (수정됨)      */
+        /* [★] 배너 스타일 (수정됨)       */
         /* ============================ */
 
         /* 1. 좌측 윙배너 (Sticky Wing) */
         .left-wing {
-            width: 170px; /* 글자 길이에 맞춰 너비 약간 증가 */
+            width: 170px; 
             position: fixed;
             top: 150px;
             left: calc(50% - 660px); /* 본문보다 왼쪽 */
@@ -57,17 +57,15 @@
         .wing-box li:last-child { border-bottom: none; }
         
         /* [★] 활성화(Active) 상태 스타일 */
-        /* 스크롤 위치에 따라 자바스크립트가 이 클래스를 붙였다 뗐다 합니다. */
         .wing-box li.active {
             color: #ab3333;
             font-weight: bold;
-            padding-left: 5px; /* 강조 효과 */
+            padding-left: 5px; 
         }
         .wing-box li.active::after {
-            content: ' >'; /* 활성화 시 화살표 생성 */
+            content: ' >'; 
         }
         
-        /* 호버 효과 (활성화 안 된 것도 마우스 올리면 반응) */
         .wing-box li:hover { 
             color: #ab3333; 
         }
@@ -145,6 +143,7 @@
         header h1 a { text-decoration: none; color: white; }
         header nav { display: none; } 
 
+        /* 사이드바 스타일 (menu.js에서 내용 로드, 스타일은 유지) */
         .sidebar {
             position: fixed;
             top: 0;
@@ -161,7 +160,22 @@
             overflow-y: auto;
         }
         .sidebar.active { left: 0; }
-        .sidebar a { padding: 15px 30px; text-decoration: none; color: #333; font-size: 1.1rem; font-weight: 500; border-bottom: 1px solid #f9f9f9; display: block; }
+        
+        /* sidebar 내부 링크 스타일은 menu.js 로드 후 적용되거나 기본 CSS 사용 */
+        .sidebar a { 
+            padding: 15px 30px; 
+            text-decoration: none; 
+            color: #333; 
+            font-size: 1.1rem; 
+            font-weight: 500; 
+            border-bottom: 1px solid #f9f9f9; 
+            display: block; 
+        }
+        .sidebar a:hover {
+            background-color: #fafafa;
+            color: #ab3333;
+            font-weight: bold;
+        }
         
         .overlay {
             position: fixed;
@@ -177,7 +191,7 @@
 
 
         /* ============================ */
-        /* [3] 본문 스타일               */
+        /* [3] 본문 스타일                */
         /* ============================ */
         section { padding: 3rem 2rem; max-width: 900px; margin: 0 auto; scroll-margin-top: 80px; /* 헤더 공간 확보 */ }
         h3 { font-size: 1.8rem; color: #2c3e50; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
@@ -185,7 +199,8 @@
         strong { color: #ab3333; }
         footer { background-color: #333; color: white; text-align: center; padding: 3rem 2rem 5rem; margin-top: 2rem; font-size: 0.8rem; }
         .footer-icons { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; }
-        .icon-btn { display: flex; justify-content: center; align-items: center; width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); border-radius: 12px; }
+        .icon-btn { display: flex; justify-content: center; align-items: center; width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); border-radius: 12px; transition: all 0.3s ease; }
+        .icon-btn:hover { background-color: #ab3333; transform: translateY(-3px); }
         .icon-btn img { width: 24px; height: 24px; object-fit: contain; }
 
         .hero-apply { background-color: #ab3333; color: white; text-align: center; padding: 4rem 1rem; }
@@ -209,13 +224,16 @@
 
         /* 기타 요소 */
         .dept-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; }
-        .dept-card { flex: 1; min-width: 250px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 4px solid #cf8b8b; }
+        .dept-card { flex: 1; min-width: 250px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 4px solid #cf8b8b; transition: transform 0.2s; }
+        .dept-card:hover { transform: translateY(-5px); }
         .dept-card h4 { color: #ab3333; margin-bottom: 10px; font-size: 1.2rem; }
         
         .activity-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 20px; }
-        .activity-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        .activity-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee; transition: transform 0.3s; }
+        .activity-card:hover { transform: translateY(-5px); }
         .activity-img-wrapper { width: 100%; height: 200px; background-color: #f0f0f0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .activity-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .activity-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .activity-card:hover img { transform: scale(1.05); }
         .activity-text { padding: 20px; }
         .activity-text h4 { color: #ab3333; margin-bottom: 10px; font-size: 1.2rem; }
 
@@ -227,7 +245,9 @@
         .chart-box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; display: flex; flex-direction: column; }
         .chart-box.full-width { flex: 0 0 100%; height: 180px; }
         .chart-box.half-width { flex: 1 1 calc(50% - 20px); height: 400px; min-width: 300px; }
-        
+        .chart-box canvas { flex: 1; width: 100% !important; height: 100% !important; max-height: 300px; }
+        .chart-box h4 { margin-bottom: 15px; color: #ab3333; font-size: 1.1rem; }
+
         /* 지원하기 버튼 */
         .apply-cta { text-align: center; padding: 5rem 2rem; background-color: #f9f9f9; border-top: 1px solid #eee; }
         .btn-apply-big { display: inline-block; background-color: #ab3333; color: white; padding: 18px 50px; border-radius: 40px; font-size: 1.4rem; font-weight: bold; text-decoration: none; transition: background 0.3s, transform 0.2s; box-shadow: 0 8px 20px rgba(171, 51, 51, 0.3); }
@@ -612,7 +632,8 @@
     </script>
 
     <script>
-        // loadSidebar('apply'); 
+        // [수정] 주석 해제하여 menu.js의 기능을 활성화함
+        loadSidebar('apply'); 
 
         // 1. 성별 분포
         const ctxGender = document.getElementById('skillsChart').getContext('2d');
