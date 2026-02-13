@@ -86,17 +86,9 @@
         }
         .overlay.active { display: block; }
 
-        /* [4] 메인 섹션 스타일 (배경 이미지 수정됨) */
+        /* [4] 메인 섹션 스타일 (배경 원래대로 복구) */
         .hero { 
-            /* 폴백 색상 */
             background-color: #ab3333; 
-            
-            /* 배경 이미지 + 검은색 반투명 오버레이 적용 */
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('단체사진.png');
-            background-size: cover;      /* 화면 꽉 차게 */
-            background-position: center; /* 중앙 정렬 */
-            background-repeat: no-repeat;
-            
             color: white; 
             text-align: center; 
             padding: 4rem 1rem; 
@@ -106,6 +98,14 @@
 
         section { padding: 3rem 2rem; max-width: 1000px; margin: 0 auto; }
         h3 { font-size: 1.8rem; color: #2c3e50; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+
+        /* [추가] About Us 단체사진 스타일 */
+        .about-us-image {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin-bottom: 20px; /* 본문과의 간격 */
+        }
 
         /* [5] 달력 스타일 */
         .calendar-container {
@@ -367,6 +367,7 @@
 
     <section>
         <h3>About Us</h3>
+        <img src="단체사진.png" alt="PAINS 단체사진" class="about-us-image">
         <p>
             2020년 설립되어 2026학년도 1학기에 11기로 활동하는 PAINS는 스포츠 통계를 사랑하는 사람들이 모여,
             같이 프로젝트를 수행하며 스포츠 통계학에 대한 학문적 탐구를 진행하는 동아리입니다. <br>
