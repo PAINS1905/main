@@ -86,13 +86,31 @@
         }
         .overlay.active { display: block; }
 
-        /* [4] 메인 섹션 스타일 */
-        .hero { background-color: #ab3333; color: white; text-align: center; padding: 4rem 1rem; }
+        /* [4] 메인 섹션 스타일 (배경 원래대로 복구) */
+        .intro-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .hero { 
+            background-color: #ab3333; 
+            color: white; 
+            text-align: center; 
+            padding: 4rem 1rem; 
+        }
         .hero-image { max-width: 80%; width: 400px; height: auto; margin-bottom: 20px; border-radius: 12px; }
         .hero p { font-size: 1.2rem; opacity: 0.9; }
 
         section { padding: 3rem 2rem; max-width: 1000px; margin: 0 auto; }
         h3 { font-size: 1.8rem; color: #2c3e50; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+
+        /* [추가] About Us 단체사진 스타일 */
+        .about-us-image {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin-bottom: 20px; /* 본문과의 간격 */
+        }
 
         /* [5] 달력 스타일 */
         .calendar-container {
@@ -352,21 +370,18 @@
         <p>고려대학교 교내 유일 스포츠 통계분석 동아리 PAINS</p>
     </div>
 
-    <section>
+    <section class="intro-text">
         <h3>About Us</h3>
+        <img src="단체사진.png" alt="PAINS 단체사진" class="about-us-image">
         <p>
-            2020년 설립되어 2026학년도 1학기에 11기로 활동하는 PAINS는 스포츠 통계를 사랑하는 사람들이 모여,
-            같이 프로젝트를 수행하며 스포츠 통계학에 대한 학문적 탐구를 진행하는 동아리입니다. <br>
-            야구, 축구부터 농구, 배구, F1, e-sports까지 다양한 종목에 대한 흥미와 열정을 지닌 부원들이 매 학기 열정적으로
-            프로젝트를 수행하고 있습니다. 탐구 프로젝트뿐만 아니라, 스포츠 경기 단체 관람, MT, 체육대회 등
-            다양한 친목활동도 개최하여 서로 다른 관심 종목을 가진 부원들 간의 교류도 활발합니다! <br>
-            또한, 비슷한 성격의 학회인 연세대학교 YSAL과 교류하며, 매 기수 합동 세미나를 개최해
-            상호 간 진행한 프로젝트에서 얻은 인사이트를 공유하고 있습니다. <br>
+            2020년 설립되어 2026학년도 1학기에 11기로 활동하는 PAINS는 스포츠 통계를 사랑하는 사람들이 모여, 같이 프로젝트를 수행하며 스포츠 통계에 대한 학문적 탐구를 진행하는 동아리입니다. <br>
+            야구, 축구, 농구, 배구, F1, e-sports등 다양한 종목에 대한 흥미와 열정을 지닌 부원들이 매 학기 열정적으로 프로젝트를 수행하고 있습니다. 탐구 프로젝트뿐만 아니라 스포츠 경기 단체 관람, 연사초청, MT, 체육대회 등 다양한 친목활동을 개최하여 서로 다른 관심 종목을 가진 부원들 간의 교류도 활발하게 진행하고 있습니다. <br>
+            또한 연세대학교 스포츠 통계 분석 학회 YSAL과 교류하며, 매 기수 합동 세미나를 개최해 상호 간 진행한 프로젝트에서 얻은 인사이트를 공유하고 있습니다. <br>
             전공, 학번, 성별에 상관없이 통계 지식과 스포츠에 대한 열정만 있다면 누구든 환영합니다!
         </p>
     </section>
 
-    <section>
+    <section class="intro-text">
         <h3>회장 인사말</h3>
         <p>
             안녕하십니까, 고려대학교 스포츠 통계분석 동아리 PAINS의 11기 회장 전영재입니다. <br>
@@ -920,8 +935,8 @@
                 let endPart = eDateStr;
 
                 if (hasValidTime) {
-                     startPart += ` ${isInvalidTime(sTime) ? '' : sTime}`;
-                     endPart += ` ${isInvalidTime(eTime) ? '' : eTime}`;
+                      startPart += ` ${isInvalidTime(sTime) ? '' : sTime}`;
+                      endPart += ` ${isInvalidTime(eTime) ? '' : eTime}`;
                 }
                 date.innerHTML = `${startPart} -<br>${endPart}`;
 
@@ -1035,4 +1050,3 @@
 
 </body>
 </html>
-
