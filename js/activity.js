@@ -52,16 +52,6 @@
     };
   }
 
-  function isFiltered(state) {
-    return (
-      state.year !== 'all' ||
-      state.generation !== 'all' ||
-      state.period !== 'all' ||
-      state.sport !== 'all' ||
-      normalize(state.q) !== ''
-    );
-  }
-
   function matches(p, state) {
     if (state.year !== 'all' && String(p.year) !== state.year) return false;
     if (state.generation !== 'all' && String(p.generation) !== state.generation) return false;
@@ -92,13 +82,6 @@
   function render() {
     const state = getState();
     const filtered = projects.filter(p => matches(p, state)).sort(sortProjects);
-
-    // "필터 적용 시 제목+다운" 모드
-    if (isFiltered(state)) {
-      elList.classList.add('compact');
-    } else {
-      elList.classList.remove('compact');
-    }
 
     elCount.textContent = `총 ${filtered.length}개`;
 
