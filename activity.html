@@ -175,6 +175,43 @@
       color: #777;
     }
 
+    /* [8] Notion 임베드 */
+    .notion-box {
+      margin: 18px 0 22px;
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+    
+    .notion-box-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid #f1f1f1;
+    }
+    
+    .notion-box-title {
+      font-weight: 700;
+      color: #2c3e50;
+      font-size: 1.0rem;
+    }
+    
+    .notion-frame {
+      width: 100%;
+      height: 900px;   /* 필요하면 700~1200 사이로 조절 */
+      border: 0;
+    }
+    
+    /* 모바일에서는 화면 높이에 맞춰 보기 좋게 */
+    @media (max-width: 900px) {
+      .notion-frame { height: 80vh; }
+    }
+
+
     /* [9] 반응형 */
     @media (max-width: 900px) {
       .filters { grid-template-columns: 1fr 1fr; }
@@ -234,6 +271,28 @@
         <button class="btn" id="btn-reset" type="button">필터 초기화</button>
       </div>
     </div>
+
+        <!-- Notion 자료실 임베드 시작 -->
+    <div class="notion-box" aria-label="Notion 자료실">
+      <div class="notion-box-head">
+        <div class="notion-box-title">Notion 자료실</div>
+
+        <!-- (선택) 새 탭으로 크게 열기 버튼 -->
+        <a class="btn" href="https://painsports.notion.site/963708a98b6b4962bc0c7b5e19b2fa82?source=copy_link" target="_blank" rel="noopener">
+          새 탭으로 열기
+        </a>
+      </div>
+
+      <iframe
+        class="notion-frame"
+        src="https://painsports.notion.site/ebd/963708a98b6b4962bc0c7b5e19b2fa82"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen>
+      </iframe>
+    </div>
+    <!-- Notion 자료실 임베드 끝 -->
+
 
     <div class="results-header">
       <div class="results-count" id="results-count">로딩 중…</div>
