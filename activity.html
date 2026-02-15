@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PAINS - 활동(프로젝트 자료)</title>
+  <style>
+    /* [1] 폰트 설정 */
+    @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); font-weight: normal; font-style: normal; }
+    @font-face { font-family: 'SCDream'; src: url('SCDream5.otf'); font-weight: normal; font-style: normal; }
+
+    /* [2] 기본 스타일 */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'SCDream', sans-serif; line-height: 1.6; color: #333; background-color: #fdfdfd; }
+    header h1, section h2 { font-family: 'KBO_Dia', sans-serif; }
+
+    /* [3] 레이아웃 및 헤더 */
+    header {
+      background-color: #cf8b8b;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      z-index: 1000;
+    }
+    .hamburger-btn {
+      display: flex; flex-direction: column; justify-content: space-between;
+      width: 24px; height: 18px; cursor: pointer; z-index: 1100;
+    }
+    .hamburger-btn span {
+      display: block; width: 100%; height: 2px;
+      background-color: white; border-radius: 3px; transition: all 0.3s ease;
+    }
+    header h1 { font-size: 1.5rem; font-weight: bold; margin: 0; }
+    header h1 a { text-decoration: none; color: white; }
+
+    /* [4] 사이드바/오버레이 (기존 페이지와 동일한 동작) */
+    .sidebar {
+      position: fixed; top: 0; left: -300px; width: 260px; height: 100vh;
+      background-color: white; box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      transition: left 0.3s ease; z-index: 1050; padding-top: 80px;
+      display: flex; flex-direction: column; overflow-y: auto;
+    }
+    .sidebar.active { left: 0; }
+    .sidebar a {
+      padding: 15px 30px; text-decoration: none; color: #333;
+      font-size: 1.1rem; font-weight: 500; border-bottom: 1px solid #f9f9f9;
+      transition: background 0.2s, color 0.2s; display: block;
+    }
+    .sidebar a:hover { background-color: #fafafa; color: #ab3333; font-weight: bold; }
+
+    .sidebar a.menu-toggle { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .submenu { display: none; background-color: #f8f8f8; border-bottom: 1px solid #eee; }
+    .submenu.open { display: block; }
+    .submenu a { padding-left: 50px; font-size: 1rem; color: #666; border-bottom: none; }
+    .submenu a:hover { color: #ab3333; background-color: #f0f0f0; }
+
+    .overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5); display: none; z-index: 1040;
+    }
+    .overlay.active { display: block; }
+
+    /* [5] 본문 */
+    section { padding: 3rem 1rem; max-width: 1100px; margin: 0 auto; }
+    h2 { font-size: 2rem; color: #ab3333; margin-bottom: 12px; text-align: center; }
+    .subnote { text-align: center; color: #666; font-size: 0.95rem; margin-bottom: 28px; }
+    .subnote strong { color: #ab3333; }
+
+    /* [6] 필터 영역 */
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      background: white;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      margin-bottom: 18px;
+    }
+    .filter-item label {
+      display: block;
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 6px;
+    }
+    .filter-item select,
+    .filter-item input {
+      width: 100%;
+      padding: 10px 10px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .filter-item select:focus,
+    .filter-item input:focus {
+      border-color: #ab3333;
+      box-shadow: 0 0 0 3px rgba(171, 51, 51, 0.12);
+    }
+
+    .filter-actions {
+      display: flex;
+      align-items: end;
+      justify-content: flex-end;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+      user-select: none;
+    }
+    .btn:hover { border-color: #ab3333; color: #ab3333; background: #fff7f7; }
+
+    /* [7] 결과 영역 */
+    .results-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 10px 0 12px;
+      padding: 0 2px;
+    }
+    .results-count { color: #666; font-size: 0.95rem; }
+    .results-hint { color: #888; font-size: 0.9rem; }
+
+    .project-list { list-style: none; display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .project-card {
+      background: white;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      padding: 14px 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .project-main { min-width: 0; }
+    .project-title {
+      display: inline-block;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #2c3e50;
+      text-decoration: none;
+      word-break: keep-all;
+    }
+    .project-title:hover { text-decoration: underline; text-decoration-color: rgba(171, 51, 51, 0.6); }
+    .project-meta { margin-top: 6px; color: #777; font-size: 0.9rem; }
+
+    .project-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .btn-download {
+      border-color: #ab3333;
+      background: #ab3333;
+      color: white;
+    }
+    .btn-download:hover { background: #962c2c; border-color: #962c2c; color: white; }
+
+    .empty {
+      background: #fff;
+      border: 1px dashed #ddd;
+      border-radius: 12px;
+      padding: 26px;
+      text-align: center;
+      color: #777;
+    }
+
+    /* [8] "필터 적용 시 제목+다운로드만" 모드 */
+    .compact .project-meta { display: none; }
+
+    /* [9] 반응형 */
+    @media (max-width: 900px) {
+      .filters { grid-template-columns: 1fr 1fr; }
+      .filter-actions { justify-content: stretch; }
+      .filter-actions .btn { width: 100%; }
+    }
+    @media (max-width: 520px) {
+      header { padding: 1rem 1rem; }
+      section { padding: 2.2rem 1rem; }
+      .project-card { flex-direction: column; align-items: stretch; }
+      .project-actions { justify-content: flex-end; }
+    }
+
+    footer { background-color: #333; color: white; text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hamburger-btn" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+    <h1><a href="index.html">Providing Academic INsights for Sports.</a></h1>
+  </header>
+
+  <div class="sidebar" id="sidebar"></div>
+  <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+  <section>
+    <h2>활동 아카이브</h2>
+    <p class="subnote">
+      프로젝트 PDF를 <strong>미리보기(제목 클릭)</strong>하거나 <strong>다운로드</strong>할 수 있어요.
+    </p>
+
+    <div class="filters" aria-label="프로젝트 필터">
+      <div class="filter-item">
+        <label for="filter-year">연도</label>
+        <select id="filter-year"></select>
+      </div>
+      <div class="filter-item">
+        <label for="filter-generation">기수</label>
+        <select id="filter-generation"></select>
+      </div>
+      <div class="filter-item">
+        <label for="filter-period">학기/방학</label>
+        <select id="filter-period"></select>
+      </div>
+      <div class="filter-item">
+        <label for="filter-sport">종목</label>
+        <select id="filter-sport"></select>
+      </div>
+      <div class="filter-item">
+        <label for="filter-q">검색(제목)</label>
+        <input id="filter-q" type="search" placeholder="예) KBO, EPL, 회귀, 승률…" />
+      </div>
+
+      <div class="filter-actions" style="grid-column: 1 / -1;">
+        <button class="btn" id="btn-reset" type="button">필터 초기화</button>
+      </div>
+    </div>
+
+    <div class="results-header">
+      <div class="results-count" id="results-count">로딩 중…</div>
+      <div class="results-hint">* 필터를 적용하면 목록이 "제목 + 다운로드" 중심으로 간단히 표시됩니다.</div>
+    </div>
+
+    <ul class="project-list" id="project-list" aria-label="프로젝트 목록"></ul>
+
+    <div class="empty" id="empty" style="display:none;">
+      조건에 맞는 프로젝트가 없습니다.<br />
+      필터를 줄이거나 검색어를 변경해 보세요.
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 PAINS. All rights reserved.</p>
+  </footer>
+
+  <script>
+    document.write('<script src="menu.js?v=' + new Date().getTime() + '"><\/script>');
+  </script>
+  <script>
+    loadSidebar('activity');
+  </script>
+
+  <script src="js/activity.js"></script>
+</body>
+</html>

@@ -1,13 +1,15 @@
-/* menu.js - v2.4 (지원하기 링크 활성화) */
+/* menu.js - v2.5 (활동 탭 추가) */
 
 // ============================================================
 // [1] 사이드바 로드 및 초기화
 // ============================================================
 function loadSidebar(currentPage) {
-    console.log("PAINS Menu v2.4 Loaded");
+    console.log("PAINS Menu v2.5 Loaded");
 
     const sidebarHTML = `
         <a href="index.html" id="link-home">Home</a>
+
+        <a href="activity.html" id="link-activity">활동</a>
         
         <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('members-submenu', 'members-arrow')">
             Members <span id="members-arrow" style="font-size:0.8rem; transition: transform 0.3s; display:inline-block;">▼</span>
