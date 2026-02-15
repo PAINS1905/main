@@ -175,9 +175,6 @@
       color: #777;
     }
 
-    /* [8] "필터 적용 시 제목+다운로드만" 모드 */
-    .compact .project-meta { display: none; }
-
     /* [9] 반응형 */
     @media (max-width: 900px) {
       .filters { grid-template-columns: 1fr 1fr; }
@@ -240,7 +237,7 @@
 
     <div class="results-header">
       <div class="results-count" id="results-count">로딩 중…</div>
-      <div class="results-hint">* 필터를 적용하면 목록이 "제목 + 다운로드" 중심으로 간단히 표시됩니다.</div>
+      <div class="results-hint">* 제목 클릭: 미리보기(새 탭) / 다운로드 버튼: 파일 저장</div>
     </div>
 
     <ul class="project-list" id="project-list" aria-label="프로젝트 목록"></ul>
