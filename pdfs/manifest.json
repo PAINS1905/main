@@ -1,0 +1,12 @@
+{
+  "projects": [
+    {
+      "title": "예시) 2024-1 KBO 승률 예측",
+      "year": "2024",
+      "generation": "6기",
+      "period": "2024-1학기",
+      "sport": "KBO",
+      "file": "example_2024_1_kbo.pdf"
+    }
+  ]
+}
