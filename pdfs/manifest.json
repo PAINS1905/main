@@ -6,7 +6,7 @@
       "generation": "10기",
       "period": "2025-2학기",
       "sport": "baseball",
-      "file": "10_03_baseball.pdf?v=1"
+      "file": "example1.pdf"
     }, 
     {
       "title": "새로운 프로젝트 제목",
@@ -14,7 +14,7 @@
       "generation": "7기",
       "period": "2025-1학기",
       "sport": "축구",
-      "file": "new_project_file.pdf"
+      "file": "example.pdf"
     }
   ]
 }
