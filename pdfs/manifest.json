@@ -1,12 +1,12 @@
 {
   "projects": [
     {
-      "title": "2024-1 KBO 승률 예측",
-      "year": "2024",
-      "generation": "6기",
-      "period": "2024-1학기",
-      "sport": "KBO",
-      "file": "example_2024_1_kbo.pdf"
+      "title": "KBO 투구 데이터의 정량적 분석과 모델 구축",
+      "year": "2025",
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "baseball",
+      "file": "10_03_baseball.pdf"
     }, 
     {
       "title": "새로운 프로젝트 제목",
