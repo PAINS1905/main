@@ -1,6 +1,22 @@
 {
   "projects": [
     {
+      "title": "역대 KBO 최강팀은?",
+      "year": "2025",
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "baseball",
+      "file": "10_01_baseball.pdf"
+    }, 
+    {
+      "title": "'잠실 구장 이적 효과'는 실재하는가?",
+      "year": "2025",
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "baseball",
+      "file": "10_02_baseball.pdf"
+    }, 
+    {
       "title": "KBO 투구 데이터의 정량적 분석과 모델 구축",
       "year": "2025",
       "generation": "10기",
@@ -9,12 +25,52 @@
       "file": "10_03_baseball.pdf"
     }, 
     {
-      "title": "새로운 프로젝트 제목",
+      "title": "MLB 선수들의 정규시즌과 포스트시즌 성적차이의 통계적 분석",
       "year": "2025",
-      "generation": "7기",
-      "period": "2025-1학기",
-      "sport": "축구",
-      "file": "example.pdf" 
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "baseball",
+      "file": "10_04_baseball.pdf" 
+    },
+    {
+      "title": "5 선수들의 정규시즌과 포스트시즌 성적차이의 통계적 분석",
+      "year": "2025",
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "baseball",
+      "file": "10_05_baseball.pdf" 
+    },
+    {
+      "title": "6 선수들의 정규시즌과 포스트시즌 성적차이의 통계적 분석",
+      "year": "2025",
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "soccer",
+      "file": "10_06_soccer.pdf" 
+    },
+    {
+      "title": "7 선수들의 정규시즌과 포스트시즌 성적차이의 통계적 분석",
+      "year": "2025",
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "esports",
+      "file": "10_07_esports.pdf" 
+    },
+    {
+      "title": "8 선수들의 정규시즌과 포스트시즌 성적차이의 통계적 분석",
+      "year": "2025",
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "f1",
+      "file": "10_08_f1.pdf" 
+    },
+    {
+      "title": "9 선수들의 정규시즌과 포스트시즌 성적차이의 통계적 분석",
+      "year": "2025",
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "soccer",
+      "file": "10_09_soccer.pdf" 
     }
   ]
 }
