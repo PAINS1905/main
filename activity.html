@@ -15,52 +15,24 @@
     header h1, section h2 { font-family: 'KBO_Dia', sans-serif; }
 
     /* [3] 레이아웃 및 헤더 */
-    header {
-      background-color: #cf8b8b;
-      color: white;
-      padding: 1rem 2rem;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      position: relative;
-      z-index: 1000;
-    }
-    .hamburger-btn {
-      display: flex; flex-direction: column; justify-content: space-between;
-      width: 24px; height: 18px; cursor: pointer; z-index: 1100;
-    }
-    .hamburger-btn span {
-      display: block; width: 100%; height: 2px;
-      background-color: white; border-radius: 3px; transition: all 0.3s ease;
-    }
+    header { background-color: #cf8b8b; color: white; padding: 1rem 2rem; display: flex; align-items: center; gap: 20px; position: relative; z-index: 1000; }
+    .hamburger-btn { display: flex; flex-direction: column; justify-content: space-between; width: 24px; height: 18px; cursor: pointer; z-index: 1100; }
+    .hamburger-btn span { display: block; width: 100%; height: 2px; background-color: white; border-radius: 3px; transition: all 0.3s ease; }
     header h1 { font-size: 1.5rem; font-weight: bold; margin: 0; }
     header h1 a { text-decoration: none; color: white; }
 
-    /* [4] 사이드바/오버레이 (기존 페이지와 동일한 동작) */
-    .sidebar {
-      position: fixed; top: 0; left: -300px; width: 260px; height: 100vh;
-      background-color: white; box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-      transition: left 0.3s ease; z-index: 1050; padding-top: 80px;
-      display: flex; flex-direction: column; overflow-y: auto;
-    }
+    /* [4] 사이드바/오버레이 */
+    .sidebar { position: fixed; top: 0; left: -300px; width: 260px; height: 100vh; background-color: white; box-shadow: 2px 0 10px rgba(0,0,0,0.1); transition: left 0.3s ease; z-index: 1050; padding-top: 80px; display: flex; flex-direction: column; overflow-y: auto; }
     .sidebar.active { left: 0; }
-    .sidebar a {
-      padding: 15px 30px; text-decoration: none; color: #333;
-      font-size: 1.1rem; font-weight: 500; border-bottom: 1px solid #f9f9f9;
-      transition: background 0.2s, color 0.2s; display: block;
-    }
+    .sidebar a { padding: 15px 30px; text-decoration: none; color: #333; font-size: 1.1rem; font-weight: 500; border-bottom: 1px solid #f9f9f9; transition: background 0.2s, color 0.2s; display: block; }
     .sidebar a:hover { background-color: #fafafa; color: #ab3333; font-weight: bold; }
-
     .sidebar a.menu-toggle { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
     .submenu { display: none; background-color: #f8f8f8; border-bottom: 1px solid #eee; }
     .submenu.open { display: block; }
     .submenu a { padding-left: 50px; font-size: 1rem; color: #666; border-bottom: none; }
     .submenu a:hover { color: #ab3333; background-color: #f0f0f0; }
 
-    .overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.5); display: none; z-index: 1040;
-    }
+    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: none; z-index: 1040; }
     .overlay.active { display: block; }
 
     /* [5] 본문 */
@@ -81,14 +53,11 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.04);
       margin-bottom: 18px;
     }
-    .filter-item label {
-      display: block;
-      font-size: 0.85rem;
-      color: #666;
-      margin-bottom: 6px;
-    }
+    .filter-item label { display: block; font-size: 0.85rem; color: #666; margin-bottom: 6px; }
+    
     .filter-item select,
-    .filter-item input {
+    .filter-item input,
+    .sort-select {
       width: 100%;
       padding: 10px 10px;
       border: 1px solid #ddd;
@@ -96,17 +65,29 @@
       font-size: 0.95rem;
       outline: none;
     }
-    .filter-item select:focus,
-    .filter-item input:focus {
-      border-color: #ab3333;
-      box-shadow: 0 0 0 3px rgba(171, 51, 51, 0.12);
+    
+    /* 다중 선택 박스 높이 고정 */
+    .filter-item select[multiple] {
+      height: 90px;
+      resize: vertical;
     }
+
+    .filter-item select:focus,
+    .filter-item input:focus,
+    .sort-select:focus { border-color: #ab3333; box-shadow: 0 0 0 3px rgba(171, 51, 51, 0.12); }
 
     .filter-actions {
       display: flex;
-      align-items: end;
+      align-items: center;
       justify-content: flex-end;
+      gap: 10px;
     }
+    
+    .sort-select {
+      width: auto;
+      min-width: 180px;
+    }
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -119,67 +100,34 @@
       font-size: 0.95rem;
       transition: background 0.2s, border-color 0.2s, color 0.2s;
       user-select: none;
+      height: 42px; /* 버튼과 정렬 박스 높이 정렬 */
     }
     .btn:hover { border-color: #ab3333; color: #ab3333; background: #fff7f7; }
 
     /* [7] 결과 영역 */
-    .results-header {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 12px;
-      margin: 10px 0 12px;
-      padding: 0 2px;
-    }
+    .results-header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 10px 0 12px; padding: 0 2px; }
     .results-count { color: #666; font-size: 0.95rem; }
     .results-hint { color: #888; font-size: 0.9rem; }
 
     .project-list { list-style: none; display: grid; grid-template-columns: 1fr; gap: 12px; }
-    .project-card {
-      background: white;
-      border: 1px solid #eee;
-      border-radius: 12px;
-      padding: 14px 14px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-    }
+    .project-card { background: white; border: 1px solid #eee; border-radius: 12px; padding: 14px 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: space-between; gap: 14px; }
     .project-main { min-width: 0; }
-    .project-title {
-      display: inline-block;
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #2c3e50;
-      text-decoration: none;
-      word-break: keep-all;
-    }
+    .project-title { display: inline-block; font-size: 1.05rem; font-weight: 700; color: #2c3e50; text-decoration: none; word-break: keep-all; }
     .project-title:hover { text-decoration: underline; text-decoration-color: rgba(171, 51, 51, 0.6); }
     .project-meta { margin-top: 6px; color: #777; font-size: 0.9rem; }
 
     .project-actions { display: flex; gap: 8px; flex-shrink: 0; }
-    .btn-download {
-      border-color: #ab3333;
-      background: #ab3333;
-      color: white;
-    }
+    .btn-download { border-color: #ab3333; background: #ab3333; color: white; }
     .btn-download:hover { background: #962c2c; border-color: #962c2c; color: white; }
 
-    .empty {
-      background: #fff;
-      border: 1px dashed #ddd;
-      border-radius: 12px;
-      padding: 26px;
-      text-align: center;
-      color: #777;
-    }
+    .empty { background: #fff; border: 1px dashed #ddd; border-radius: 12px; padding: 26px; text-align: center; color: #777; }
 
-    /* [9] 반응형 */
+    /* [8] 반응형 */
     @media (max-width: 900px) {
       .filters { grid-template-columns: 1fr 1fr; }
-      .filter-actions { justify-content: stretch; }
-      .filter-actions .btn { width: 100%; }
+      .filter-actions { justify-content: stretch; flex-wrap: wrap; }
+      .sort-select { flex-grow: 1; }
+      .filter-actions .btn { flex-grow: 1; }
     }
     @media (max-width: 520px) {
       header { padding: 1rem 1rem; }
@@ -205,25 +153,26 @@
   <section>
     <h2>활동 아카이브</h2>
     <p class="subnote">
-      프로젝트 PDF를 <strong>미리보기(제목 클릭)</strong>하거나 <strong>다운로드</strong>할 수 있어요.
+      프로젝트 PDF를 <strong>미리보기(제목 클릭)</strong>하거나 <strong>다운로드</strong>할 수 있어요.<br>
+      <span style="font-size: 0.85rem; color: #888;">* 윈도우는 Ctrl, 맥은 Cmd 키를 누르고 클릭하면 여러 필터를 동시에 선택할 수 있습니다.</span>
     </p>
 
     <div class="filters" aria-label="프로젝트 필터">
       <div class="filter-item">
         <label for="filter-year">연도</label>
-        <select id="filter-year"></select>
+        <select id="filter-year" multiple></select>
       </div>
       <div class="filter-item">
         <label for="filter-generation">기수</label>
-        <select id="filter-generation"></select>
+        <select id="filter-generation" multiple></select>
       </div>
       <div class="filter-item">
         <label for="filter-period">학기/방학</label>
-        <select id="filter-period"></select>
+        <select id="filter-period" multiple></select>
       </div>
       <div class="filter-item">
         <label for="filter-sport">종목</label>
-        <select id="filter-sport"></select>
+        <select id="filter-sport" multiple></select>
       </div>
       <div class="filter-item">
         <label for="filter-q">검색(제목)</label>
@@ -231,11 +180,16 @@
       </div>
 
       <div class="filter-actions" style="grid-column: 1 / -1;">
+        <select id="sort-options" class="sort-select">
+          <option value="none">정렬 안 함 (기본)</option>
+          <option value="name_asc">이름 오름차순 (가~하)</option>
+          <option value="name_desc">이름 내림차순 (하~가)</option>
+          <option value="gen_asc">기수 오름차순 (1기부터)</option>
+          <option value="gen_desc">기수 내림차순 (최신기수부터)</option>
+        </select>
         <button class="btn" id="btn-reset" type="button">필터 초기화</button>
       </div>
     </div>
-
-
 
     <div class="results-header">
       <div class="results-count" id="results-count">로딩 중…</div>
@@ -258,7 +212,7 @@
     document.write('<script src="menu.js?v=' + new Date().getTime() + '"><\/script>');
   </script>
   <script>
-    loadSidebar('activity');
+    if (typeof loadSidebar === 'function') loadSidebar('activity');
   </script>
 
   <script src="js/activity.js"></script>
