@@ -1,0 +1,83 @@
+{
+  "release": {
+    "owner": "pains1905",
+    "repo": "main",
+    "tag": "pdfs",
+    "useLatest": false,
+    "proxy": ""
+  },
+  "projects": [
+    {
+      "title": "역대 KBO 최강팀은?",
+      "year": "2025",
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "baseball",
+      "file": "10_01_baseball.pdf"
+    },
+    {
+      "title": "'잠실 구장 이적 효과'는 실재하는가?",
+      "year": "2025",
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "baseball",
+      "file": "10_02_baseball.pdf"
+    },
+    {
+      "title": "KBO 투구 데이터의 정량적 분석과 모델 구축",
+      "year": "2025",
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "baseball",
+      "file": "10_03_baseball.pdf"
+    },
+    {
+      "title": "MLB 선수들의 정규시즌과 포스트시즌 성적차이의 통계적 분석",
+      "year": "2025",
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "baseball",
+      "file": "10_04_baseball.pdf"
+    },
+    {
+      "title": "어뢰배트 도입 효과 추정",
+      "year": "2025",
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "baseball",
+      "file": "10_05_baseball.pdf"
+    },
+    {
+      "title": "2026 북중미 월드컵 예측 및 대한민국의 전술 분석",
+      "year": "2025",
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "soccer",
+      "file": "10_06_soccer.pdf"
+    },
+    {
+      "title": "리그 성적이 월즈(WORLDS) 성적과 유의미한 차이를 보이는 이유는 무엇일까?",
+      "year": "2025",
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "esports",
+      "file": "10_07_esports.pdf"
+    },
+    {
+      "title": "회귀분석을 이용한 팀메이트 간 실력 비교 지표 제시",
+      "year": "2025",
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "f1",
+      "file": "10_08_f1.pdf"
+    },
+    {
+      "title": "끊어진 연결고리: 데이터로 시각화한 2024 전북의 붕괴",
+      "year": "2025",
+      "generation": "10기",
+      "period": "2025-2학기",
+      "sport": "soccer",
+      "file": "10_09_soccer.pdf"
+    }
+  ]
+}
