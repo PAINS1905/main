@@ -20,6 +20,7 @@
     period: $('filter-period'),
     sport: $('filter-sport'),
     q: $('filter-q'),
+    sort: $('sort-options'), // 정렬 엘리먼트 추가
     reset: $('btn-reset'),
     list: $('project-list'),
     count: $('results-count'),
@@ -39,7 +40,6 @@
 
   function coerceProjects(json) {
     if (Array.isArray(json)) {
-      // ["a.pdf", "b.pdf"] 형태도 허용
       if (json.every((x) => typeof x === 'string')) {
         return json
           .filter(isPdfFile)
@@ -48,7 +48,6 @@
             file,
           }));
       }
-      // [{...}, {...}] 형태
       return json;
     }
     if (json && Array.isArray(json.projects)) return json.projects;
@@ -70,13 +69,10 @@
     return Array.from(new Set(values.filter((v) => norm(v) !== '').map((v) => norm(v))));
   }
 
-  function fillSelect(selectEl, values, allLabel = '전체') {
+  // 다중 선택 박스에는 '전체' 옵션 생략 (아무것도 선택 안 함 = 전체)
+  function fillSelect(selectEl, values) {
     if (!selectEl) return;
     selectEl.innerHTML = '';
-    const optAll = document.createElement('option');
-    optAll.value = '';
-    optAll.textContent = allLabel;
-    selectEl.appendChild(optAll);
 
     values.forEach((v) => {
       const opt = document.createElement('option');
@@ -84,6 +80,14 @@
       opt.textContent = v;
       selectEl.appendChild(opt);
     });
+  }
+
+  // select[multiple]에서 선택된 값들을 배열로 반환
+  function getSelectedValues(selectEl) {
+    if (!selectEl) return [];
+    return Array.from(selectEl.selectedOptions)
+      .map(opt => norm(opt.value))
+      .filter(v => v !== '');
   }
 
   function buildFilters(projects) {
@@ -101,10 +105,10 @@
     const periods = unique(projects.map((p) => p.period)).sort((a, b) => a.localeCompare(b, 'ko'));
     const sports = unique(projects.map((p) => p.sport)).sort((a, b) => a.localeCompare(b, 'ko'));
 
-    fillSelect(els.year, years, '전체');
-    fillSelect(els.gen, gens, '전체');
-    fillSelect(els.period, periods, '전체');
-    fillSelect(els.sport, sports, '전체');
+    fillSelect(els.year, years);
+    fillSelect(els.gen, gens);
+    fillSelect(els.period, periods);
+    fillSelect(els.sport, sports);
   }
 
   function projectMeta(p) {
@@ -120,10 +124,8 @@
   // PDF 링크 생성 (local / release)
   // ---------------------------
 
-  // "pdfs/파일명.pdf" 형태를 안전하게 URL로 만들기
   function localPdfUrl(file) {
     const f = norm(file);
-    // encodeURI는 공백/한글 등을 인코딩하면서 '/'는 보존합니다.
     return encodeURI(`pdfs/${f}`);
   }
 
@@ -149,7 +151,6 @@
     if (!f) return null;
 
     if (releaseCfg.useLatest) {
-      // https://github.com/<owner>/<repo>/releases/latest/download/<file>
       return `https://github.com/${releaseCfg.owner}/${releaseCfg.repo}/releases/latest/download/${encodeURIComponent(f)}`;
     }
 
@@ -157,9 +158,6 @@
     return `https://github.com/${releaseCfg.owner}/${releaseCfg.repo}/releases/download/${encodeURIComponent(tag)}/${encodeURIComponent(f)}`;
   }
 
-  // pdf.js 뷰어에서 사용할 "프록시 URL" (선택)
-  // - release asset은 CORS 헤더가 없어 pdf.js가 직접 읽기 어려운 경우가 많습니다.
-  // - proxy를 설정하면: proxy + encodeURIComponent(releaseUrl) 로 우회합니다.
   function maybeProxyUrl(directUrl) {
     if (!releaseCfg) return null;
     const base = norm(releaseCfg.proxy);
@@ -175,8 +173,8 @@
     const params = new URLSearchParams();
     if (title) params.set('title', title);
     if (file) params.set('file', file);
-    if (srcUrl) params.set('src', srcUrl);       // pdf.js가 로드할 URL(프록시 포함 가능)
-    if (directUrl) params.set('direct', directUrl); // 원본 URL(열기 버튼용)
+    if (srcUrl) params.set('src', srcUrl);
+    if (directUrl) params.set('direct', directUrl);
     if (downloadUrl) params.set('download', downloadUrl);
     return `${VIEWER_PAGE}?${params.toString()}`;
   }
@@ -184,9 +182,6 @@
   function pdfLinksForProject(p) {
     const file = norm(p.file);
     const title = norm(p.title) || file || '제목 없음';
-
-    // 프로젝트 단위로 local/release 강제하고 싶으면 origin 필드를 쓸 수 있게 해둠
-    // - origin: "local" | "release"
     const origin = norm(p.origin).toLowerCase();
 
     const local = localPdfUrl(file);
@@ -195,7 +190,6 @@
     const directUrl = (origin === 'local') ? local : (origin === 'release' ? release : (releaseCfg ? release : local));
     const downloadUrl = directUrl;
 
-    // pdf.js가 읽을 URL: (릴리즈면 proxy가 있으면 proxy 우선)
     const srcUrl = (directUrl && releaseCfg && directUrl.startsWith('https://github.com/'))
       ? (maybeProxyUrl(directUrl) || directUrl)
       : directUrl;
@@ -221,7 +215,6 @@
       const title = norm(p.title) || norm(p.file) || '제목 없음';
       const file = norm(p.file);
 
-      // file이 없으면 렌더링 제외
       if (!file) return;
 
       const { previewUrl, downloadUrl } = pdfLinksForProject(p);
@@ -234,7 +227,7 @@
 
       const aTitle = document.createElement('a');
       aTitle.className = 'project-title';
-      aTitle.href = previewUrl;    // pdf.js 뷰어
+      aTitle.href = previewUrl;
       aTitle.target = '_blank';
       aTitle.rel = 'noopener';
       aTitle.textContent = title;
@@ -251,7 +244,7 @@
 
       const btnDownload = document.createElement('a');
       btnDownload.className = 'btn btn-download';
-      btnDownload.href = downloadUrl; // 원본 PDF
+      btnDownload.href = downloadUrl;
       btnDownload.target = '_blank';
       btnDownload.rel = 'noopener';
       btnDownload.setAttribute('download', '');
@@ -267,17 +260,19 @@
   }
 
   function applyFilters() {
-    const y = norm(els.year?.value);
-    const g = norm(els.gen?.value);
-    const p = norm(els.period?.value);
-    const s = norm(els.sport?.value);
+    const selectedYears = getSelectedValues(els.year);
+    const selectedGens = getSelectedValues(els.gen);
+    const selectedPeriods = getSelectedValues(els.period);
+    const selectedSports = getSelectedValues(els.sport);
     const q = norm(els.q?.value).toLowerCase();
+    const sortVal = norm(els.sort?.value) || 'none';
 
-    const filtered = allProjects.filter((proj) => {
-      if (y && norm(proj.year) !== y) return false;
-      if (g && norm(proj.generation) !== g) return false;
-      if (p && norm(proj.period) !== p) return false;
-      if (s && norm(proj.sport) !== s) return false;
+    // 1. 필터링
+    let filtered = allProjects.filter((proj) => {
+      if (selectedYears.length > 0 && !selectedYears.includes(norm(proj.year))) return false;
+      if (selectedGens.length > 0 && !selectedGens.includes(norm(proj.generation))) return false;
+      if (selectedPeriods.length > 0 && !selectedPeriods.includes(norm(proj.period))) return false;
+      if (selectedSports.length > 0 && !selectedSports.includes(norm(proj.sport))) return false;
 
       if (q) {
         const t = norm(proj.title).toLowerCase();
@@ -286,6 +281,27 @@
       return true;
     });
 
+    // 2. 정렬
+    filtered.sort((a, b) => {
+      const titleA = norm(a.title) || norm(a.file);
+      const titleB = norm(b.title) || norm(b.file);
+      const genA = norm(a.generation);
+      const genB = norm(b.generation);
+
+      if (sortVal === 'name_asc') {
+        return titleA.localeCompare(titleB, 'ko');
+      } else if (sortVal === 'name_desc') {
+        return titleB.localeCompare(titleA, 'ko');
+      } else if (sortVal === 'gen_asc') {
+        return byNumberPrefix(genA, genB);
+      } else if (sortVal === 'gen_desc') {
+        // 내림차순을 위해 b와 a의 순서를 바꾸어 비교
+        return byNumberPrefix(genB, genA);
+      }
+      return 0; // 'none' 이면 기본 순서 유지
+    });
+
+    // 3. 렌더링
     render(filtered);
   }
 
@@ -296,14 +312,18 @@
     });
 
     if (els.q) els.q.addEventListener('input', applyFilters);
+    if (els.sort) els.sort.addEventListener('change', applyFilters);
 
     if (els.reset) {
       els.reset.addEventListener('click', () => {
-        if (els.year) els.year.value = '';
-        if (els.gen) els.gen.value = '';
-        if (els.period) els.period.value = '';
-        if (els.sport) els.sport.value = '';
+        // 다중 선택 박스들의 선택 해제
+        [els.year, els.gen, els.period, els.sport].forEach((sel) => {
+          if (sel) {
+            Array.from(sel.options).forEach(opt => opt.selected = false);
+          }
+        });
         if (els.q) els.q.value = '';
+        if (els.sort) els.sort.value = 'none';
         applyFilters();
       });
     }
@@ -313,7 +333,6 @@
     if (els.count) els.count.textContent = '로딩 중…';
 
     try {
-      // 캐시 때문에 갱신이 늦게 보이는 걸 방지하기 위해 v 파라미터를 붙입니다.
       const res = await fetch(`${MANIFEST_URL}?v=${Date.now()}`, { cache: 'no-store' });
       if (!res.ok) throw new Error(`manifest fetch failed: ${res.status}`);
       const json = await res.json();
