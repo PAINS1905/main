@@ -8,76 +8,668 @@
   },
   "projects": [
     {
-      "title": "역대 KBO 최강팀은?",
-      "year": "2025",
-      "generation": "10기",
+      "title": "21시즌 후 FA대상 선수들의 연봉 예측 - 회귀 분석 방법론을 이용",
+      "year": "2021",
+      "generation": "1기",
       "period": "방학 중 프로젝트",
       "sport": "야구",
-      "file": "10V_01_baseball.pdf"
+      "file": "01V_01-1.pdf"
     },
     {
-      "title": "'잠실 구장 이적 효과'는 실재하는가?",
+      "title": "FA 연봉 예측 2편.스카우팅 리포트 - 선발투수, 포수",
+      "year": "2021",
+      "generation": "1기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "01V_01-2.pdf"
+    },
+    {
+      "title": "FA 연봉 예측 3편.스카우팅 리포트 - 외야수(1)",
+      "year": "2021",
+      "generation": "1기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "01V_01-3.pdf"
+    },
+    {
+      "title": "FA 연봉 예측 4편.스카우팅 리포트 - 외야수(2)",
+      "year": "2021",
+      "generation": "1기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "01V_01-4.pdf"
+    },
+    {
+      "title": "FA 연봉 예측 5편.스카우팅 리포트 - 내야수",
+      "year": "2021",
+      "generation": "1기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "01V_01-5.pdf"
+    },
+    {
+      "title": "근 3년간 PL 선수들의 몸값 구하기 - 다변량 Factor Analysis를 이용한",
+      "year": "2021",
+      "generation": "1기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "01V_05.pdf"
+    },
+    {
+      "title": "KBO 주전 선수들의 성적을 고려한 팀 별 최적의 타순 구성 - R을 활용한 가상 야구 게임 모델 활용",
+      "year": "2022",
+      "generation": "2기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "02V_01.pdf"
+    },
+    {
+      "title": "한국 프로야구 리그에서의 수비 시프트의 효용성 분석과 새로운 수비지표 탐구",
+      "year": "2022",
+      "generation": "2기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "02V_02.pdf"
+    },
+    {
+      "title": "기대득점으로 산출한 예상 순위와 실제 순위 간의 간극과 그 원인 분석 - EPL과 분데스리가를 중심으로",
+      "year": "2022",
+      "generation": "2기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "02V_03.pdf"
+    },
+    {
+      "title": "각 1차스탯이 각 2차 스탯(PPP, PER, BPM, WS/48)에 미치는 영향과 1차 스탯에 비해 효율이나 기여도가 떨어지는 선수 분석",
+      "year": "2022",
+      "generation": "2기",
+      "period": "방학 중 프로젝트",
+      "sport": "농구",
+      "file": "02V_04.pdf"
+    },
+    {
+      "title": "V리그 여자부에서 '포지티브(Positive) 리시브'가 갖는 가치에 대한 탐구",
+      "year": "2022",
+      "generation": "2기",
+      "period": "방학 중 프로젝트",
+      "sport": "배구",
+      "file": "02V_05.pdf"
+    },
+    {
+      "title": "롤에서의 팀 단위 전투(한타)를 통계적으로 나타낼 수 있는가? -2022 LCK 스프링을 중심으로",
+      "year": "2022",
+      "generation": "2기",
+      "period": "방학 중 프로젝트",
+      "sport": "e스포츠",
+      "file": "02V_06.pdf"
+    },
+    {
+      "title": "정규시즌과 포스트시즌에서 퍼포먼스 차이가 발생하는 이유 탐구",
+      "year": "2022",
+      "generation": "2기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "02V_07.pdf"
+    },
+    {
+      "title": "LCK 각 포지션에 따른 에이징커브 알아보기",
+      "year": "2022",
+      "generation": "2기",
+      "period": "방학 중 프로젝트",
+      "sport": "e스포츠",
+      "file": "02V_08.pdf"
+    },
+    {
+      "title": "블로커 수 및 높이가 선수들의 공격력에 미치는 영향",
+      "year": "2022",
+      "generation": "3기",
+      "period": "방학 중 프로젝트",
+      "sport": "배구",
+      "file": "03V_01.pdf"
+    },
+    {
+      "title": "선수 타이틀과 팀 성적의 비교",
+      "year": "2022",
+      "generation": "3기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "03V_02.pdf"
+    },
+    {
+      "title": "KBO 리그 신인드래프트 지명권의 가치 판정",
+      "year": "2022",
+      "generation": "3기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "03V_03.pdf"
+    },
+    {
+      "title": "2021 손아섭은 스탯 관리형 타자인가",
+      "year": "2022",
+      "generation": "3기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "03V_04.pdf"
+    },
+    {
+      "title": "포수 리드의 실질적 효과에 대한 탐구",
+      "year": "2022",
+      "generation": "3기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "03V_05.pdf"
+    },
+    {
+      "title": "한화와 롯데가 지속적으로 낮은 순위를 기록하는 원인에 대한 분석",
+      "year": "2022",
+      "generation": "3기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "03V_06.pdf"
+    },
+    {
+      "title": "축구에서의 WAR 지표 구체화 및 대체 선수 모델링에 대한 연구",
+      "year": "2022",
+      "generation": "3기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "03V_07.pdf"
+    },
+    {
+      "title": "패스를 통한 어시스트 상황에서 해당 패스의 득점 확률 변동 계산 : PL 최고의 패스마스터 찾기 - 패스를 더 잘 줄 수는 없었는가?",
+      "year": "2023",
+      "generation": "4기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "04V_01.pdf"
+    },
+    {
+      "title": "여자 배구 선수들의 에이징 커브: 2004년부터 현재 V-리그를 중심으로",
+      "year": "2023",
+      "generation": "4기",
+      "period": "방학 중 프로젝트",
+      "sport": "배구",
+      "file": "04V_02.pdf"
+    },
+    {
+      "title": "V리그 여자부에서 공격 유형과 난이도를 반영한 지표에 대한 탐구 및 22-23시즌 종료 후 FA대상 아웃사이드히터(OH) 선수들의 적정 계약 금액 도출",
+      "year": "2023",
+      "generation": "4기",
+      "period": "방학 중 프로젝트",
+      "sport": "배구",
+      "file": "04V_03.pdf"
+    },
+    {
+      "title": "초구 상황에 따른 롯데 자이언츠 최준용의 경기 성적 예측",
+      "year": "2023",
+      "generation": "4기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "04V_04.pdf"
+    },
+    {
+      "title": "스트라이크 존 편파판정은 존재하는가?",
+      "year": "2023",
+      "generation": "4기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "04V_05.pdf"
+    },
+    {
+      "title": "한국프로야구 트레이드 가치 모델 적용",
+      "year": "2023",
+      "generation": "4기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "04V_06.pdf"
+    },
+    {
+      "title": "22-23 시즌 4R 우리카드&대한항공 수비 전략 분석",
+      "year": "2023",
+      "generation": "4기",
+      "period": "방학 중 프로젝트",
+      "sport": "배구",
+      "file": "04V_07.pdf"
+    },
+    {
+      "title": "위기의 프리미어리그 1위 아스날, 토마스 파티를 대체하라",
+      "year": "2023",
+      "generation": "4기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "04V_08.pdf"
+    },
+    {
+      "title": "누가 남고 누가 떠나야 하는가",
+      "year": "2023",
+      "generation": "4기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "04V_09.pdf"
+    },
+    {
+      "title": "비디오 판독에 대한 고찰",
+      "year": "2023",
+      "generation": "5기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "05V_01.pdf"
+    },
+    {
+      "title": "구단 홈런의 효율을 극대화할 수 있는 홈구장 모델 제시",
+      "year": "2023",
+      "generation": "5기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "05V_02.pdf"
+    },
+    {
+      "title": "스카우팅 리포트로 보는 유망주들의 성공 가능성",
+      "year": "2023",
+      "generation": "5기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "05V_03.pdf"
+    },
+    {
+      "title": "KBO 리그의 이동거리가 팀 성적에 미치는 영향",
+      "year": "2023",
+      "generation": "5기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "05V_04.pdf"
+    },
+    {
+      "title": "Retriever-LLM 모델 기반의 축구 특화형 챗봇",
+      "year": "2023",
+      "generation": "5기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "05V_05.pdf"
+    },
+    {
+      "title": "선수들의 시장 가치는 객관적일까?",
+      "year": "2023",
+      "generation": "5기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "05V_06.pdf"
+    },
+    {
+      "title": "좋은 수비수는 스탯으로 확인할 수 있는가 -가드 수비수를 중심으로-",
+      "year": "2023",
+      "generation": "5기",
+      "period": "방학 중 프로젝트",
+      "sport": "농구",
+      "file": "05V_07.pdf"
+    },
+    {
+      "title": "NFL에서 패싱 게임과 러싱 게임이 가져오는 차이점",
+      "year": "2023",
+      "generation": "5기",
+      "period": "방학 중 프로젝트",
+      "sport": "미식축구",
+      "file": "05V_08.pdf"
+    },
+    {
+      "title": "군집분석을 통한 K리그와 EPL 유명 구단의 전술적 성향 도출 및 비교",
+      "year": "2024",
+      "generation": "6기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "06V_01.pdf"
+    },
+    {
+      "title": "회귀 모델을 활용한 23-24시즌 NBA 팀의 승수 예측",
+      "year": "2024",
+      "generation": "6기",
+      "period": "방학 중 프로젝트",
+      "sport": "농구",
+      "file": "06V_02.pdf"
+    },
+    {
+      "title": "축구 스카우팅 웹 개발하기",
+      "year": "2024",
+      "generation": "6기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "06V_03.pdf"
+    },
+    {
+      "title": "감독 랭킹 고안",
+      "year": "2024",
+      "generation": "6기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "06V_04.pdf"
+    },
+    {
+      "title": "볼펜 투수 혹사가 다음 시즌에 미치는 영향",
+      "year": "2024",
+      "generation": "6기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "06V_05.pdf"
+    },
+    {
+      "title": "이정후의 MLB 성적 예측",
+      "year": "2024",
+      "generation": "6기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "06V_06.pdf"
+    },
+    {
+      "title": "F1 입문자를 위한 주요 서킷 가이드와 랭킹 (F1에서 가장 흥미진진한 서킷은 어디?)",
+      "year": "2024",
+      "generation": "6기",
+      "period": "방학 중 프로젝트",
+      "sport": "F1",
+      "file": "06V_07.pdf"
+    },
+    {
+      "title": "롯데 자이언츠 김태형 감독 부임 전후 비교",
+      "year": "2024",
+      "generation": "7기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "07V_01.pdf"
+    },
+    {
+      "title": "2023 LG트윈스의 우승 요인 분석과 앞으로의 방향성 제안",
+      "year": "2024",
+      "generation": "7기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "07V_02.pdf"
+    },
+    {
+      "title": "KBO 골든글러브 예측 모델 구현하기",
+      "year": "2024",
+      "generation": "7기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "07V_03.pdf"
+    },
+    {
+      "title": "좌우놀이는 효과적인가?",
+      "year": "2024",
+      "generation": "7기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "07V_04.pdf"
+    },
+    {
+      "title": "축구판 WAR 만들기",
+      "year": "2024",
+      "generation": "7기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "07V_05.pdf"
+    },
+    {
+      "title": "k-means 군집분석을 이용한 스트라이커 유형 분류 및 스트라이커 추천 시스템 구축",
+      "year": "2024",
+      "generation": "7기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "07V_06.pdf"
+    },
+    {
+      "title": "경기 기여도를 반영한 히트맵 재구성 : 축구판 WAR 히트맵 만들기",
+      "year": "2024",
+      "generation": "7기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "07V_07.pdf"
+    },
+    {
+      "title": "많이 쉬는 팀이 진짜 유리할까?",
+      "year": "2024",
+      "generation": "7기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "07V_08.pdf"
+    },
+    {
+      "title": "NBA 선수 트렌드 변화",
+      "year": "2024",
+      "generation": "7기",
+      "period": "방학 중 프로젝트",
+      "sport": "농구",
+      "file": "07V_09.pdf"
+    },
+    {
+      "title": "신인 드래프트, 정배와 소신 중 정답은 있을까?",
+      "year": "2024",
+      "generation": "7기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "07V_10.pdf"
+    },
+    {
+      "title": "선발 ERA 개선",
+      "year": "2024",
+      "generation": "7기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "07V_11.pdf"
+    },
+    {
+      "title": "KBO 구단별 고과산정 방식 알아보기 - 비fa선수 연봉 예측하기",
       "year": "2025",
+      "generation": "8기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "08V_01.pdf"
+    },
+    {
+      "title": "2024 두산 베어스 투수 교체 패턴 분석: 이승엽은 정말 무지성 졸장인가?",
+      "year": "2025",
+      "generation": "8기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "08V_02.pdf"
+    },
+    {
+      "title": "KBO 타자의 컨디션 예측(feat. LCA, LSTM)",
+      "year": "2025",
+      "generation": "8기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "08V_03.pdf"
+    },
+    {
+      "title": "최근 3년 랩타임 분석을 통한 맥라렌의 퍼포먼스 향상 평가 (부제: 맥라렌은 어떻게 다시 강팀이 되었나)",
+      "year": "2025",
+      "generation": "8기",
+      "period": "방학 중 프로젝트",
+      "sport": "F1",
+      "file": "08V_04.pdf"
+    },
+    {
+      "title": "포수의 가치 파악 - 수비형 / 공격형 포수 분석을 중심으로",
+      "year": "2025",
+      "generation": "8기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "08V_05.pdf"
+    },
+    {
+      "title": "도루의 가치를 포함한 공격 스탯 분석",
+      "year": "2025",
+      "generation": "8기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "08V_06.pdf"
+    },
+    {
+      "title": "축구 선수의 클러치 능력 검증: 기대 승점 기반 클러치 지표 개발 및 분석",
+      "year": "2025",
+      "generation": "8기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "08V_07.pdf"
+    },
+    {
+      "title": "자유투에 대한 종합 연구",
+      "year": "2025",
+      "generation": "8기",
+      "period": "방학 중 프로젝트",
+      "sport": "농구",
+      "file": "08V_08.pdf"
+    },
+    {
+      "title": "패싱과 러싱 스탯으로 보는 슈퍼볼 59 프리뷰",
+      "year": "2025",
+      "generation": "8기",
+      "period": "방학 중 프로젝트",
+      "sport": "미식축구",
+      "file": "08V_09.pdf"
+    },
+    {
+      "title": "회귀분석 기반 KBL WS 도출 및 적정 연봉 산정",
+      "year": "2025",
+      "generation": "9기",
+      "period": "방학 중 프로젝트",
+      "sport": "농구",
+      "file": "09V_01.pdf"
+    },
+    {
+      "title": "Football Manager를 이용한 유망주 분석 및 시뮬레이션",
+      "year": "2025",
+      "generation": "9기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "09V_02.pdf"
+    },
+    {
+      "title": "한국 프로야구의 명장을 찾아서",
+      "year": "2025",
+      "generation": "9기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "09V_03.pdf"
+    },
+    {
+      "title": "트레블 팀의 전술 DNA: 우승 팀들의 공통된 전략을 찾아서",
+      "year": "2025",
+      "generation": "9기",
+      "period": "방학 중 프로젝트",
+      "sport": "축구",
+      "file": "09V_04.pdf"
+    },
+    {
+      "title": "NBA 드래프트 종합 분석 - PreDraft 스탯에 따른 픽순위와 퍼포먼스 분석",
+      "year": "2025",
+      "generation": "9기",
+      "period": "방학 중 프로젝트",
+      "sport": "농구",
+      "file": "09V_05.pdf"
+    },
+    {
+      "title": "회귀분석을 통해 바라본 언더컷",
+      "year": "2025",
+      "generation": "9기",
+      "period": "방학 중 프로젝트",
+      "sport": "F1",
+      "file": "09V_06.pdf"
+    },
+    {
+      "title": "구단 운영 비용과 팀 성적의 연관성",
+      "year": "2025",
+      "generation": "9기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "09V_07.pdf"
+    },
+    {
+      "title": "KBO 투수 FA 성패 분석 - 불펜FA를 중심으로",
+      "year": "2025",
+      "generation": "9기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "09V_08.pdf"
+    },
+    {
+      "title": "KBTI - 타자편",
+      "year": "2025",
+      "generation": "9기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "09V_09.pdf"
+    },
+    {
+      "title": "역대 KBO 최강팀은?",
+      "year": "2026",
       "generation": "10기",
       "period": "방학 중 프로젝트",
       "sport": "야구",
-      "file": "10V_02_baseball.pdf"
+      "file": "10V_01.pdf"
+    },
+    {
+      "title": "잠실 구장 이적 효과'는 실재하는가?",
+      "year": "2026",
+      "generation": "10기",
+      "period": "방학 중 프로젝트",
+      "sport": "야구",
+      "file": "10V_02.pdf"
     },
     {
       "title": "KBO 투구 데이터의 정량적 분석과 모델 구축",
-      "year": "2025",
+      "year": "2026",
       "generation": "10기",
       "period": "방학 중 프로젝트",
       "sport": "야구",
-      "file": "10V_03_baseball.pdf"
+      "file": "10V_03.pdf"
     },
     {
       "title": "MLB 선수들의 정규시즌과 포스트시즌 성적차이의 통계적 분석",
-      "year": "2025",
+      "year": "2026",
       "generation": "10기",
       "period": "방학 중 프로젝트",
       "sport": "야구",
-      "file": "10V_04_baseball.pdf"
+      "file": "10V_04.pdf"
     },
     {
       "title": "어뢰배트 도입 효과 추정",
-      "year": "2025",
+      "year": "2026",
       "generation": "10기",
       "period": "방학 중 프로젝트",
       "sport": "야구",
-      "file": "10V_05_baseball.pdf"
+      "file": "10V_05.pdf"
     },
     {
       "title": "2026 북중미 월드컵 예측 및 대한민국의 전술 분석",
-      "year": "2025",
+      "year": "2026",
       "generation": "10기",
       "period": "방학 중 프로젝트",
       "sport": "축구",
-      "file": "10V_06_soccer.pdf"
+      "file": "10V_06.pdf"
     },
     {
       "title": "리그 성적이 월즈(WORLDS) 성적과 유의미한 차이를 보이는 이유는 무엇일까?",
-      "year": "2025",
+      "year": "2026",
       "generation": "10기",
       "period": "방학 중 프로젝트",
       "sport": "e스포츠",
-      "file": "10V_07_esports.pdf"
+      "file": "10V_07.pdf"
     },
     {
       "title": "회귀분석을 이용한 팀메이트 간 실력 비교 지표 제시",
-      "year": "2025",
+      "year": "2026",
       "generation": "10기",
       "period": "방학 중 프로젝트",
       "sport": "F1",
-      "file": "10V_08_F1.pdf"
+      "file": "10V_08.pdf"
     },
     {
       "title": "끊어진 연결고리: 데이터로 시각화한 2024 전북의 붕괴",
-      "year": "2025",
+      "year": "2026",
       "generation": "10기",
       "period": "방학 중 프로젝트",
       "sport": "축구",
-      "file": "10F_09_soccer.pdf"
+      "file": "10V_09.pdf"
     }
   ]
 }
