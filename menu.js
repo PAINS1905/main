@@ -1,4 +1,4 @@
-/* menu.js - v2.6 (활동 탭 임시 잠금 옵션 추가) */
+/* menu.js - v2.6 (활동 탭 임시 잠금 옵션 추가 및 지원 결과 링크 수정) */
 
 // ============================================================
 // [1] 사이드바 로드 및 초기화
@@ -11,7 +11,7 @@ function loadSidebar(currentPage) {
 
     const activityLink = (!ACTIVITY_MENU_LOCKED || currentPage === 'activity')
         ? `<a href="activity.html" id="link-activity">활동</a>`
-        : `<a href="javascript:void(0)" id="link-activity" onclick="alert('활동 페이지는 아직 준비 중이라 메뉴에서 접근이 제한됩니다.\n직접 주소(activity.html)로만 접속할 수 있어요.'); return false;">활동</a>`;
+        : `<a href="javascript:void(0)" id="link-activity" onclick="alert('활동 페이지는 아직 준비 중이라 메뉴에서 접근이 제한됩니다.\\n직접 주소(activity.html)로만 접속할 수 있어요.'); return false;">활동</a>`;
 
     const sidebarHTML = `
         <a href="index.html" id="link-home">Home</a>
@@ -32,7 +32,7 @@ function loadSidebar(currentPage) {
         </a>
         <div class="submenu" id="support-submenu">
             <a href="apply.html" id="link-apply">지원하기</a>
-            <a href="javascript:void(0)" onclick="alert('지원 기간이 아닙니다.')" id="link-result">지원 결과 안내</a>
+            <a href="result.html" id="link-result">지원 결과 안내</a>
         </div>
     `;
 
