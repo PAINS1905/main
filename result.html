@@ -266,8 +266,14 @@
             resultArea.style.display = "none";
 
             try {
-                const targetUrl = `${SCRIPT_URL}?id=${id}&name=${name}`;
-                const response = await fetch(targetUrl);
+                // URL 끝에 현재 시간 값을 붙여서 매번 새로운 주소로 인식하게 만듦 (캐시 방지)
+                const timestamp = new Date().getTime(); 
+                const targetUrl = `${SCRIPT_URL}?id=${id}&name=${name}&t=${timestamp}`;
+    
+                // 캐시를 절대 사용하지 않도록 강력한 옵션 추가
+                const response = await fetch(targetUrl, { 
+                    cache: 'no-store' 
+                });
                 const data = await response.json();
 
                 if (data.result === "fail") {
@@ -320,6 +326,7 @@
 
 </body>
 </html>
+
 
 
 
