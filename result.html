@@ -214,7 +214,7 @@
                 
                 <div id="status-badge" class="status-badge">결과 로딩중</div>
                 
-                <p id="result-desc" style="color: #666; font-size: 0.95rem; word-break: keep-all;">
+                <p id="result-desc" style="color: #666; font-size: 0.95rem; word-break: keep-all; text-align: justify; line-height: 1.7; padding: 10px 5px;">
                     </p>
 
                 <div class="interview-box" id="interview-box">
@@ -296,7 +296,7 @@
                 if (data.status === "합격") {
                     badge.innerText = "합 격";
                     badge.className = "status-badge status-pass"; 
-                    desc.innerText = "축하드립니다! PAINS 최종 합격하셨습니다.\n아래 OT 일정을 확인해주시기 바랍니다.";
+                    desc.innerText = "축하드립니다! 귀하는 PAINS에 최종 합격하셨습니다.\n아래 OT 일정을 확인해주시기 바랍니다.";
                     
                     // 수정한 부분: 날짜 데이터를 가져와서 넣는 코드를 삭제하고, 합격자면 무조건 OT 안내 박스를 띄우도록 단순화했습니다.
                     interviewBox.style.display = "block"; 
@@ -323,5 +323,6 @@
 
 </body>
 </html>
+
 
 
