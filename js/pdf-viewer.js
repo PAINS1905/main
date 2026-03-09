@@ -79,6 +79,8 @@
     if (els.prev) els.prev.disabled = isFirstPage;
     if (els.next) els.next.disabled = isLastPage;
     if (els.last) els.last.disabled = isLastPage;
+    
+    // 문서가 로드되면 입력창 활성화
     if (els.pageInput) els.pageInput.disabled = false;
   }
 
