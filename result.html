@@ -122,8 +122,8 @@
         }
         .overlay.active { display: block; }
 
-        /* [4] 기존 조회 페이지 스타일 - 너비 1.2배(600px) 증가 */
-        .container { max-width: 600px; margin: 5rem auto; padding: 0 1rem; text-align: center; }
+        /* [4] 기존 조회 페이지 스타일 - 너비 700px로 증가 */
+        .container { max-width: 700px; margin: 5rem auto; padding: 0 1rem; text-align: center; }
         
         .search-card {
             background: white; border-radius: 12px; padding: 2.5rem 2rem;
@@ -166,6 +166,16 @@
         .interview-box h4 { margin-bottom: 10px; color: #333; font-weight: bold; }
         .interview-info li { list-style: none; margin-bottom: 5px; color: #555; }
         .interview-info strong { color: #333; margin-right: 5px; display: inline-block; width: 45px; }
+
+        /* 약도 이미지 스타일 */
+        .map-image {
+            width: 100%;
+            height: auto;
+            margin-top: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            display: none; /* 기본적으로 숨김 처리 */
+        }
 
         .warning-msg { font-size: 0.85rem; color: #e74c3c; margin-top: 15px; font-weight: bold; word-break: keep-all; }
         .notice-msg { font-size: 0.8rem; color: #888; margin-top: 8px; word-break: keep-all; }
@@ -227,6 +237,9 @@
                         <li><strong>시간:</strong> <span id="display-time"></span></li>
                         <li><strong>장소:</strong> <span id="display-location"></span></li>
                     </ul>
+                    
+                    <img id="display-map" class="map-image" src="" alt="면접장소 약도">
+
                     <p class="warning-msg">* 면접 시간에 5분 이상 늦으실 경우 면접 진행이 어려울 수 있으니, 여유를 두고 미리 도착해 주시기 바랍니다.</p>
                     <p class="notice-msg">* 배정된 면접 시간에 참석이 어려우신 경우, 즉시 동아리 카카오톡 채널 또는 인스타그램 DM으로 연락 주시기 바랍니다.</p>
                 </div>
@@ -292,6 +305,7 @@
                 const badge = document.getElementById('status-badge');
                 const desc = document.getElementById('result-desc');
                 const interviewBox = document.getElementById('interview-box');
+                const mapImage = document.getElementById('display-map');
 
                 if (data.status === "합격") {
                     badge.innerText = "합 격";
@@ -299,9 +313,24 @@
                     desc.innerHTML = "축하드립니다! 귀하는 PAINS 11기 서류 전형에 합격하셨습니다.<br>아래 면접 일정을 확인해주시기 바랍니다.";
                     
                     // JSON 응답으로 받아온 면접 정보를 HTML에 삽입
+                    const loc = data.interviewLocation || "미정";
                     document.getElementById('display-date').innerText = data.interviewDate || "미정";
                     document.getElementById('display-time').innerText = data.interviewTime || "미정";
-                    document.getElementById('display-location').innerText = data.interviewLocation || "미정";
+                    document.getElementById('display-location').innerText = loc;
+
+                    // 약도 이미지 조건부 출력
+                    if (loc === '100주년기념삼성관 2층 G-Lounge Group Room 8 (201H)') {
+                        mapImage.src = 'G_Lounge_201H.png';
+                        mapImage.style.display = 'block';
+                    } else if (loc === '하나스퀘어 스터디룸 B101A') {
+                        mapImage.src = 'Hana_Square_B101A.png';
+                        mapImage.style.display = 'block';
+                    } else if (loc === '하나스퀘어 스터디룸 B101D') {
+                        mapImage.src = 'Hana_Square_B101D.png';
+                        mapImage.style.display = 'block';
+                    } else {
+                        mapImage.style.display = 'none';
+                    }
 
                     interviewBox.style.display = "block"; 
 
@@ -309,9 +338,10 @@
                     badge.innerText = "불합격";
                     badge.className = "status-badge status-fail"; 
                     
-                    desc.innerHTML = "PAINS 11기 리크루팅에 지원해주셔서 진심으로 감사드립니다. <br>지원자님의 뛰어난 역량과 열정에도 불구하고, 한정된 선발 인원으로 인해 아쉽게도 이번 기수에는 함께하지 못하게 되었습니다. 비록 이번에는 좋은 인연으로 이어지지 못했지만 보여주신 관심에 깊이 감사드리며 앞으로의 행보를 진심으로 응원하겠습니다. <br>PAINS는 매 기수 리크루팅을 진행하고 있으니, 이후에도 PAINS에 많은 관심 부탁드립니다.";
+                    desc.innerHTML = "2026년 상반기 PAINS 11기 리크루팅에 지원해주셔서 진심으로 감사드립니다. <br>지원자님의 뛰어난 역량과 열정에도 불구하고, 한정된 선발 인원으로 인해 아쉽게도 이번 기수에는 함께하지 못하게 되었습니다. 비록 이번에는 좋은 인연으로 이어지지 못했지만 보여주신 관심에 깊이 감사드리며 앞으로의 행보를 진심으로 응원하겠습니다. <br>PAINS는 매 기수 리크루팅을 진행하고 있으니, 이후에도 PAINS에 많은 관심 부탁드립니다.";
                     
                     interviewBox.style.display = "none"; 
+                    mapImage.style.display = 'none'; // 불합격일 때 이미지 숨김 확실히 처리
                 }
 
                 resultArea.style.display = "block";
@@ -329,4 +359,3 @@
 
 </body>
 </html>
-
