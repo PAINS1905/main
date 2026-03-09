@@ -1,14 +1,10 @@
 // PAINS 활동 아카이브 (GitHub Pages용)
-// - pdfs/manifest.json에서 프로젝트 목록을 불러와 필터/검색 후 렌더링합니다.
-// - PDF는 2가지 방식 모두 지원합니다.
-//   (1) /pdfs 폴더에 직접 업로드(기존 방식)
-//   (2) GitHub Releases(Assets)에 업로드(권장: Pages 1GB 제한 회피)
-// - 제목 클릭: pdf.js 뷰어(pdf-viewer.html)로 미리보기
-// - 다운로드: 원본 PDF 링크로 다운로드/열기
+// - 구글 앱스 스크립트 API에서 프로젝트 목록을 불러와 필터/검색 후 렌더링합니다.
 
 (() => {
   'use strict';
 
+  // 구글 앱스 스크립트 웹 앱 URL
   const API_URL = "https://script.google.com/macros/s/AKfycbwuNda5HuzwNhp7ecL0BTMt4eCgE8z9y1F8_kDR-ZaEp72mYngLp0DQ4ibWcKDEZyg/exec";
   const VIEWER_PAGE = 'pdf-viewer.html';
 
@@ -27,7 +23,7 @@
   };
 
   let allProjects = [];
-  let releaseCfg = null; // { owner, repo, tag, useLatest, proxy }
+  let releaseCfg = null; 
 
   function norm(v) {
     return (v ?? '').toString().trim();
@@ -39,7 +35,6 @@
 
   function coerceProjects(json) {
     if (Array.isArray(json)) {
-      // ["a.pdf", "b.pdf"] 형태도 허용
       if (json.every((x) => typeof x === 'string')) {
         return json
           .filter(isPdfFile)
@@ -48,7 +43,6 @@
             file,
           }));
       }
-      // [{...}, {...}] 형태
       return json;
     }
     if (json && Array.isArray(json.projects)) return json.projects;
@@ -93,7 +87,7 @@
         const nb = parseInt(b, 10);
         const aIsNum = !Number.isNaN(na);
         const bIsNum = !Number.isNaN(nb);
-        if (aIsNum && bIsNum) return nb - na; // 연도는 내림차순
+        if (aIsNum && bIsNum) return nb - na; 
         return b.localeCompare(a, 'ko');
       });
 
@@ -116,14 +110,8 @@
     return parts.join(' · ');
   }
 
-  // ---------------------------
-  // PDF 링크 생성 (local / release)
-  // ---------------------------
-
-  // "pdfs/파일명.pdf" 형태를 안전하게 URL로 만들기
   function localPdfUrl(file) {
     const f = norm(file);
-    // encodeURI는 공백/한글 등을 인코딩하면서 '/'는 보존합니다.
     return encodeURI(`pdfs/${f}`);
   }
 
@@ -149,7 +137,6 @@
     if (!f) return null;
 
     if (releaseCfg.useLatest) {
-      // https://github.com/<owner>/<repo>/releases/latest/download/<file>
       return `https://github.com/${releaseCfg.owner}/${releaseCfg.repo}/releases/latest/download/${encodeURIComponent(f)}`;
     }
 
@@ -157,9 +144,6 @@
     return `https://github.com/${releaseCfg.owner}/${releaseCfg.repo}/releases/download/${encodeURIComponent(tag)}/${encodeURIComponent(f)}`;
   }
 
-  // pdf.js 뷰어에서 사용할 "프록시 URL" (선택)
-  // - release asset은 CORS 헤더가 없어 pdf.js가 직접 읽기 어려운 경우가 많습니다.
-  // - proxy를 설정하면: proxy + encodeURIComponent(releaseUrl) 로 우회합니다.
   function maybeProxyUrl(directUrl) {
     if (!releaseCfg) return null;
     const base = norm(releaseCfg.proxy);
@@ -175,8 +159,8 @@
     const params = new URLSearchParams();
     if (title) params.set('title', title);
     if (file) params.set('file', file);
-    if (srcUrl) params.set('src', srcUrl);       // pdf.js가 로드할 URL(프록시 포함 가능)
-    if (directUrl) params.set('direct', directUrl); // 원본 URL(열기 버튼용)
+    if (srcUrl) params.set('src', srcUrl);      
+    if (directUrl) params.set('direct', directUrl); 
     if (downloadUrl) params.set('download', downloadUrl);
     return `${VIEWER_PAGE}?${params.toString()}`;
   }
@@ -185,17 +169,13 @@
     const file = norm(p.file);
     const title = norm(p.title) || file || '제목 없음';
 
-    // 프로젝트 단위로 local/release 강제하고 싶으면 origin 필드를 쓸 수 있게 해둠
-    // - origin: "local" | "release"
     const origin = norm(p.origin).toLowerCase();
-
     const local = localPdfUrl(file);
     const release = releaseDownloadUrl(file, p.tag);
 
     const directUrl = (origin === 'local') ? local : (origin === 'release' ? release : (releaseCfg ? release : local));
     const downloadUrl = directUrl;
 
-    // pdf.js가 읽을 URL: (릴리즈면 proxy가 있으면 proxy 우선)
     const srcUrl = (directUrl && releaseCfg && directUrl.startsWith('https://github.com/'))
       ? (maybeProxyUrl(directUrl) || directUrl)
       : directUrl;
@@ -204,10 +184,6 @@
 
     return { previewUrl, downloadUrl, directUrl, srcUrl };
   }
-
-  // ---------------------------
-  // 렌더링
-  // ---------------------------
 
   function render(projects) {
     if (!els.list) return;
@@ -221,7 +197,6 @@
       const title = norm(p.title) || norm(p.file) || '제목 없음';
       const file = norm(p.file);
 
-      // file이 없으면 렌더링 제외
       if (!file) return;
 
       const { previewUrl, downloadUrl } = pdfLinksForProject(p);
@@ -234,7 +209,7 @@
 
       const aTitle = document.createElement('a');
       aTitle.className = 'project-title';
-      aTitle.href = previewUrl;    // pdf.js 뷰어
+      aTitle.href = previewUrl;    
       aTitle.target = '_blank';
       aTitle.rel = 'noopener';
       aTitle.textContent = title;
@@ -251,7 +226,7 @@
 
       const btnDownload = document.createElement('a');
       btnDownload.className = 'btn btn-download';
-      btnDownload.href = downloadUrl; // 원본 PDF
+      btnDownload.href = downloadUrl; 
       btnDownload.target = '_blank';
       btnDownload.rel = 'noopener';
       btnDownload.setAttribute('download', '');
@@ -313,9 +288,9 @@
     if (els.count) els.count.textContent = '로딩 중…';
 
     try {
-      // 캐시 때문에 갱신이 늦게 보이는 걸 방지하기 위해 v 파라미터를 붙입니다.
-      const res = await fetch(`${API_URL}?v=${Date.now()}`, { cache: 'no-store' });
-      if (!res.ok) throw new Error(`manifest fetch failed: ${res.status}`);
+      // CORS 에러 방지를 위해 구글 앱스 스크립트에 안전한 단순 fetch 요청 전송
+      const res = await fetch(API_URL, { redirect: 'follow' });
+      if (!res.ok) throw new Error(`Google Apps Script fetch failed: ${res.status}`);
       const json = await res.json();
 
       releaseCfg = parseReleaseCfg(json);
@@ -331,12 +306,13 @@
       applyFilters();
     } catch (err) {
       console.error(err);
-      if (els.count) els.count.textContent = '목록을 불러오지 못했습니다';
+      if (els.count) els.count.textContent = '데이터를 불러오지 못했습니다';
       if (els.empty) {
         els.empty.style.display = 'block';
+        // 에러 문구를 API 환경에 맞게 수정
         els.empty.innerHTML =
-          '프로젝트 목록을 불러오지 못했습니다.<br />' +
-          'pdfs/manifest.json 경로와 JSON 형식을 확인해 주세요.';
+          '데이터 목록을 불러오지 못했습니다.<br />' +
+          '스프레드시트의 배포 URL이나 네트워크 상태를 확인해 주세요.';
       }
     }
   }
