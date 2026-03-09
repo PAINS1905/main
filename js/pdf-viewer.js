@@ -1,10 +1,4 @@
 // pdf-viewer.html 전용 스크립트
-// - query params:
-//   - src: pdf.js가 로드할 URL (프록시 적용된 URL도 가능)
-//   - direct: 원본 URL (참고용, 뷰어 내 원본 버튼은 삭제됨)
-//   - download: 다운로드 URL(선택)
-//   - title: 표시용 제목(선택)
-//   - file: 파일명(선택)
 
 (() => {
   'use strict';
@@ -22,12 +16,14 @@
   const els = {
     title: $('doc-title'),
     canvas: $('pdf-canvas'),
+    first: $('btn-first'), // 맨 앞 버튼
     prev: $('btn-prev'),
     next: $('btn-next'),
+    last: $('btn-last'),   // 맨 뒤 버튼
+    pageInput: $('page-num-input'), // 페이지 번호 입력창
+    pageCount: $('page-count'),     // 전체 페이지 수 표시 영역
     zoomIn: $('btn-zoom-in'),
     zoomOut: $('btn-zoom-out'),
-    status: $('page-status'),
-    // open: $('btn-open'), // 원본 열기 버튼 연결 삭제
     download: $('btn-download'),
     error: $('error-box'),
   };
@@ -36,8 +32,6 @@
   document.title = title;
   if (els.title) els.title.textContent = title;
 
-  // 원본 버튼에 href 연결하던 부분 삭제
-  
   if (els.download) {
     els.download.href = download || '#';
     if (file) els.download.setAttribute('download', file);
@@ -53,22 +47,39 @@
   const MAX_SCALE = 2.6;
 
   function setStatus() {
-    if (!els.status) return;
     if (!pdfDoc) {
-      els.status.textContent = '- / -';
+      if (els.pageInput) els.pageInput.value = '';
+      if (els.pageCount) els.pageCount.textContent = '/ -';
       return;
     }
-    els.status.textContent = `${pageNum} / ${pdfDoc.numPages}`;
+    // 현재 페이지 번호와 전체 페이지 수 업데이트
+    if (els.pageInput) {
+      els.pageInput.value = pageNum;
+      els.pageInput.max = pdfDoc.numPages;
+    }
+    if (els.pageCount) {
+      els.pageCount.textContent = `/ ${pdfDoc.numPages}`;
+    }
   }
 
   function setNavDisabled() {
     if (!pdfDoc) {
+      if (els.first) els.first.disabled = true;
       if (els.prev) els.prev.disabled = true;
       if (els.next) els.next.disabled = true;
+      if (els.last) els.last.disabled = true;
+      if (els.pageInput) els.pageInput.disabled = true;
       return;
     }
-    if (els.prev) els.prev.disabled = pageNum <= 1;
-    if (els.next) els.next.disabled = pageNum >= pdfDoc.numPages;
+    
+    const isFirstPage = pageNum <= 1;
+    const isLastPage = pageNum >= pdfDoc.numPages;
+
+    if (els.first) els.first.disabled = isFirstPage;
+    if (els.prev) els.prev.disabled = isFirstPage;
+    if (els.next) els.next.disabled = isLastPage;
+    if (els.last) els.last.disabled = isLastPage;
+    if (els.pageInput) els.pageInput.disabled = false;
   }
 
   function showError(html) {
@@ -124,6 +135,12 @@
     }
   }
 
+  function onFirstPage() {
+    if (!pdfDoc || pageNum <= 1) return;
+    pageNum = 1;
+    queueRenderPage(pageNum);
+  }
+
   function onPrevPage() {
     if (!pdfDoc || pageNum <= 1) return;
     pageNum--;
@@ -134,6 +151,36 @@
     if (!pdfDoc || pageNum >= pdfDoc.numPages) return;
     pageNum++;
     queueRenderPage(pageNum);
+  }
+
+  function onLastPage() {
+    if (!pdfDoc || pageNum >= pdfDoc.numPages) return;
+    pageNum = pdfDoc.numPages;
+    queueRenderPage(pageNum);
+  }
+
+  // 사용자가 직접 번호를 입력했을 때 처리하는 함수
+  function onPageInput(e) {
+    if (!pdfDoc) return;
+    
+    let inputVal = parseInt(e.target.value, 10);
+    
+    // 빈칸이거나 숫자가 아니면 무시하고 현재 페이지로 되돌림
+    if (isNaN(inputVal)) {
+      e.target.value = pageNum;
+      return;
+    }
+    
+    // 범위를 벗어나는 숫자 방어 로직
+    if (inputVal < 1) inputVal = 1;
+    if (inputVal > pdfDoc.numPages) inputVal = pdfDoc.numPages;
+
+    if (inputVal !== pageNum) {
+      pageNum = inputVal;
+      queueRenderPage(pageNum);
+    } else {
+      e.target.value = pageNum; 
+    }
   }
 
   function zoomIn() {
@@ -147,13 +194,30 @@
   }
 
   function attachEvents() {
+    if (els.first) els.first.addEventListener('click', onFirstPage);
     if (els.prev) els.prev.addEventListener('click', onPrevPage);
     if (els.next) els.next.addEventListener('click', onNextPage);
+    if (els.last) els.last.addEventListener('click', onLastPage);
+    
+    // 페이지 직접 입력 이벤트 연결 (엔터 쳤을 때 & 마우스로 다른 곳 클릭했을 때)
+    if (els.pageInput) {
+      els.pageInput.addEventListener('change', onPageInput);
+      els.pageInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          onPageInput(e);
+          els.pageInput.blur(); // 엔터 후 포커스 해제
+        }
+      });
+    }
+
     if (els.zoomIn) els.zoomIn.addEventListener('click', zoomIn);
     if (els.zoomOut) els.zoomOut.addEventListener('click', zoomOut);
 
     // 키보드 네비게이션
     window.addEventListener('keydown', (e) => {
+      // 입력창에 포커스가 있을 때는 방향키로 페이지 넘김을 막습니다.
+      if (document.activeElement === els.pageInput) return;
+
       if (e.key === 'ArrowLeft') onPrevPage();
       if (e.key === 'ArrowRight') onNextPage();
       if (e.key === '+' || e.key === '=') zoomIn();
@@ -200,16 +264,13 @@
             '이 경우 pdf.js로는 직접 불러올 수 없고, <strong>프록시</strong>를 설정해야 미리보기가 됩니다.'
           : '';
 
-      // 에러 메시지에서 '원본' 텍스트 삭제
       showError(
         '<strong>PDF를 미리보기로 불러오지 못했습니다.</strong><br />' +
         '대신 상단의 <strong>다운로드</strong> 버튼으로 파일을 저장해 열어보세요.' +
         extra
       );
 
-      // 네비게이션은 비활성
-      if (els.prev) els.prev.disabled = true;
-      if (els.next) els.next.disabled = true;
+      setNavDisabled(); // 에러 시 모든 버튼/입력창 비활성화
     }
   }
 
