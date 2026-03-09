@@ -1,10 +1,10 @@
-/* menu.js - v2.7 (활동 탭 잠금 해제) */
+/* menu.js - v2.8 (지원하기 버튼 비활성화) */
 
 // ============================================================
 // [1] 사이드바 로드 및 초기화
 // ============================================================
 function loadSidebar(currentPage) {
-    console.log("PAINS Menu v2.7 Loaded");
+    console.log("PAINS Menu v2.8 Loaded");
 
     const sidebarHTML = `
         <a href="index.html" id="link-home">Home</a>
@@ -24,7 +24,8 @@ function loadSidebar(currentPage) {
             지원 <span id="support-arrow" style="font-size:0.8rem; transition: transform 0.3s; display:inline-block;">▼</span>
         </a>
         <div class="submenu" id="support-submenu">
-            <a href="apply.html" id="link-apply">지원하기</a>
+            <a href="javascript:void(0)" id="link-apply" onclick="alert('지원 기간이 아닙니다.'); return false;">지원하기</a>
+            
             <a href="result.html" id="link-result">지원 결과 안내</a>
         </div>
     `;
