@@ -9,7 +9,7 @@
 (() => {
   'use strict';
 
-  const MANIFEST_URL = 'pdfs/manifest.json';
+  const API_URL = "https://script.google.com/macros/s/AKfycbwuNda5HuzwNhp7ecL0BTMt4eCgE8z9y1F8_kDR-ZaEp72mYngLp0DQ4ibWcKDEZyg/exec";
   const VIEWER_PAGE = 'pdf-viewer.html';
 
   const $ = (id) => document.getElementById(id);
@@ -314,7 +314,7 @@
 
     try {
       // 캐시 때문에 갱신이 늦게 보이는 걸 방지하기 위해 v 파라미터를 붙입니다.
-      const res = await fetch(`${MANIFEST_URL}?v=${Date.now()}`, { cache: 'no-store' });
+      const res = await fetch(`${API_URL}?v=${Date.now()}`, { cache: 'no-store' });
       if (!res.ok) throw new Error(`manifest fetch failed: ${res.status}`);
       const json = await res.json();
 
