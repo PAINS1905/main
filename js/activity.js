@@ -224,6 +224,14 @@
       const actions = document.createElement('div');
       actions.className = 'project-actions';
 
+      // "뷰어로 보기" 버튼 추가
+      const btnViewer = document.createElement('a');
+      btnViewer.className = 'btn'; 
+      btnViewer.href = previewUrl; 
+      btnViewer.target = '_blank';
+      btnViewer.rel = 'noopener';
+      btnViewer.textContent = '뷰어로 보기';
+
       const btnDownload = document.createElement('a');
       btnDownload.className = 'btn btn-download';
       btnDownload.href = downloadUrl; 
@@ -232,6 +240,8 @@
       btnDownload.setAttribute('download', '');
       btnDownload.textContent = '다운로드';
 
+      // 뷰어로 보기 버튼을 다운로드 버튼보다 먼저(왼쪽) 추가합니다.
+      actions.appendChild(btnViewer);
       actions.appendChild(btnDownload);
 
       li.appendChild(main);
@@ -288,7 +298,6 @@
     if (els.count) els.count.textContent = '로딩 중…';
 
     try {
-      // CORS 에러 방지를 위해 구글 앱스 스크립트에 안전한 단순 fetch 요청 전송
       const res = await fetch(API_URL, { redirect: 'follow' });
       if (!res.ok) throw new Error(`Google Apps Script fetch failed: ${res.status}`);
       const json = await res.json();
@@ -309,7 +318,6 @@
       if (els.count) els.count.textContent = '데이터를 불러오지 못했습니다';
       if (els.empty) {
         els.empty.style.display = 'block';
-        // 에러 문구를 API 환경에 맞게 수정
         els.empty.innerHTML =
           '데이터 목록을 불러오지 못했습니다.<br />' +
           '스프레드시트의 배포 URL이나 네트워크 상태를 확인해 주세요.';
