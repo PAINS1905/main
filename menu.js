@@ -1,22 +1,15 @@
-/* menu.js - v2.6 (활동 탭 임시 잠금 옵션 추가 및 지원 결과 링크 수정) */
+/* menu.js - v2.7 (활동 탭 잠금 해제) */
 
 // ============================================================
 // [1] 사이드바 로드 및 초기화
 // ============================================================
 function loadSidebar(currentPage) {
-    console.log("PAINS Menu v2.6 Loaded");
-
-    // 활동 메뉴 임시 잠금(완성되면 false로 변경)
-    const ACTIVITY_MENU_LOCKED = true;
-
-    const activityLink = (!ACTIVITY_MENU_LOCKED || currentPage === 'activity')
-        ? `<a href="activity.html" id="link-activity">활동</a>`
-        : `<a href="javascript:void(0)" id="link-activity" onclick="alert('활동 페이지는 아직 준비 중이라 메뉴에서 접근이 제한됩니다.\\n직접 주소(activity.html)로만 접속할 수 있어요.'); return false;">활동</a>`;
+    console.log("PAINS Menu v2.7 Loaded");
 
     const sidebarHTML = `
         <a href="index.html" id="link-home">Home</a>
 
-        ${activityLink}
+        <a href="activity.html" id="link-activity">활동</a>
         
         <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('members-submenu', 'members-arrow')">
             Members <span id="members-arrow" style="font-size:0.8rem; transition: transform 0.3s; display:inline-block;">▼</span>
