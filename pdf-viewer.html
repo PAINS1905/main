@@ -57,12 +57,30 @@
 
     .sep { width: 1px; height: 24px; background: #eee; margin: 0 2px; }
 
-    .status {
+    /* 페이지 입력 영역 스타일 수정 */
+    .status-container {
+      display: flex;
+      align-items: center;
+      gap: 4px;
       font-size: 0.9rem;
       color: #666;
-      min-width: 84px;
-      text-align: center;
+      white-space: nowrap;
     }
+    .status-container input {
+      width: 44px;
+      text-align: center;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 4px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .status-container input:focus { border-color: #ab3333; }
+    /* 숫자 입력창의 스피너(위아래 화살표) 숨기기 */
+    .status-container input::-webkit-outer-spin-button,
+    .status-container input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .status-container input[type=number] { -moz-appearance: textfield; }
 
     .wrap {
       max-width: 1100px;
@@ -105,8 +123,7 @@
     }
     .error strong { color: #ab3333; }
 
-    @media (max-width: 640px) {
-      .status { display: none; }
+    @media (max-width: 768px) {
       .hide-sm { display: none; }
       .topbar { gap: 8px; }
       .btn { padding: 8px 8px; }
@@ -115,8 +132,6 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>
-    // pdf.worker 경로를 명시적으로 설정해야 안정적으로 동작합니다.
-    // (pdf.js 이슈/가이드에서 권장)
     pdfjsLib.GlobalWorkerOptions.workerSrc =
       "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
   </script>
@@ -128,9 +143,16 @@
 
     <div class="sep hide-sm"></div>
 
+    <button class="btn hide-sm" id="btn-first" type="button">맨 앞</button>
     <button class="btn" id="btn-prev" type="button">이전</button>
-    <div class="status" id="page-status">- / -</div>
+    
+    <div class="status-container">
+      <input type="number" id="page-num-input" value="1" min="1" disabled />
+      <span id="page-count">/ -</span>
+    </div>
+    
     <button class="btn" id="btn-next" type="button">다음</button>
+    <button class="btn hide-sm" id="btn-last" type="button">맨 뒤</button>
 
     <div class="sep"></div>
 
@@ -150,8 +172,8 @@
     <div class="error" id="error-box"></div>
 
     <div class="hint" id="hint-box">
-      * 상단의 <strong>이전/다음</strong>, <strong>확대/축소</strong>로 페이지를 탐색할 수 있어요.<br />
-      * 만약 화면에 에러가 뜬다면 <strong>다운로드</strong> 버튼으로 파일을 저장해 열어보세요.
+      * <strong>숫자를 입력하고 엔터</strong>를 치면 해당 페이지로 바로 이동합니다.<br />
+      * 상단의 <strong>이전/다음</strong>, <strong>확대/축소</strong>로 페이지를 탐색할 수 있어요.
     </div>
   </div>
 
