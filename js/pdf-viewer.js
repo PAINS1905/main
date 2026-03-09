@@ -1,7 +1,7 @@
 // pdf-viewer.html 전용 스크립트
 // - query params:
 //   - src: pdf.js가 로드할 URL (프록시 적용된 URL도 가능)
-//   - direct: 원본 URL(열기 버튼용)
+//   - direct: 원본 URL (참고용, 뷰어 내 원본 버튼은 삭제됨)
 //   - download: 다운로드 URL(선택)
 //   - title: 표시용 제목(선택)
 //   - file: 파일명(선택)
@@ -27,7 +27,7 @@
     zoomIn: $('btn-zoom-in'),
     zoomOut: $('btn-zoom-out'),
     status: $('page-status'),
-    open: $('btn-open'),
+    // open: $('btn-open'), // 원본 열기 버튼 연결 삭제
     download: $('btn-download'),
     error: $('error-box'),
   };
@@ -36,7 +36,8 @@
   document.title = title;
   if (els.title) els.title.textContent = title;
 
-  if (els.open) els.open.href = direct || '#';
+  // 원본 버튼에 href 연결하던 부분 삭제
+  
   if (els.download) {
     els.download.href = download || '#';
     if (file) els.download.setAttribute('download', file);
@@ -175,11 +176,9 @@
 
     try {
       // pdf.js 로드
-      // - GitHub Releases 자산은 CORS 때문에 실패할 수 있습니다(이 경우 프록시가 필요).
       const loadingTask = pdfjsLib.getDocument({
         url: src,
         withCredentials: false,
-        // range 요청이 가능하면 성능이 좋아집니다(서버/프록시가 Range를 지원해야 함).
         disableRange: false,
         disableStream: false,
       });
@@ -201,9 +200,10 @@
             '이 경우 pdf.js로는 직접 불러올 수 없고, <strong>프록시</strong>를 설정해야 미리보기가 됩니다.'
           : '';
 
+      // 에러 메시지에서 '원본' 텍스트 삭제
       showError(
         '<strong>PDF를 미리보기로 불러오지 못했습니다.</strong><br />' +
-        '대신 상단의 <strong>원본</strong> 또는 <strong>다운로드</strong> 버튼으로 열 수 있어요.' +
+        '대신 상단의 <strong>다운로드</strong> 버튼으로 파일을 저장해 열어보세요.' +
         extra
       );
 
