@@ -15,7 +15,7 @@ function loadSidebar(currentPage) {
             Members <span id="members-arrow" style="font-size:0.8rem; transition: transform 0.3s; display:inline-block;">▼</span>
         </a>
         <div class="submenu" id="members-submenu">
-            <a href="members.html" id="link-members">운영진</a>
+            <a href="members.html" id="link-members">운영진 소개</a>
             <a href="attendance.html" id="link-attendance">출석 현황 확인</a>
             <a href="fee.html" id="link-fee">회비 내역 조회</a>
         </div>
