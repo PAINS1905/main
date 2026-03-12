@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAINS - 결석계 사용 현황</title>
+    <title>PAINS - 활동 및 결석 현황</title>
     <style>
         /* [1] 폰트 및 공통 스타일 */
         @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); font-weight: normal; font-style: normal; }
@@ -61,18 +61,19 @@
         /* 결과 표시 영역 */
         #result-area { display: none; margin-top: 20px; text-align: center; }
         
-        /* 결석계/출석률 표시 뱃지 컨테이너 */
-        .badge-container { display: flex; justify-content: center; gap: 20px; margin: 15px 0; flex-wrap: wrap; }
+        /* 뱃지 컨테이너 (유연하게 조절) */
+        .badge-container { display: flex; justify-content: center; gap: 15px; margin: 15px 0; flex-wrap: wrap; }
         
         .count-badge { 
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: 15px 25px; border-radius: 12px; background-color: #333; color: white; min-width: 120px;
+            padding: 15px 20px; border-radius: 12px; background-color: #333; color: white; flex: 1; min-width: 100px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .count-badge .label-text { font-size: 0.9rem; color: #ccc; margin-bottom: 5px; }
+        .count-badge .label-text { font-size: 0.85rem; color: #ccc; margin-bottom: 5px; }
         .count-badge .value-wrap { display: flex; align-items: baseline; gap: 3px; }
-        .count-badge .number { font-family: 'KBO_Dia', sans-serif; font-size: 2rem; font-weight: bold; line-height: 1; color: #fff; }
-        .count-badge .unit { font-family: 'SCDream', sans-serif; font-size: 1rem; font-weight: normal; }
+        .count-badge .number { font-family: 'KBO_Dia', sans-serif; font-size: 1.8rem; font-weight: bold; line-height: 1; color: #fff; }
+        .count-badge .text-status { font-family: 'SCDream', sans-serif; font-size: 1.3rem; font-weight: bold; line-height: 1; color: #fff; margin-top: 4px; }
+        .count-badge .unit { font-family: 'SCDream', sans-serif; font-size: 0.9rem; font-weight: normal; }
 
         .rule-box {
             background-color: #fff5f5; border: 1px solid #ffcccc; border-left: 5px solid #ab3333;
@@ -103,6 +104,7 @@
         @media (max-width: 600px) { 
             .container { margin-top: 2rem; } 
             header { justify-content: flex-start; }
+            .badge-container { flex-direction: column; }
         }
     </style>
 </head>
@@ -121,8 +123,8 @@
     <div class="container">
         
         <div class="section-card">
-            <h3>사용한 결석계 조회</h3>
-            <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">학번과 이름을 입력하여 현재까지 사용한 횟수와 출석률을 확인하세요.</p>
+            <h3>회원 정보 조회</h3>
+            <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">학번과 이름을 입력하여 회원 자격, 사용한 결석계 횟수 및 출석률을 확인하세요.</p>
             
             <div class="input-group">
                 <label>학번</label>
@@ -136,9 +138,15 @@
             <button class="btn-check" onclick="checkUsedCount()" id="btn-check-submit">조회하기</button>
 
             <div id="result-area">
-                <p class="result-msg"><span id="user-name-display" style="font-weight:bold;"></span>님의 출석 현황</p>
+                <p class="result-msg"><span id="user-name-display" style="font-weight:bold;"></span>님의 정보 및 출석 현황</p>
                 
                 <div class="badge-container">
+                    <div class="count-badge" style="background-color: #555;">
+                        <span class="label-text">회원 자격</span>
+                        <div class="value-wrap">
+                            <span id="member-status" class="text-status">-</span>
+                        </div>
+                    </div>
                     <div class="count-badge">
                         <span class="label-text">사용한 결석계</span>
                         <div class="value-wrap">
@@ -230,7 +238,7 @@
         const SCHEDULE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBnuUvyE2CDV-hG26xCVdnt88JhQgtusdEndJwTzaI62TXPdWTNldVvua9RLkXj1s34qiM0CEcNvbr/pub?gid=305458048&single=true&output=csv";
 
         // ============================================
-        // 1. 결석 횟수 및 출석률 조회
+        // 1. 회원 정보, 결석 횟수 및 출석률 조회
         // ============================================
         async function checkUsedCount() {
             document.getElementById('check-id').blur();
@@ -254,6 +262,10 @@
 
                 if (data.result === "success") {
                     document.getElementById('user-name-display').innerText = name;
+                    
+                    // 회원 자격 표시 추가
+                    document.getElementById('member-status').innerText = data.memberStatus; 
+                    
                     document.getElementById('used-count').innerText = data.usedCount;
                     // % 기호가 데이터에 이미 포함되어 있다면 제외하도록 파싱 처리
                     document.getElementById('attendance-rate').innerText = String(data.attendanceRate).replace('%', '');
@@ -342,7 +354,7 @@
             const id = document.getElementById('submit-id').value.trim();
             const name = document.getElementById('submit-name').value.trim();
             const selected = document.querySelector('input[name="selected_event"]:checked');
-            const absenceType = document.getElementById('submit-type').value; // 결석계 종류 가져오기
+            const absenceType = document.getElementById('submit-type').value; 
             
             if (!id || !name) { alert("학번과 이름을 입력해주세요."); return; }
             if (!selected) { alert("결석할 활동을 선택해주세요."); return; }
@@ -360,7 +372,6 @@
 
             try {
                 const encodedEventName = encodeURIComponent(eventName);
-                // type=attendance 명시
                 const checkResponse = await fetch(`${SCRIPT_URL}?type=attendance&id=${id}&name=${name}&eventName=${encodedEventName}`);
                 const checkData = await checkResponse.json();
 
@@ -404,7 +415,7 @@
                     name: name,
                     eventName: eventName,
                     date: dateStr,
-                    absenceType: absenceType // POST 요청에 결석계 종류 포함
+                    absenceType: absenceType 
                 })
             })
             .then(() => {
@@ -430,5 +441,3 @@
 
 </body>
 </html>
-
-
