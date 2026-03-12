@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAINS - 부원 소개</title>
+    <title>PAINS - 이벤트</title>
     <style>
         /* [1] 폰트 설정 */
         @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); font-weight: normal; font-style: normal; }
@@ -25,13 +25,12 @@
         header h1 a { text-decoration: none; color: white; }
         header nav { display: none; }
 
-        /* [사이드바 스타일 업데이트] */
+        /* 사이드바 스타일 */
         .sidebar { position: fixed; top: 0; left: -300px; width: 260px; height: 100vh; background-color: white; box-shadow: 2px 0 10px rgba(0,0,0,0.1); transition: left 0.3s ease; z-index: 1050; padding-top: 80px; display: flex; flex-direction: column; overflow-y: auto; }
         .sidebar.active { left: 0; }
         .sidebar a { padding: 15px 30px; text-decoration: none; color: #333; font-size: 1.1rem; font-weight: 500; border-bottom: 1px solid #f9f9f9; transition: background 0.2s, color 0.2s; display: block; }
         .sidebar a:hover { background-color: #fafafa; color: #ab3333; font-weight: bold; }
         
-        /* 드롭다운 메뉴 스타일 */
         .sidebar a.menu-toggle { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .submenu { display: none; background-color: #f8f8f8; border-bottom: 1px solid #eee; }
         .submenu.open { display: block; }
@@ -41,37 +40,75 @@
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: none; z-index: 1040; }
         .overlay.active { display: block; }
 
-        /* 기존 섹션 스타일 */
-        section { padding: 3rem 1rem; max-width: 1200px; margin: 0 auto; }
-        h2 { font-size: 2rem; color: #ab3333; margin-bottom: 40px; text-align: center;}
+        /* 섹션 및 제목 스타일 */
+        section { padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; min-height: calc(100vh - 200px); }
+        h2 { font-size: 2.2rem; color: #ab3333; margin-bottom: 40px; text-align: center; }
         footer { background-color: #333; color: white; text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.8rem; }
 
-        /* [4] 조직도 스타일 */
-        .org-chart-wrapper { overflow-x: auto; padding: 20px 0; text-align: center; -webkit-overflow-scrolling: touch; }
-        .tree-container { display: inline-block; position: relative; padding-top: 20px; min-width: 700px; }
-        .org-card { background: white; border: 2px solid #ab3333; border-radius: 12px; padding: 15px; text-align: center; width: 160px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative; z-index: 2; margin: 0 auto; }
-        .org-img { width: 80px; height: 80px; background-color: #eee; border-radius: 50%; margin: 0 auto 10px; background-size: cover; background-position: center; transition: background-image 0.3s ease-in-out; }
-        .org-role { color: #ab3333; font-weight: bold; font-size: 0.9rem; margin-bottom: 4px; }
-        .org-name { font-size: 1.1rem; font-weight: bold; margin-bottom: 4px; }
-        .org-major { font-size: 0.8rem; color: #666; word-break: keep-all; }
-        .level-1, .level-2, .level-3 { display: flex; justify-content: center; position: relative; }
-        .level-1 { margin-bottom: 50px; }
-        .level-2 { margin-bottom: 50px; }
-        .level-3 { gap: 40px; }
-        .line { position: absolute; background-color: #ccc; z-index: 1; }
-        .line-v-1 { width: 2px; height: 50px; top: 100%; left: 50%; transform: translateX(-50%); }
-        .vice-president-wrapper { position: relative; display: flex; justify-content: center; }
-        .line-v-2-short { width: 2px; height: 25px; top: 100%; left: 50%; transform: translateX(-50%); }
-        .line-h-long { height: 2px; width: 400px; top: calc(100% + 25px); left: 50%; transform: translateX(-50%); }
-        .line-v-3-branches { width: 2px; height: 25px; top: calc(100% + 25px); }
-        .branch-left { left: calc(50% - 200px); }
-        .branch-center { left: 50%; transform: translateX(-50%); }
-        .branch-right { right: calc(50% - 200px); }
-        .general-affairs-wrapper { position: absolute; left: calc(50% + 140px); top: 0; }
-        .card-staff { border-color: #7f8c8d; }
-        .card-staff .org-role { color: #7f8c8d; }
+        /* [4] 이벤트 리스트 스타일 (새로 추가된 부분) */
+        .event-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px; /* 버튼 사이 간격 */
+        }
 
-        @media (max-width: 600px) { header { justify-content: flex-start; } section { padding: 2rem 0; } }
+        .event-btn {
+            position: relative;
+            display: block;
+            width: 100%;
+            height: 180px; /* 버튼 높이 */
+            border-radius: 16px;
+            overflow: hidden;
+            text-decoration: none;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* 사진을 어둡게 만드는 반투명 검은색 오버레이 */
+        .event-btn::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.55); 
+            z-index: 1;
+            transition: background-color 0.3s ease;
+        }
+
+        /* 마우스 호버(오버) 시 약간 위로 떠오르면서 밝아지는 효과 */
+        .event-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .event-btn:hover::before {
+            background-color: rgba(0, 0, 0, 0.4); 
+        }
+
+        /* 이벤트 텍스트 스타일 */
+        .event-btn .event-name {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            color: #ffffff;
+            font-size: 2.5rem;
+            font-weight: bold;
+            font-family: 'KBO_Dia', sans-serif;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+            width: 100%;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 600px) { 
+            header { justify-content: flex-start; } 
+            section { padding: 2rem 1rem; } 
+            h2 { font-size: 1.8rem; margin-bottom: 25px; }
+            .event-btn { height: 140px; }
+            .event-btn .event-name { font-size: 1.8rem; }
+        }
     </style>
 </head>
 <body>
@@ -83,70 +120,27 @@
         <h1><a href="index.html">Providing Academic INsights for Sports.</a></h1>
     </header>
 
-    <div class="sidebar" id="sidebar">
-    </div>
+    <div class="sidebar" id="sidebar"></div>
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <section>
-        <h2>11기 운영진 조직도</h2>
-        <div class="org-chart-wrapper">
-            <div class="tree-container">
-                <div class="level-1">
-                    <div style="position: relative;">
-                        <div class="org-card" data-role="회장v2">
-                            <div class="org-img"></div> 
-                            <div class="org-role">회장</div>
-                            <div class="org-name">전영재</div>
-                            <div class="org-major">언어학과 24</div>
-                        </div>
-                        <div class="line line-v-1"></div>
-                    </div>
-                    <div class="general-affairs-wrapper">
-                        <div class="org-card card-staff" data-role="총무">
-                            <div class="org-img"></div>
-                            <div class="org-role">총무</div>
-                            <div class="org-name">손영현</div>
-                            <div class="org-major">통계학과 23</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="level-2">
-                    <div class="vice-president-wrapper">
-                        <div class="org-card" data-role="부회장">
-                            <div class="org-img"></div>
-                            <div class="org-role">부회장</div>
-                            <div class="org-name">하승민</div>
-                            <div class="org-major">데이터과학과 23</div>
-                        </div>
-                        <div class="line line-v-2-short"></div>
-                        <div class="line line-h-long"></div>
-                        <div class="line line-v-3-branches branch-left"></div>
-                        <div class="line line-v-3-branches branch-center"></div>
-                        <div class="line line-v-3-branches branch-right"></div>
-                    </div>
-                </div>
-                <div class="level-3">
-                    <div class="org-card" data-role="기획부장v2">
-                        <div class="org-img"></div>
-                        <div class="org-role">기획부장</div>
-                        <div class="org-name">나영우</div>
-                        <div class="org-major">보건환경융합과학부 25</div>
-                    </div>
-                    <div class="org-card" data-role="홍보부장v2">
-                        <div class="org-img"></div>
-                        <div class="org-role">홍보부장</div>
-                        <div class="org-name">김가현</div>
-                        <div class="org-major">미디어학부 24</div>
-                    </div>
-                    <div class="org-card" data-role="교육부장">
-                        <div class="org-img"></div>
-                        <div class="org-role">교육부장</div>
-                        <div class="org-name">이지섭</div>
-                        <div class="org-major">통계학과 24</div>
-                    </div>
-                </div>
+        <h2>진행 중인 이벤트</h2>
+        
+        <div class="event-list">
+            
+            <a href="https://www.naver.com" target="_blank" class="event-btn" style="background-image: url('eventex1.png');">
+                <span class="event-name">가제1</span>
+            </a>
+
+            <a href="https://www.youtube.com" target="_blank" class="event-btn" style="background-image: url('eventex2.png');">
+                <span class="event-name">가제2</span>
+            </a>
+
+            <a href="https://www.google.com" target="_blank" class="event-btn" style="background-image: url('eventex3.png');">
+                <span class="event-name">가제3</span>
+            </a>
+
             </div>
-        </div>
     </section>
 
     <footer>
@@ -158,18 +152,10 @@
     </script>
     
     <script>
-        loadSidebar('members');
-        // [3] 부원 명단 이미지 로컬 설정
-        document.addEventListener("DOMContentLoaded", function() {
-            const cards = document.querySelectorAll('.org-card');
-            cards.forEach(card => {
-                const role = card.getAttribute('data-role');
-                const imgDiv = card.querySelector('.org-img');
-                if (role && imgDiv) {
-                    imgDiv.style.backgroundImage = `url('${role}.png')`;
-                }
-            });
-        });
+        // 사이드바에서 현재 페이지에 불 들어오게 하기 위한 설정 (menu.js 구조에 맞춰 'event'로 지정)
+        if (typeof loadSidebar === 'function') {
+            loadSidebar('event');
+        }
     </script>
 </body>
 </html>
