@@ -27,6 +27,8 @@ function loadSidebar(currentPage) {
             <a href="javascript:void(0)" id="link-apply" onclick="alert('지원 기간이 아닙니다.'); return false;">지원하기</a>
             <a href="javascript:void(0)" id="link-result" onclick="alert('최종 결과 확인 기간이 아닙니다. 최종 합격자 발표는 3월 15일 13:00에 이루어질 예정입니다.'); return false;">지원 결과 안내</a>
         </div>
+
+        <a href="javascript:void(0)" id="link-event" onclick="alert('현재 진행하고 있는 이벤트가 없습니다.'<br>'곧 새로운 이벤트로 찾아뵙겠습니다.'>이벤트</a>
     `;
 
     // HTML에 사이드바 내용 넣기
