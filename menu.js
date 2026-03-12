@@ -25,8 +25,7 @@ function loadSidebar(currentPage) {
         </a>
         <div class="submenu" id="support-submenu">
             <a href="javascript:void(0)" id="link-apply" onclick="alert('지원 기간이 아닙니다.'); return false;">지원하기</a>
-            
-            <a href="result.html" id="link-result">지원 결과 안내</a>
+            <a href="javascript:void(0)" id="link-result" onclick="alert('최종 결과 확인 기간이 아닙니다. 최종 합격자 발표는 3월 15일 13:00에 이루어질 예정입니다.'); return false;">지원 결과 안내</a>
         </div>
     `;
 
