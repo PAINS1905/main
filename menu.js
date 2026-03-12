@@ -16,7 +16,7 @@ function loadSidebar(currentPage) {
         </a>
         <div class="submenu" id="members-submenu">
             <a href="members.html" id="link-members">운영진 소개</a>
-            <a href="attendance.html" id="link-attendance">회원 정보 확인</a>
+            <a href="attendance.html" id="link-attendance">회원 정보 / 결석계</a>
             <a href="fee.html" id="link-fee">회비 내역 조회</a>
         </div>
 
