@@ -154,8 +154,8 @@
                             <span class="unit">회</span>
                         </div>
                     </div>
-                    <div class="count-badge" style="background-color: #ab3333;">
-                        <span class="label-text">현재 출석률</span>
+                    <div class="count-badge" id="attendance-badge" style="background-color: #ab3333; min-width: 140px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">
+                        <span class="label-text" style="color: #f5f5f5;">현재 출석률</span>
                         <div class="value-wrap">
                             <span id="attendance-rate" class="number">0</span>
                             <span class="unit">%</span>
@@ -265,29 +265,37 @@
                     
                     document.getElementById('member-status').innerText = data.memberStatus; 
                     document.getElementById('used-count').innerText = data.usedCount;
-                    // % 기호가 데이터에 이미 포함되어 있다면 제외하도록 파싱 처리
-                    document.getElementById('attendance-rate').innerText = String(data.attendanceRate).replace('%', '');
                     
-                    // [NEW] 색상 동적 적용 로직
+                    // 출석률 파싱 및 보정
+                    let rawRate = String(data.attendanceRate).replace('%', '');
+                    let rateNum = parseFloat(rawRate);
+
+                    if (isNaN(rateNum)) rateNum = 0;
+                    if (rateNum < 0) rateNum = 0;
+                    if (rateNum > 100) rateNum = 100;
+
+                    document.getElementById('attendance-rate').innerText = rawRate;
+
+                    // 출석률에 맞춰 배경 프로그레스 바 적용
+                    const attendanceBadge = document.getElementById('attendance-badge');
+                    attendanceBadge.style.background = `linear-gradient(to right, #ab3333 ${rateNum}%, #dca5a5 ${rateNum}%)`;
+                    
+                    // 색상 동적 적용 로직
                     const hexColor = data.memberColor;
                     const statusBadge = document.getElementById('status-badge');
                     const statusText = document.getElementById('member-status');
                     const statusLabel = document.getElementById('status-label');
 
-                    // 시트의 기본 색상(#000000 등)이 아닐 경우 지정된 색상 적용
                     if (hexColor && hexColor !== "#000000") {
-                        // HEX 코드를 RGB로 변환
                         let r = parseInt(hexColor.slice(1, 3), 16);
                         let g = parseInt(hexColor.slice(3, 5), 16);
                         let b = parseInt(hexColor.slice(5, 7), 16);
                         
-                        // 배경은 투명도 15% 적용 (밝은 파스텔 효과), 글자는 원본 색상
                         statusBadge.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.15)`;
-                        statusBadge.style.border = `1px solid rgba(${r}, ${g}, ${b}, 0.3)`; // 은은한 테두리
+                        statusBadge.style.border = `1px solid rgba(${r}, ${g}, ${b}, 0.3)`; 
                         statusText.style.color = hexColor;
                         statusLabel.style.color = hexColor;
                     } else {
-                        // 색상이 지정되지 않았거나 기본 검은색일 경우 기본 디자인
                         statusBadge.style.backgroundColor = "#f5f5f5";
                         statusBadge.style.border = "1px solid #ddd";
                         statusText.style.color = "#333";
