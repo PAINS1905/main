@@ -349,7 +349,8 @@
                     const diffTime = eventDate.getTime() - today.getTime();
                     const diffDays = Math.round(diffTime / (1000 * 3600 * 24));
 
-                    if(type.includes("정기") && diffDays >= 1 && diffDays <= 21) {
+                    // 수정된 부분: '정기'가 포함되고, '비정기'는 포함되지 않도록 필터링
+                    if(type.includes("정기") && !type.includes("비정기") && diffDays >= 1 && diffDays <= 21) {
                         availableEvents.push({ date: eventDate, dateStr: dateStr, name: eventName });
                     }
                 }
