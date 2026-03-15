@@ -25,6 +25,7 @@ function loadSidebar(currentPage) {
             <a href="members.html" id="link-members">운영진 소개</a>
             <a href="attendance.html" id="link-attendance">회원 정보 / 결석계</a>
             <a href="fee.html" id="link-fee">회비 내역 조회</a>
+            <a href="javascript:void(0)" id="link-rule" onclick="alert('작업 중인 페이지입니다. 자세한 회칙 내용은 노션을 우선 참조해주시기 바랍니다.'); return false;">회칙</a>
         </div>
 
         <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('support-submenu', 'support-arrow')">
