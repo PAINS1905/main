@@ -10,6 +10,15 @@ function loadSidebar(currentPage) {
         <a href="index.html" id="link-home">Home</a>
 
         <a href="activity.html" id="link-activity">활동</a>
+
+        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('members-submenu', 'members-arrow')">
+            Members <span id="activities-arrow" style="font-size:0.8rem; transition: transform 0.3s; display:inline-block;">▼</span>
+        </a>
+        <div class="submenu" id="activities-submenu">
+            <a href="activity.html" id="link-members">프로젝트 아카이브</a>
+            <a href="study.html" id="link-attendance">신입부원 스터디</a>
+            <a href="javascript:void(0)" id="link-event" onclick="alert('현재 진행하고 있는 이벤트가 없습니다. 곧 새로운 이벤트로 찾아뵙겠습니다.'); return false;">이벤트</a>
+        </div>
         
         <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('members-submenu', 'members-arrow')">
             Members <span id="members-arrow" style="font-size:0.8rem; transition: transform 0.3s; display:inline-block;">▼</span>
@@ -27,8 +36,6 @@ function loadSidebar(currentPage) {
             <a href="javascript:void(0)" id="link-apply" onclick="alert('지원 기간이 아닙니다.'); return false;">지원하기</a>
             <a href="result.html" id="link-result">지원 결과 안내</a>
         </div>
-
-        <a href="javascript:void(0)" id="link-event" onclick="alert('현재 진행하고 있는 이벤트가 없습니다. 곧 새로운 이벤트로 찾아뵙겠습니다.'); return false;">이벤트</a>
     `;
 
     // HTML에 사이드바 내용 넣기
