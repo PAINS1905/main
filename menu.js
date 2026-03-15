@@ -7,12 +7,10 @@ function loadSidebar(currentPage) {
     console.log("PAINS Menu v2.8 Loaded");
 
     const sidebarHTML = `
-        <a href="index.html" id="link-home">Home</a>
+        <a href="index.html" id="link-home">홈</a>
 
-        <a href="activity.html" id="link-activity">활동</a>
-
-        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('members-submenu', 'members-arrow')">
-            Members <span id="activities-arrow" style="font-size:0.8rem; transition: transform 0.3s; display:inline-block;">▼</span>
+        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('activities-submenu', 'activities-arrow')">
+            활동 <span id="activities-arrow" style="font-size:0.8rem; transition: transform 0.3s; display:inline-block;">▼</span>
         </a>
         <div class="submenu" id="activities-submenu">
             <a href="activity.html" id="link-members">프로젝트 아카이브</a>
@@ -21,7 +19,7 @@ function loadSidebar(currentPage) {
         </div>
         
         <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('members-submenu', 'members-arrow')">
-            Members <span id="members-arrow" style="font-size:0.8rem; transition: transform 0.3s; display:inline-block;">▼</span>
+            운영 <span id="members-arrow" style="font-size:0.8rem; transition: transform 0.3s; display:inline-block;">▼</span>
         </a>
         <div class="submenu" id="members-submenu">
             <a href="members.html" id="link-members">운영진 소개</a>
