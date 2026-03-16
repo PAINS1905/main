@@ -5,129 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PAINS - 11기 최종 합격자 안내</title>
     <style>
-        /* [1] 폰트 설정 */
+        /* ============================ */
+        /* [1] 폰트 및 기본 스타일        */
+        /* ============================ */
         @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); }
         @font-face { font-family: 'SCDream'; src: url('SCDream5.otf'); }
 
-        /* [2] 기본 스타일 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'SCDream', sans-serif; background-color: #fdfdfd; color: #333; line-height: 1.6; }
-        
-        /* [3] 레이아웃 및 헤더 */
-        header { 
-            background-color: #cf8b8b; 
-            color: white; 
-            padding: 1rem 2rem; 
-            display: flex; 
-            align-items: center; 
-            gap: 20px; 
-            position: relative;
-            z-index: 1000;
-        }
+        body { font-family: 'SCDream', sans-serif; line-height: 1.6; }
 
-        /* 햄버거 버튼 스타일 */
-        .hamburger-btn {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 24px;
-            height: 18px;
-            cursor: pointer;
-            z-index: 1100;
-        }
-        .hamburger-btn span {
-            display: block;
-            width: 100%;
-            height: 2px;
-            background-color: white;
-            border-radius: 3px;
-            transition: all 0.3s ease;
-        }
-
-        header h1 { font-family: 'KBO_Dia', sans-serif; font-size: 1.5rem; margin: 0; }
-        header h1 a { text-decoration: none; color: white; }
-        
-        header nav { display: none; }
-
-        /* 사이드바 스타일 */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -300px;
-            width: 260px;
-            height: 100vh;
-            background-color: white;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            transition: left 0.3s ease;
-            z-index: 1050;
-            padding-top: 80px;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto; 
-        }
-        .sidebar.active { left: 0; }
-
-        .sidebar a {
-            padding: 15px 30px;
-            text-decoration: none;
-            color: #333;
-            font-size: 1.1rem;
-            font-weight: 500;
-            border-bottom: 1px solid #f9f9f9;
-            transition: background 0.2s, color 0.2s;
-            display: block;
-        }
-        .sidebar a:hover {
-            background-color: #fafafa;
-            color: #ab3333;
-            font-weight: bold;
-        }
-
-        /* 드롭다운 메뉴 스타일 */
-        .sidebar a.menu-toggle {
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .submenu {
-            display: none; 
-            background-color: #f8f8f8;
-            border-bottom: 1px solid #eee;
-        }
-        .submenu.open {
-            display: block; 
-        }
-        .submenu a {
-            padding-left: 50px; 
-            font-size: 1rem;
-            color: #666;
-            border-bottom: none;
-        }
-        .submenu a:hover {
-            color: #ab3333;
-            background-color: #f0f0f0;
-        }
-
-        /* 오버레이 스타일 */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            display: none;
-            z-index: 1040;
-        }
-        .overlay.active { display: block; }
-
-        /* [4] 기존 조회 페이지 스타일 - 너비 700px로 증가 */
-        .container { max-width: 700px; margin: 5rem auto; padding: 0 1rem; text-align: center; }
+        /* ============================ */
+        /* [2] 메인 컨텐츠 세부 스타일    */
+        /* ============================ */
+        .container { max-width: 700px; margin: 0 auto; padding: 0 1rem; text-align: center; }
         
         .search-card {
             background: white; border-radius: 12px; padding: 2.5rem 2rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eee;
+            margin-bottom: 2rem;
+            /* 테두리와 그림자는 menu.js에서 동적 주입 (.search-card 대신 기본 속성에 맞게) */
         }
         .search-card h2 { font-family: 'KBO_Dia', sans-serif; color: #ab3333; margin-bottom: 0.5rem; font-size: 1.6rem; }
         .sub-title { color: #666; font-size: 0.9rem; margin-bottom: 30px; }
@@ -135,14 +30,12 @@
         .input-group { margin-bottom: 15px; text-align: left; }
         .input-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; color: #555; }
         .input-group input {
-            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;
-            font-size: 1rem; font-family: 'SCDream', sans-serif;
+            width: 100%; padding: 12px; border-radius: 8px; font-size: 1rem; font-family: 'SCDream', sans-serif; outline: none;
+            /* 테두리 등은 menu.js가 덮어씌움 */
         }
-        .input-group input:focus { outline: none; border-color: #ab3333; }
 
         .btn-submit {
-            width: 100%; padding: 12px; background-color: #ab3333; color: white; border: none;
-            border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 10px;
+            width: 100%; padding: 12px; background-color: #ab3333; color: white; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 10px;
         }
         .btn-submit:hover { background-color: #8f2a2a; }
         
@@ -167,14 +60,8 @@
         .interview-info li { list-style: none; margin-bottom: 5px; color: #555; }
         .interview-info strong { color: #333; margin-right: 5px; display: inline-block; width: 45px; }
 
-        /* 약도 이미지 스타일 */
         .map-image {
-            width: 100%;
-            height: auto;
-            margin-top: 15px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            display: none; /* 기본적으로 숨김 처리 */
+            width: 100%; height: auto; margin-top: 15px; border-radius: 8px; border: 1px solid #ddd; display: none;
         }
 
         .warning-msg { font-size: 0.85rem; color: #e74c3c; margin-top: 15px; font-weight: bold; word-break: keep-all; }
@@ -182,28 +69,13 @@
 
         .loader { display: none; margin: 20px auto; border: 4px solid #f3f3f3; border-top: 4px solid #ab3333; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        @media (max-width: 600px) { 
-            .container { margin-top: 2rem; } 
-            header { justify-content: flex-start; }
-        }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="hamburger-btn" onclick="toggleMenu()">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-        <h1><a href="index.html">Providing Academic INsights for Sports.</a></h1>
-    </header>
-
-    <div class="sidebar" id="sidebar">
-        
-    </div>
-    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <header></header>
+    <div class="sidebar" id="sidebar"></div>
+    <div class="overlay" id="overlay"></div>
 
     <div class="container">
         <div class="search-card">
@@ -249,6 +121,8 @@
         </div>
     </div>
 
+    <footer></footer>
+
     <script>
         document.write('<script src="menu.js?v=' + new Date().getTime() + '"><\/script>');
     </script>
@@ -256,9 +130,6 @@
     <script>
         loadSidebar('result');
 
-        // ============================================
-        // 앱스 스크립트 연동
-        // ============================================
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7shd9op70ZSSuEYe3Iod6wSoRfQ_UKLs7DU1TdOAWoFr1Xr-d8ZDzBBQ_Iq1kEivPg/exec";
 
         async function checkResult() {
@@ -313,14 +184,10 @@
                     badge.className = "status-badge status-pass"; 
                     desc.innerHTML = "축하드립니다! 귀하는 PAINS 11기 최종 면접에 합격하셨습니다.<br>아래 OT 일정을 확인해주시기 바랍니다.";
                     
-                    // JSON 응답으로 받아온 면접 정보를 HTML에 삽입
                     const loc = data.interviewLocation || "미정";
                     document.getElementById('display-date').innerText = data.interviewDate || "미정";
                     document.getElementById('display-time').innerText = data.interviewTime || "미정";
                     document.getElementById('display-location').innerText = loc;
-
-                    // 약도 이미지 조건부 출력
-                    
 
                     interviewBox.style.display = "block"; 
 
@@ -331,7 +198,7 @@
                     desc.innerHTML = "2026년 상반기 PAINS 11기 리크루팅에 지원해주셔서 진심으로 감사드립니다. <br>지원자님의 뛰어난 역량과 열정에도 불구하고, 한정된 선발 인원으로 인해 아쉽게도 이번 기수에는 함께하지 못하게 되었습니다. 비록 이번에는 좋은 인연으로 이어지지 못했지만 보여주신 관심에 깊이 감사드리며 앞으로의 행보를 진심으로 응원하겠습니다. <br>PAINS는 매 기수 리크루팅을 진행하고 있으니, 이후에도 PAINS에 많은 관심 부탁드립니다.";
                     
                     interviewBox.style.display = "none"; 
-                    mapImage.style.display = 'none'; // 불합격일 때 이미지 숨김 확실히 처리
+                    mapImage.style.display = 'none'; 
                 }
 
                 resultArea.style.display = "block";
@@ -349,6 +216,3 @@
 
 </body>
 </html>
-
-
-
