@@ -13,6 +13,7 @@
     <meta property="og:description" content="고려대학교 유일의 스포츠 통계분석 동아리 PAINS(페인스)입니다.">
     <meta property="og:url" content="https://pains1905.github.io/main/">
     <meta property="og:image" content="https://pains1905.github.io/main/PAINS_logo.png">
+
     <style>
         /* ============================ */
         /* [1] 폰트 및 기본 설정        */
@@ -20,41 +21,81 @@
         @font-face {
             font-family: 'KBO_Dia';
             src: url('KBO_medium.woff') format('woff');
-            font-weight: normal; font-style: normal;
+            font-weight: normal;
+            font-style: normal;
         }
         @font-face {
             font-family: 'SCDream';
             src: url('SCDream5.otf');
-            font-weight: normal; font-style: normal;
+            font-weight: normal;
+            font-style: normal;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'SCDream', sans-serif; line-height: 1.6; color: #333; }
         h1, h3 { font-family: 'KBO_Dia', sans-serif; }
-        
-        /* [수정됨] 강조 문구 붉은색 통일 & 링크 스타일 (밑줄 제거) */
-/* hover 시 밑줄 생기는 스타일 삭제됨 */
 
-        /* ============================ */
-        /* [2] 레이아웃 및 헤더         */
-        /* ============================ */
-/* [3] 사이드바 스타일 */
-/* [4] 메인 섹션 스타일 (배경 원래대로 복구) */
         .intro-text p {
             font-size: 1.1rem;
             line-height: 1.8;
         }
-.hero-image { max-width: 80%; width: 400px; height: auto; margin-bottom: 20px; border-radius: 12px; }
-        .hero p { font-size: 1.2rem; opacity: 0.9; }
-/* [추가] About Us 단체사진 스타일 */
+
+        .hero {
+            background-color: #ab3333;
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            border-radius: 12px;
+        }
+
+        .hero-image {
+            max-width: 80%;
+            width: 400px;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 12px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        section {
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        strong { color: #ab3333; }
+
+        .inline-link {
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        /* About Us 단체사진 */
         .about-us-image {
             width: 100%;
             height: auto;
             border-radius: 12px;
-            margin-bottom: 20px; /* 본문과의 간격 */
+            margin-bottom: 20px;
         }
 
-        /* [5] 달력 스타일 */
+        /* ============================ */
+        /* [2] 달력 스타일              */
+        /* ============================ */
         .calendar-container {
             width: 100%;
             background: #fff;
@@ -67,81 +108,165 @@
 
         .calendar-header {
             display: flex;
-            justify-content: center; 
+            justify-content: center;
             align-items: center;
             background-color: #f9f9f9;
             padding: 15px 20px;
             border-bottom: 1px solid #eee;
             position: relative;
             gap: 10px;
-            z-index: 50; 
+            z-index: 50;
         }
-        
+
         .btn-today-reset {
-            padding: 5px 12px; background: white; border: 1px solid #ddd;
-            border-radius: 4px; font-size: 0.9rem; cursor: pointer;
-            margin-left: auto; color: #555; transition: all 0.2s;
+            padding: 5px 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-left: auto;
+            color: #555;
+            transition: all 0.2s;
         }
-        .btn-today-reset:hover { background-color: #eee; color: #333; }
+
+        .btn-today-reset:hover {
+            background-color: #eee;
+            color: #333;
+        }
 
         .calendar-nav-group {
-            display: flex; align-items: center; gap: 15px;
-            position: absolute; left: 50%; transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .calendar-title {
-            font-family: 'KBO_Dia', sans-serif; font-size: 1.5rem;
-            color: #ab3333; cursor: pointer; position: relative;
+            font-family: 'KBO_Dia', sans-serif;
+            font-size: 1.5rem;
+            color: #ab3333;
+            cursor: pointer;
+            position: relative;
         }
-        .calendar-title:hover { text-decoration: underline; }
 
-        /* 날짜 선택 팝업 */
-        .date-picker {
-            display: none; position: absolute;
-            top: 100%; left: 50%; transform: translateX(-50%);
-            width: 280px; height: 240px;
-            background: white; border: 1px solid #ccc;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            z-index: 2000; border-radius: 4px;
-            flex-direction: column; text-align: left;
+        .calendar-title:hover {
+            text-decoration: underline;
         }
+
+        .date-picker {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px;
+            height: 240px;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 2000;
+            border-radius: 4px;
+            flex-direction: column;
+            text-align: left;
+        }
+
         .date-picker.active { display: flex; }
 
         .picker-header {
-            padding: 10px 15px; border-bottom: 1px solid #eee;
-            display: flex; justify-content: space-between; align-items: center;
-            font-weight: bold; color: #333; font-size: 0.95rem;
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            color: #333;
+            font-size: 0.95rem;
         }
-        .picker-close { cursor: pointer; color: #999; font-size: 1.2rem; line-height: 1; }
+
+        .picker-close {
+            cursor: pointer;
+            color: #999;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
         .picker-close:hover { color: #333; }
 
-        .picker-body { display: flex; flex: 1; overflow: hidden; }
-        .picker-col { flex: 1; overflow-y: auto; border-right: 1px solid #eee; }
+        .picker-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .picker-col {
+            flex: 1;
+            overflow-y: auto;
+            border-right: 1px solid #eee;
+        }
+
         .picker-col:last-child { border-right: none; }
+
         .picker-col::-webkit-scrollbar { width: 6px; }
-        .picker-col::-webkit-scrollbar-thumb { background-color: #ddd; border-radius: 3px; }
-        .picker-col::-webkit-scrollbar-track { background-color: transparent; }
-        .picker-item { padding: 8px 15px; cursor: pointer; font-size: 0.9rem; color: #555; }
-        .picker-item:hover { background-color: #f5f5f5; }
-        .picker-item.selected { background-color: #f0f8ff; color: #ab3333; font-weight: bold; }
 
-        .calendar-nav-btn {
-            background: none; border: none; font-size: 1.5rem;
-            cursor: pointer; color: #666; transition: color 0.3s; padding: 0 5px;
+        .picker-col::-webkit-scrollbar-thumb {
+            background-color: #ddd;
+            border-radius: 3px;
         }
-        .calendar-nav-btn:hover { color: #ab3333; }
 
-        /* 달력 내부 그리드 시스템 */
-        .calendar-body { display: flex; flex-direction: column; width: 100%; }
-        
-        .weekday-row {
-            display: grid; grid-template-columns: repeat(7, 1fr);
-            border-bottom: 1px solid #eee; background-color: #fff;
+        .picker-col::-webkit-scrollbar-track {
+            background-color: transparent;
         }
-        .weekday {
-            text-align: center; padding: 10px 0; font-weight: bold;
+
+        .picker-item {
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
             color: #555;
         }
+
+        .picker-item:hover { background-color: #f5f5f5; }
+
+        .picker-item.selected {
+            background-color: #f0f8ff;
+            color: #ab3333;
+            font-weight: bold;
+        }
+
+        .calendar-nav-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s;
+            padding: 0 5px;
+        }
+
+        .calendar-nav-btn:hover { color: #ab3333; }
+
+        .calendar-body {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .weekday-row {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            border-bottom: 1px solid #eee;
+            background-color: #fff;
+        }
+
+        .weekday {
+            text-align: center;
+            padding: 10px 0;
+            font-weight: bold;
+            color: #555;
+        }
+
         .weekday.sun { color: #e74c3c; }
         .weekday.sat { color: #3498db; }
 
@@ -152,40 +277,57 @@
             background-color: #fff;
         }
 
-        /* 날짜 배경 레이어 */
         .day-bg-layer {
-            display: grid; grid-template-columns: repeat(7, 1fr);
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; pointer-events: none;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
         }
+
         .day-cell-bg {
-            border-right: 1px solid #eee; padding: 5px;
-            display: flex; justify-content: flex-end;
+            border-right: 1px solid #eee;
+            padding: 5px;
+            display: flex;
+            justify-content: flex-end;
         }
+
         .day-cell-bg:last-child { border-right: none; }
-        
-        .day-number { font-size: 0.9rem; color: #333; }
+
+        .day-number {
+            font-size: 0.9rem;
+            color: #333;
+        }
+
         .day-cell-bg.sun .day-number { color: #e74c3c; }
         .day-cell-bg.sat .day-number { color: #3498db; }
+
         .day-cell-bg.other-month { background-color: #f9f9f9; }
         .day-cell-bg.other-month .day-number { color: #ccc; }
-        .day-cell-bg.today { background-color: #fff5f5; }
-        .day-cell-bg.today .day-number { font-weight: bold; color: #ab3333; text-decoration: underline; }
 
-        /* 공휴일 스타일 */
+        .day-cell-bg.today { background-color: #fff5f5; }
+        .day-cell-bg.today .day-number {
+            font-weight: bold;
+            color: #ab3333;
+            text-decoration: underline;
+        }
+
         .day-cell-bg.holiday .day-number { color: #e74c3c !important; }
 
-        /* 일정 표시 레이어 */
         .events-layer {
             position: relative;
             z-index: 2;
             width: 100%;
-            margin-top: 30px; 
+            margin-top: 30px;
             padding-bottom: 5px;
         }
 
         .event-bar {
-            position: absolute; 
+            position: absolute;
             height: 22px;
             line-height: 22px;
             border-radius: 4px;
@@ -199,9 +341,13 @@
             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
             transition: opacity 0.2s, transform 0.1s;
         }
-        .event-bar:hover { opacity: 0.9; transform: scale(1.01); z-index: 10; }
-        
-        /* 색상 클래스 정의 */
+
+        .event-bar:hover {
+            opacity: 0.9;
+            transform: scale(1.01);
+            z-index: 10;
+        }
+
         .event-bar.holiday { background-color: #e74c3c; }
         .event-bar.academic { background-color: #e36767; }
         .event-bar.recruiting { background-color: #0abde3; }
@@ -209,85 +355,186 @@
         .event-bar.regular { background-color: #27ae60; }
         .event-bar.etc { background-color: #7f8c8d; }
 
+        .activities {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            flex: 1;
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            min-width: 280px;
+        }
+
+        .card h4 {
+            color: #ab3333;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* 상세 모달 */
+        .event-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .event-modal {
+            background: white;
+            width: 350px;
+            max-width: 90%;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .event-modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            color: #999;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .event-modal-close:hover { color: #333; }
+
+        .event-modal-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .event-modal-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            word-break: keep-all;
+        }
+
+        .event-modal-info {
+            padding: 0;
+            margin: 0;
+        }
+
+        .event-modal-info li {
+            list-style: none;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: #555;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .event-modal-info strong {
+            color: #333;
+            margin-right: 10px;
+            white-space: nowrap;
+            width: 35px;
+            flex-shrink: 0;
+        }
+
+        /* 팝업 */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background: white;
+            width: 400px;
+            max-width: 90%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .popup-img-box {
+            width: 100%;
+            background-color: #fff;
+        }
+
+        .popup-img-box img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .popup-footer {
+            display: flex;
+            border-top: 1px solid #eee;
+        }
+
+        .popup-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: white;
+            cursor: pointer;
+            font-family: 'SCDream', sans-serif;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+
+        .popup-btn:hover { background-color: #f5f5f5; }
+
+        .btn-today {
+            border-right: 1px solid #eee;
+            color: #666;
+        }
+
+        .btn-close {
+            color: #ab3333;
+            font-weight: bold;
+        }
+
         @media (max-width: 600px) {
             .week-row { min-height: 80px; }
             .event-bar { font-size: 0.7rem; height: 20px; line-height: 20px; }
             .calendar-title { font-size: 1.2rem; }
             .btn-today-reset { font-size: 0.8rem; padding: 4px 8px; }
+            .hero { padding: 3rem 1rem; }
+            .activities { flex-direction: column; }
         }
-
-        .activities { display: flex; gap: 20px; flex-wrap: wrap; }
-        .card { flex: 1; background: #f9f9f9; padding: 25px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); min-width: 280px; }
-        .card h4 { color: #ab3333; font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; }
-@media (max-width: 600px) {
-.activities { flex-direction: column; }
-}
-
-        /* 상세 모달 */
-        .event-modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.5); z-index: 3000;
-            justify-content: center; align-items: center;
-        }
-        .event-modal {
-            background: white; width: 350px; max-width: 90%;
-            border-radius: 12px; padding: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2); position: relative;
-            animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .event-modal-close {
-            position: absolute; top: 15px; right: 15px;
-            font-size: 1.5rem; color: #999; cursor: pointer; line-height: 1;
-        }
-        .event-modal-close:hover { color: #333; }
-        .event-modal-badge {
-            display: inline-block; padding: 5px 10px; border-radius: 20px;
-            font-size: 0.8rem; font-weight: bold; color: white; margin-bottom: 10px;
-        }
-        .event-modal-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; color: #333; word-break: keep-all; }
-        
-        /* 상세 정보 리스트 스타일 */
-        .event-modal-info { padding: 0; margin: 0; }
-        .event-modal-info li { 
-            list-style: none; margin-bottom: 8px; font-size: 0.95rem; color: #555;
-            display: flex; /* Flexbox 활성화 */
-            align-items: flex-start; /* 상단 정렬 */
-        }
-        .event-modal-info strong { 
-            color: #333; 
-            margin-right: 10px; 
-            white-space: nowrap; 
-            width: 35px; 
-            flex-shrink: 0;
-        }
-
-        /* 팝업 (새해 인사) */
-        .popup-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); z-index: 9999;
-            justify-content: center; align-items: center;
-        }
-        .popup-content {
-            background: white; width: 400px; max-width: 90%;
-            border-radius: 12px; overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3); text-align: center;
-        }
-        .popup-img-box { width: 100%; background-color: #fff; }
-        .popup-img-box img { width: 100%; height: auto; display: block; }
-        .popup-footer { display: flex; border-top: 1px solid #eee; }
-        .popup-btn {
-            flex: 1; padding: 15px; border: none; background: white; cursor: pointer;
-            font-family: 'SCDream', sans-serif; font-size: 0.95rem; transition: background 0.2s;
-        }
-        .popup-btn:hover { background-color: #f5f5f5; }
-        .btn-today { border-right: 1px solid #eee; color: #666; }
-        .btn-close { color: #ab3333; font-weight: bold; }
     </style>
 </head>
 <body>
-<div class="hero">
+
+    <div class="hero">
         <img src="PAINS_logo.png" alt="PAINS 메인 로고" class="hero-image">
         <p>고려대학교 교내 유일 스포츠 통계분석 동아리 PAINS</p>
     </div>
@@ -343,7 +590,7 @@
                 </div>
                 <button class="btn-today-reset" onclick="goToToday()">오늘</button>
             </div>
-            
+
             <div class="calendar-body" id="calendar-body">
                 <div class="weekday-row">
                     <div class="weekday sun">일</div>
@@ -354,7 +601,7 @@
                     <div class="weekday">금</div>
                     <div class="weekday sat">토</div>
                 </div>
-                </div>
+            </div>
         </div>
     </section>
 
@@ -378,7 +625,8 @@
             더 자세한 활동은 <a href="#" onclick="alert('지원 기간이 아닙니다.'); return false;" class="inline-link"><strong>11기 지원하기 페이지</strong></a>와 <a href="https://www.instagram.com/ku_pains" target="_blank" class="inline-link"><strong>PAINS 공식 인스타그램 계정</strong></a>을 참고해주세요!
         </p>
     </section>
-<div id="event-modal-overlay" class="event-modal-overlay" onclick="closeEventModal()">
+
+    <div id="event-modal-overlay" class="event-modal-overlay" onclick="closeEventModal()">
         <div class="event-modal" onclick="event.stopPropagation()">
             <span class="event-modal-close" onclick="closeEventModal()">&times;</span>
             <div id="modal-badge" class="event-modal-badge"></div>
@@ -408,34 +656,32 @@
     <script>
         loadSidebar('home');
 
-        // ============================================
-        // 팝업 로직
-        // ============================================
         document.addEventListener("DOMContentLoaded", function() {
             const popup = document.getElementById('img-popup');
             const hideDate = localStorage.getItem('pains_popup_hide_date');
             const today = new Date().toDateString();
-            if (hideDate !== today) { popup.style.display = "flex"; }
+            if (hideDate !== today) {
+                popup.style.display = "flex";
+            }
         });
-        function closePopup() { document.getElementById('img-popup').style.display = "none"; }
+
+        function closePopup() {
+            document.getElementById('img-popup').style.display = "none";
+        }
+
         function closePopupToday() {
             localStorage.setItem('pains_popup_hide_date', new Date().toDateString());
             closePopup();
         }
 
-        // ============================================
-        // 공휴일 계산 로직 (2020~2040 데이터 확장)
-        // ============================================
         function getKoreanHolidays(year) {
             const holidays = new Set();
-            
-            // 1. 양력 고정 공휴일
+
             const solarHolidays = [
                 '01-01', '03-01', '05-05', '06-06', '08-15', '10-03', '10-09', '12-25'
             ];
             solarHolidays.forEach(date => holidays.add(`${year}-${date}`));
 
-            // 2. 음력 명절 및 부처님오신날 (양력 변환 데이터: 2020~2040)
             const lunarMap = {
                 2020: { seol: '01-25', buddha: '04-30', chuseok: '10-01' },
                 2021: { seol: '02-12', buddha: '05-19', chuseok: '09-21' },
@@ -462,39 +708,34 @@
 
             if (lunarMap[year]) {
                 const map = lunarMap[year];
-                
-                // 설날 (전날, 당일, 다음날)
+
                 const seol = new Date(`${year}-${map.seol}`);
-                [ -1, 0, 1 ].forEach(offset => {
+                [-1, 0, 1].forEach(offset => {
                     const d = new Date(seol);
                     d.setDate(d.getDate() + offset);
                     holidays.add(getFmtDate(d));
                 });
 
-                // 부처님오신날
                 holidays.add(`${year}-${map.buddha}`);
 
-                // 추석 (전날, 당일, 다음날)
                 const chuseok = new Date(`${year}-${map.chuseok}`);
-                [ -1, 0, 1 ].forEach(offset => {
+                [-1, 0, 1].forEach(offset => {
                     const d = new Date(chuseok);
                     d.setDate(d.getDate() + offset);
                     holidays.add(getFmtDate(d));
                 });
             }
 
-            // 3. 대체공휴일 계산
             let sortedHolidays = Array.from(holidays).sort();
-            
+
             sortedHolidays.forEach(dateStr => {
                 const dateParts = dateStr.split('-');
-                const md = `${dateParts[1]}-${dateParts[2]}`; // MM-DD
+                const md = `${dateParts[1]}-${dateParts[2]}`;
                 const dateObj = new Date(dateStr);
-                const day = dateObj.getDay(); // 0:일, 6:토
+                const day = dateObj.getDay();
 
                 let isSubstituteTarget = false;
-                
-                // 그룹 A: 토/일 겹치면 대체 (어린이날, 3.1, 8.15, 10.3, 10.9, 12.25, 부처님오신날)
+
                 const groupA = ['03-01', '05-05', '08-15', '10-03', '10-09', '12-25'];
                 if (lunarMap[year] && md === lunarMap[year].buddha) isSubstituteTarget = true;
                 if (groupA.includes(md)) isSubstituteTarget = true;
@@ -503,13 +744,12 @@
                     addSubstitute(dateObj, holidays);
                 }
 
-                // 그룹 B: 일요일만 겹치면 대체 (설날, 추석 연휴)
                 if (lunarMap[year]) {
                     const seolMain = new Date(`${year}-${lunarMap[year].seol}`);
                     const chuseokMain = new Date(`${year}-${lunarMap[year].chuseok}`);
-                    
+
                     if (isNearDate(dateObj, seolMain) || isNearDate(dateObj, chuseokMain)) {
-                        if (day === 0) { 
+                        if (day === 0) {
                             addSubstitute(dateObj, holidays);
                         }
                     }
@@ -519,13 +759,11 @@
             return holidays;
         }
 
-        // 날짜가 기준일의 전후 1일 범위 내인지 확인 (설/추석 연휴 판별용)
         function isNearDate(target, center) {
             const diff = (target - center) / (1000 * 60 * 60 * 24);
-            return Math.abs(diff) <= 1.1; // 오차 감안
+            return Math.abs(diff) <= 1.1;
         }
 
-        // 대체공휴일 추가 함수 (다음 비공휴일 찾기)
         function addSubstitute(fromDate, holidaySet) {
             let nextDate = new Date(fromDate);
             while (true) {
@@ -545,13 +783,9 @@
             return `${y}-${m}-${d}`;
         }
 
-        // ============================================
-        // 달력 로직
-        // ============================================
-        
-        let allEvents = []; 
+        let allEvents = [];
         let currentYear = new Date().getFullYear();
-        let currentMonth = new Date().getMonth() + 1; 
+        let currentMonth = new Date().getMonth() + 1;
         const todayObj = new Date();
         let pickerSelectedYear = currentYear;
 
@@ -562,21 +796,21 @@
                 const response = await fetch(GOOGLESHEET_URL);
                 const data = await response.text();
                 const rows = data.split("\n").map(row => row.trim()).filter(row => row.length > 0);
-                
+
                 allEvents = rows.slice(1).map(row => {
                     const cols = row.split(",");
                     if (cols.length < 7) return null;
-                    
+
                     return {
                         name: cols[0].trim(),
                         startDate: cols[1].trim(),
                         startTime: cols[2].trim(),
-                        endDate: cols[3].trim() || cols[1].trim(), 
+                        endDate: cols[3].trim() || cols[1].trim(),
                         endTime: cols[4].trim(),
                         location: cols[5].trim(),
                         type: cols[6].trim()
                     };
-                }).filter(event => event !== null); 
+                }).filter(event => event !== null);
 
                 renderCalendar(currentYear, currentMonth);
 
@@ -589,20 +823,19 @@
         function renderCalendar(year, month) {
             const calendarBody = document.getElementById('calendar-body');
             const title = document.getElementById('calendar-title');
-            
+
             title.innerText = `${year}. ${String(month).padStart(2, '0')}`;
 
             const oldRows = calendarBody.querySelectorAll('.week-row');
             oldRows.forEach(r => r.remove());
 
-            // [수정] 해당 연도의 공휴일 목록 가져오기
             const holidaySet = getKoreanHolidays(year);
 
             const firstDateOfMonth = new Date(year, month - 1, 1);
             const lastDateOfMonth = new Date(year, month, 0);
-            
+
             const startDate = new Date(firstDateOfMonth);
-            startDate.setDate(startDate.getDate() - firstDateOfMonth.getDay()); 
+            startDate.setDate(startDate.getDate() - firstDateOfMonth.getDay());
 
             const endDate = new Date(lastDateOfMonth);
             if (endDate.getDay() !== 6) {
@@ -610,7 +843,7 @@
             }
 
             let currentDate = new Date(startDate);
-            
+
             while (currentDate <= endDate) {
                 const weekRow = document.createElement('div');
                 weekRow.className = 'week-row';
@@ -621,7 +854,7 @@
                 const eventsLayer = document.createElement('div');
                 eventsLayer.className = 'events-layer';
 
-                let weekDates = []; 
+                let weekDates = [];
 
                 for (let i = 0; i < 7; i++) {
                     const d = new Date(currentDate);
@@ -629,55 +862,55 @@
 
                     const bgCell = document.createElement('div');
                     bgCell.className = 'day-cell-bg';
-                    
+
                     if (d.getMonth() + 1 !== month) bgCell.classList.add('other-month');
                     if (d.getDay() === 0) bgCell.classList.add('sun');
                     if (d.getDay() === 6) bgCell.classList.add('sat');
-                    
-                    // [수정] 공휴일 체크
+
                     const dateStr = getFmtDate(d);
                     if (holidaySet.has(dateStr)) {
                         bgCell.classList.add('holiday');
                     }
 
-                    if (d.getFullYear() === todayObj.getFullYear() &&
+                    if (
+                        d.getFullYear() === todayObj.getFullYear() &&
                         d.getMonth() === todayObj.getMonth() &&
-                        d.getDate() === todayObj.getDate()) {
+                        d.getDate() === todayObj.getDate()
+                    ) {
                         bgCell.classList.add('today');
                     }
 
                     const numSpan = document.createElement('span');
                     numSpan.className = 'day-number';
                     numSpan.innerText = d.getDate();
-                    
+
                     bgCell.appendChild(numSpan);
                     dayBgLayer.appendChild(bgCell);
 
-                    currentDate.setDate(currentDate.getDate() + 1); 
+                    currentDate.setDate(currentDate.getDate() + 1);
                 }
 
-                // 이벤트 배치 로직
                 const weekStart = weekDates[0].getTime();
                 const weekEnd = weekDates[6].getTime();
-                
+
                 let weekEvents = allEvents.filter(evt => {
                     const [sy, sm, sd] = evt.startDate.split('-').map(Number);
-                    const sTime = new Date(sy, sm-1, sd).getTime();
+                    const sTime = new Date(sy, sm - 1, sd).getTime();
                     const [ey, em, ed] = evt.endDate.split('-').map(Number);
-                    const eTime = new Date(ey, em-1, ed).getTime();
+                    const eTime = new Date(ey, em - 1, ed).getTime();
 
                     return sTime <= weekEnd && eTime >= weekStart;
                 }).map(evt => {
                     const [sy, sm, sd] = evt.startDate.split('-').map(Number);
-                    const sDate = new Date(sy, sm-1, sd);
+                    const sDate = new Date(sy, sm - 1, sd);
                     const [ey, em, ed] = evt.endDate.split('-').map(Number);
-                    const eDate = new Date(ey, em-1, ed);
+                    const eDate = new Date(ey, em - 1, ed);
 
                     let startIndex = 0;
                     if (sDate > weekDates[0]) {
                         startIndex = Math.floor((sDate - weekDates[0]) / (1000 * 60 * 60 * 24));
                     }
-                    
+
                     let endIndex = 6;
                     if (eDate < weekDates[6]) {
                         endIndex = 6 - Math.floor((weekDates[6] - eDate) / (1000 * 60 * 60 * 24));
@@ -692,7 +925,7 @@
                         span,
                         sDate,
                         eDate,
-                        duration: eDate - sDate 
+                        duration: eDate - sDate
                     };
                 });
 
@@ -701,13 +934,13 @@
                     return b.duration - a.duration;
                 });
 
-                let slots = []; 
+                let slots = [];
 
                 weekEvents.forEach(evt => {
                     let row = 0;
                     while (true) {
                         if (!slots[row]) slots[row] = Array(7).fill(false);
-                        
+
                         let isClear = true;
                         for (let d = evt.startIndex; d <= evt.endIndex; d++) {
                             if (slots[row][d]) {
@@ -720,17 +953,17 @@
                             for (let d = evt.startIndex; d <= evt.endIndex; d++) {
                                 slots[row][d] = true;
                             }
-                            evt.row = row; 
+                            evt.row = row;
                             break;
                         }
                         row++;
                     }
                 });
 
-                const maxRow = slots.length; 
+                const maxRow = slots.length;
                 if (maxRow > 0) {
                     const minH = 100;
-                    const contentH = 30 + (maxRow * 24) + 10; 
+                    const contentH = 30 + (maxRow * 24) + 10;
                     if (contentH > minH) {
                         weekRow.style.minHeight = contentH + 'px';
                     }
@@ -740,8 +973,7 @@
                     const bar = document.createElement('div');
                     bar.innerText = evt.original.name;
                     bar.className = 'event-bar';
-                    
-                    // 색상 조건
+
                     if (evt.original.type.includes('공휴일')) bar.classList.add('holiday');
                     else if (evt.original.type.includes('학사일정')) bar.classList.add('academic');
                     else if (evt.original.type.includes('리크루팅')) bar.classList.add('recruiting');
@@ -750,15 +982,15 @@
                     else bar.classList.add('etc');
 
                     bar.style.top = (evt.row * 24) + 'px';
-                    
-                    const ONE_DAY_PCT = 14.2857; 
-                    const GAP = 0.5; 
+
+                    const ONE_DAY_PCT = 14.2857;
+                    const GAP = 0.5;
 
                     let leftPct = evt.startIndex * ONE_DAY_PCT;
                     let widthPct = evt.span * ONE_DAY_PCT;
 
-                    const isStartInWeek = (evt.sDate >= weekDates[0]); 
-                    const isEndInWeek = (evt.eDate <= weekDates[6]);    
+                    const isStartInWeek = (evt.sDate >= weekDates[0]);
+                    const isEndInWeek = (evt.eDate <= weekDates[6]);
 
                     if (isStartInWeek) {
                         leftPct += GAP;
@@ -794,9 +1026,6 @@
             }
         }
 
-        // ============================================
-        // 상세 모달 로직
-        // ============================================
         function openEventModal(evt) {
             const modal = document.getElementById('event-modal-overlay');
             const badge = document.getElementById('modal-badge');
@@ -806,12 +1035,11 @@
             const loc = document.getElementById('modal-location');
             const liDate = document.getElementById('li-date');
             const liTime = document.getElementById('li-time');
-            const liLocation = document.getElementById('li-location'); 
+            const liLocation = document.getElementById('li-location');
 
-            // 1. 뱃지
             badge.innerText = evt.type || "기타";
-            badge.className = "event-modal-badge"; 
-            
+            badge.className = "event-modal-badge";
+
             if (evt.type.includes('공휴일')) badge.style.backgroundColor = "#e74c3c";
             else if (evt.type.includes('학사일정')) badge.style.backgroundColor = "#e36767";
             else if (evt.type.includes('리크루팅')) badge.style.backgroundColor = "#0abde3";
@@ -819,10 +1047,8 @@
             else if (evt.type.includes('정기')) badge.style.backgroundColor = "#27ae60";
             else badge.style.backgroundColor = "#7f8c8d";
 
-            // 2. 제목
             title.innerText = evt.name;
-            
-            // 3. 일시 및 시각 처리 로직
+
             const sDateStr = formatModalDate(evt.startDate);
             const eDateStr = formatModalDate(evt.endDate);
             const sTime = evt.startTime ? evt.startTime.trim() : "";
@@ -831,39 +1057,35 @@
             const isInvalidTime = (t) => !t || ["TBC", "TBD", "미정", "TBA"].includes(t.toUpperCase());
             const hasValidTime = !isInvalidTime(sTime) || !isInvalidTime(eTime);
 
-            liTime.style.display = "none"; 
+            liTime.style.display = "none";
 
             if (evt.startDate !== evt.endDate) {
-                // [2일 이상 일정]
                 let startPart = sDateStr;
                 let endPart = eDateStr;
 
                 if (hasValidTime) {
-                      startPart += ` ${isInvalidTime(sTime) ? '' : sTime}`;
-                      endPart += ` ${isInvalidTime(eTime) ? '' : eTime}`;
+                    startPart += ` ${isInvalidTime(sTime) ? '' : sTime}`;
+                    endPart += ` ${isInvalidTime(eTime) ? '' : eTime}`;
                 }
                 date.innerHTML = `${startPart} -<br>${endPart}`;
-
             } else {
-                // [1일 일정]
                 date.innerText = sDateStr;
 
                 if (hasValidTime) {
-                    liTime.style.display = "flex"; 
-                    if(sTime && eTime) time.innerText = `${sTime} ~ ${eTime}`;
-                    else if(sTime) time.innerText = sTime + " ~";
+                    liTime.style.display = "flex";
+                    if (sTime && eTime) time.innerText = `${sTime} ~ ${eTime}`;
+                    else if (sTime) time.innerText = sTime + " ~";
                     else time.innerText = "~ " + eTime;
                 }
             }
 
-            // 4. 장소 처리
             if (evt.location && evt.location.trim() !== "") {
                 liLocation.style.display = "flex";
                 loc.innerText = evt.location;
             } else {
                 liLocation.style.display = "none";
             }
-            
+
             modal.style.display = "flex";
         }
 
@@ -879,9 +1101,6 @@
             return `${y}. ${m}. ${d}. (${days[date.getDay()]})`;
         }
 
-        // ============================================
-        // 기타 유틸리티
-        // ============================================
         function goToToday() {
             currentYear = todayObj.getFullYear();
             currentMonth = todayObj.getMonth() + 1;
@@ -890,18 +1109,24 @@
 
         function changeMonth(step) {
             currentMonth += step;
-            if (currentMonth < 1) { currentMonth = 12; currentYear--; } 
-            else if (currentMonth > 12) { currentMonth = 1; currentYear++; }
+            if (currentMonth < 1) {
+                currentMonth = 12;
+                currentYear--;
+            } else if (currentMonth > 12) {
+                currentMonth = 1;
+                currentYear++;
+            }
             renderCalendar(currentYear, currentMonth);
         }
 
         function toggleDatePicker(e) {
             const picker = document.getElementById('date-picker');
-            if(e) e.stopPropagation();
+            if (e) e.stopPropagation();
+
             if (picker.classList.contains('active')) {
                 closeDatePicker();
             } else {
-                pickerSelectedYear = currentYear; 
+                pickerSelectedYear = currentYear;
                 renderPickerContent();
                 picker.classList.add('active');
                 document.addEventListener('click', closeDatePickerOutside);
@@ -925,26 +1150,40 @@
         function renderPickerContent() {
             const yearCol = document.getElementById('picker-years');
             const monthCol = document.getElementById('picker-months');
-            
-            yearCol.innerHTML = ''; monthCol.innerHTML = '';
-            
+
+            yearCol.innerHTML = '';
+            monthCol.innerHTML = '';
+
             for (let y = 2020; y <= 2030; y++) {
                 const div = document.createElement('div');
-                div.className = 'picker-item'; div.innerText = y + '년';
+                div.className = 'picker-item';
+                div.innerText = y + '년';
                 if (y === pickerSelectedYear) div.classList.add('selected');
-                div.onclick = (e) => { e.stopPropagation(); pickerSelectedYear = y; renderPickerContent(); };
+                div.onclick = (e) => {
+                    e.stopPropagation();
+                    pickerSelectedYear = y;
+                    renderPickerContent();
+                };
                 yearCol.appendChild(div);
             }
+
             setTimeout(() => {
                 const selectedEl = yearCol.querySelector('.selected');
-                if(selectedEl) selectedEl.scrollIntoView({block: "center"});
+                if (selectedEl) selectedEl.scrollIntoView({ block: "center" });
             }, 0);
 
             for (let m = 1; m <= 12; m++) {
                 const div = document.createElement('div');
-                div.className = 'picker-item'; div.innerText = m + '월';
+                div.className = 'picker-item';
+                div.innerText = m + '월';
                 if (pickerSelectedYear === currentYear && m === currentMonth) div.classList.add('selected');
-                div.onclick = (e) => { e.stopPropagation(); currentYear = pickerSelectedYear; currentMonth = m; renderCalendar(currentYear, currentMonth); closeDatePicker(); };
+                div.onclick = (e) => {
+                    e.stopPropagation();
+                    currentYear = pickerSelectedYear;
+                    currentMonth = m;
+                    renderCalendar(currentYear, currentMonth);
+                    closeDatePicker();
+                };
                 monthCol.appendChild(div);
             }
         }
@@ -952,7 +1191,5 @@
         fetchAndInitCalendar();
     </script>
 
-    <script src="menu.js"></script>
 </body>
 </html>
-
