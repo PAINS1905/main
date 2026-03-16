@@ -16,24 +16,28 @@
 
     <style>
         /* ============================ */
-        /* [1] 폰트 및 기본 설정        */
+        /* [1] 기본 설정 및 레이아웃 너비 맞춤 */
         /* ============================ */
-        @font-face {
-            font-family: 'KBO_Dia';
-            src: url('KBO_medium.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
-        }
-        @font-face {
-            font-family: 'SCDream';
-            src: url('SCDream5.otf');
-            font-weight: normal;
-            font-style: normal;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* menu.js에서 폰트를 관리하므로 중복 폰트 코드는 삭제되었습니다. */
+
+        .hero {
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem;
+            /* 👇 About Us 상자와 완벽하게 동일한 너비 적용 */
+            max-width: 1000px !important; 
+            width: 100%;
+            margin: 0 auto 28px auto !important; 
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'SCDream', sans-serif; line-height: 1.6; color: #333; }
-        h1, h3 { font-family: 'KBO_Dia', sans-serif; }
+        section {
+            /* 👇 모든 섹션(About Us 포함)의 너비를 통일 */
+            max-width: 1000px !important; 
+            width: 100%;
+            margin: 0 auto 28px auto !important;
+        }
 
         /* ============================ */
         /* [2] 콘텐츠 세부 스타일       */
@@ -41,13 +45,6 @@
         .intro-text p {
             font-size: 1.1rem;
             line-height: 1.8;
-        }
-
-        .hero {
-            color: white;
-            text-align: center;
-            padding: 4rem 2rem;
-            /* 나머지 배경/여백/둥근모서리는 menu.js가 동적 주입 */
         }
 
         .hero-image {
@@ -61,12 +58,6 @@
         .hero p {
             font-size: 1.2rem;
             opacity: 0.9;
-        }
-
-        section {
-            max-width: 1000px;
-            margin: 0 auto;
-            /* 패딩, 배경, 테두리 등은 menu.js에서 동적 주입 */
         }
 
         h3 {
@@ -84,7 +75,6 @@
             cursor: pointer;
         }
 
-        /* About Us 단체사진 */
         .about-us-image {
             width: 100%;
             height: auto;
@@ -97,19 +87,21 @@
         /* ============================ */
         .calendar-container {
             width: 100%;
-            background: #fff;
-            border-radius: 12px;
+            /* 👇 이중 상자 느낌을 제거하여 About Us 상자 너비에 꽉 차게 변경 */
+            background: transparent !important; 
+            box-shadow: none !important; 
+            border: none !important; 
+            border-radius: 0 !important; 
             position: relative;
             overflow: visible;
-            /* box-shadow, border-color는 menu.js에서 동적 주입 */
         }
 
         .calendar-header {
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f9f9f9;
-            padding: 15px 20px;
+            background-color: transparent !important; /* 투명하게 변경 */
+            padding: 15px 0; /* 좌우 여백 제거 */
             border-bottom: 1px solid #eee;
             position: relative;
             gap: 10px;
@@ -124,13 +116,11 @@
             font-size: 0.9rem;
             cursor: pointer;
             margin-left: auto;
-            color: #555;
             transition: all 0.2s;
         }
 
         .btn-today-reset:hover {
             background-color: #eee;
-            color: #333;
         }
 
         .calendar-nav-group {
@@ -143,7 +133,6 @@
         }
 
         .calendar-title {
-            font-family: 'KBO_Dia', sans-serif;
             font-size: 1.5rem;
             cursor: pointer;
             position: relative;
@@ -254,7 +243,7 @@
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             border-bottom: 1px solid #eee;
-            background-color: #fff;
+            background-color: transparent !important; /* 배경 투명하게 */
         }
 
         .weekday {
@@ -271,7 +260,7 @@
             position: relative;
             min-height: 100px;
             border-bottom: 1px solid #eee;
-            background-color: #fff;
+            background-color: transparent !important; /* 배경 투명하게 */
         }
 
         .day-bg-layer {
@@ -303,7 +292,7 @@
         .day-cell-bg.sun .day-number { color: #e74c3c; }
         .day-cell-bg.sat .day-number { color: #3498db; }
 
-        .day-cell-bg.other-month { background-color: #f9f9f9; }
+        .day-cell-bg.other-month { background-color: rgba(249, 249, 249, 0.5); }
         .day-cell-bg.other-month .day-number { color: #ccc; }
 
         .day-cell-bg.today { background-color: #fff5f5; }
@@ -502,7 +491,6 @@
             border: none;
             background: white;
             cursor: pointer;
-            font-family: 'SCDream', sans-serif;
             font-size: 0.95rem;
             transition: background 0.2s;
         }
