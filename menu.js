@@ -87,7 +87,7 @@ function buildSidebarHTML() {
         return `
             <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('${submenuId}', '${arrowId}')">
                 <span>${group.label}</span>
-                <span id="${arrowId}" class="menu-arrow">⌄</span>
+                <span id="${arrowId}" class="menu-arrow">▲</span>
             </a>
             <div class="submenu" id="${submenuId}">${children}</div>
         `;
