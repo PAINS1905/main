@@ -204,6 +204,8 @@ function initGlobalStyles() {
             color: var(--pains-text) !important;
             padding-top: calc(var(--pains-header-height) + 18px) !important;
             min-height: 100vh;
+            display: flex !important;
+            flex-direction: column !important;
         }
 
         body.pains-theme header,
@@ -400,6 +402,7 @@ function initGlobalStyles() {
         body.pains-theme .pains-footer {
             width: 100%;
             max-width: none;
+            margin-top: auto !important;
             margin: 56px 0 0;
             padding: 28px 24px !important;
             border-top: 1px solid rgba(216, 222, 232, 0.95);
