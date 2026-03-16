@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 /* menu.js - v3.1 (공통 레이아웃/테마 통합, blur 제거/푸터 전체폭) */
-=======
-/* menu.js - v3.2 (공통 레이아웃/테마 통합, blur 제거/푸터 전체폭/화살표 복원) */
->>>>>>> efbc60d (Apply shared menu layout updates)
 
 const PAINS_LAYOUT = {
     brandText: 'Providing Academic INsights for Sports.',
@@ -91,7 +87,7 @@ function buildSidebarHTML() {
         return `
             <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSubmenu('${submenuId}', '${arrowId}')">
                 <span>${group.label}</span>
-                <span id="${arrowId}" class="menu-arrow">▲</span>
+                <span id="${arrowId}" class="menu-arrow">⌄</span>
             </a>
             <div class="submenu" id="${submenuId}">${children}</div>
         `;
@@ -135,11 +131,7 @@ function ensureLayoutShell() {
 }
 
 function loadSidebar(currentPage) {
-<<<<<<< HEAD
     console.log('PAINS Menu v3.1 Loaded');
-=======
-    console.log('PAINS Menu v3.2 Loaded');
->>>>>>> efbc60d (Apply shared menu layout updates)
 
     const { header, sidebar, overlay, footer } = ensureLayoutShell();
     if (!header || !sidebar || !overlay || !footer) return;
@@ -188,14 +180,18 @@ function initGlobalStyles() {
         :root {
             --pains-accent: #9f1d2a;
             --pains-accent-strong: #7f1621;
+            --pains-accent-soft: #f4e9eb;
             --pains-text: #18202a;
             --pains-muted: #647084;
             --pains-border: #d8dee8;
+            --pains-surface: rgba(255,255,255,0.92);
             --pains-surface-strong: #ffffff;
             --pains-bg: #f3f5f8;
             --pains-shadow: 0 18px 50px rgba(16, 24, 40, 0.08);
             --pains-header-height: 72px;
             --pains-sidebar-width: 280px;
+            --pains-radius-lg: 24px;
+            --pains-radius-md: 16px;
             --pains-radius-sm: 12px;
         }
 
@@ -248,27 +244,47 @@ function initGlobalStyles() {
         }
 
         body.pains-theme .hamburger-btn {
-            width: 42px; height: 42px; min-width: 42px; border-radius: 12px;
-            display: inline-flex !important; flex-direction: column; justify-content: center; align-items: center;
-            gap: 5px; background: var(--pains-surface-strong);
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            border-radius: 12px;
+            display: inline-flex !important;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            background: var(--pains-surface-strong);
             border: 1px solid rgba(216, 222, 232, 0.95);
-            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06); cursor: pointer;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+            cursor: pointer;
         }
 
         body.pains-theme .hamburger-btn span {
-            width: 18px; height: 2px; border-radius: 999px; background: var(--pains-text) !important; display: block;
+            width: 18px;
+            height: 2px;
+            border-radius: 999px;
+            background: var(--pains-text) !important;
+            display: block;
         }
 
         body.pains-theme .sidebar {
-            position: fixed !important; top: 0 !important; left: calc(-1 * var(--pains-sidebar-width) - 24px) !important;
-            width: var(--pains-sidebar-width) !important; height: 100vh !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: calc(-1 * var(--pains-sidebar-width) - 24px) !important;
+            width: var(--pains-sidebar-width) !important;
+            height: 100vh !important;
             padding: calc(var(--pains-header-height) + 12px) 14px 18px !important;
             background: rgba(255,255,255,0.96) !important;
             border-right: 1px solid rgba(216, 222, 232, 0.95);
             box-shadow: 24px 0 60px rgba(15, 23, 42, 0.14);
-            overflow-y: auto !important; overflow-x: hidden; overscroll-behavior: contain;
-            transition: left 0.28s ease; z-index: 1100 !important;
-            display: flex; flex-direction: column; gap: 6px;
+            overflow-y: auto !important;
+            overflow-x: hidden;
+            overscroll-behavior: contain;
+            transition: left 0.28s ease;
+            z-index: 1100 !important;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
         body.pains-theme .sidebar.active {
@@ -280,34 +296,46 @@ function initGlobalStyles() {
         }
 
         body.pains-theme .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(100, 112, 132, 0.35); border-radius: 999px; border: 2px solid transparent; background-clip: padding-box;
+            background: rgba(100, 112, 132, 0.35);
+            border-radius: 999px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
         }
-<<<<<<< HEAD
 
         body.pains-theme .sidebar::-webkit-scrollbar-track {
             background: transparent;
         }
 
-=======
-        body.pains-theme .sidebar::-webkit-scrollbar-track { background: transparent; }
->>>>>>> efbc60d (Apply shared menu layout updates)
         body.pains-theme .sidebar a {
-            display: flex; align-items: center; justify-content: space-between; gap: 12px;
-            padding: 14px 16px !important; margin: 0; border: 1px solid transparent !important;
-            border-radius: var(--pains-radius-sm); color: var(--pains-text) !important; background: transparent !important;
-            font-size: 1rem !important; font-weight: 600 !important; text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px !important;
+            margin: 0;
+            border: 1px solid transparent !important;
+            border-radius: var(--pains-radius-sm);
+            color: var(--pains-text) !important;
+            background: transparent !important;
+            font-size: 1rem !important;
+            font-weight: 600 !important;
+            text-decoration: none;
             transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
         }
 
         body.pains-theme .sidebar a:hover {
-            background: #fff !important; color: var(--pains-accent) !important; border-color: rgba(159, 29, 42, 0.14) !important; transform: translateX(2px);
+            background: #fff !important;
+            color: var(--pains-accent) !important;
+            border-color: rgba(159, 29, 42, 0.14) !important;
+            transform: translateX(2px);
         }
 
         body.pains-theme .sidebar a.active-link {
             background: linear-gradient(135deg, rgba(159,29,42,0.11), rgba(159,29,42,0.04)) !important;
-            color: var(--pains-accent) !important; border-color: rgba(159, 29, 42, 0.2) !important; font-weight: 800 !important;
+            color: var(--pains-accent) !important;
+            border-color: rgba(159, 29, 42, 0.2) !important;
+            font-weight: 800 !important;
         }
-<<<<<<< HEAD
 
         body.pains-theme .sidebar a.menu-toggle {
             cursor: pointer;
@@ -320,16 +348,17 @@ function initGlobalStyles() {
             flex-shrink: 0;
         }
 
-=======
-        body.pains-theme .sidebar a.menu-toggle { cursor: pointer; }
-        body.pains-theme .menu-arrow { font-size: 0.85rem; color: var(--pains-muted); transition: transform 0.28s ease; flex-shrink: 0; }
->>>>>>> efbc60d (Apply shared menu layout updates)
         body.pains-theme .submenu {
-            display: block !important; max-height: 0; overflow: hidden; opacity: 0; margin: -2px 0 2px; padding-left: 8px;
-            border-left: 2px solid rgba(159, 29, 42, 0.09); background: transparent !important;
+            display: block !important;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            margin: -2px 0 2px;
+            padding-left: 8px;
+            border-left: 2px solid rgba(159, 29, 42, 0.09);
+            background: transparent !important;
             transition: max-height 0.28s ease, opacity 0.22s ease, margin 0.22s ease;
         }
-<<<<<<< HEAD
 
         body.pains-theme .submenu.open {
             max-height: 1000px;
@@ -337,18 +366,21 @@ function initGlobalStyles() {
             margin: 2px 0 8px;
         }
 
-=======
-        body.pains-theme .submenu.open { max-height: 1000px; opacity: 1; margin: 2px 0 8px; }
->>>>>>> efbc60d (Apply shared menu layout updates)
         body.pains-theme .submenu a {
-            font-size: 0.95rem !important; font-weight: 500 !important; color: var(--pains-muted) !important; padding-left: 16px !important; margin-left: 6px;
+            font-size: 0.95rem !important;
+            font-weight: 500 !important;
+            color: var(--pains-muted) !important;
+            padding-left: 16px !important;
+            margin-left: 6px;
         }
 
         body.pains-theme .submenu a:hover,
-        body.pains-theme .submenu a.active-link { color: var(--pains-accent) !important; background: rgba(159,29,42,0.06) !important; }
+        body.pains-theme .submenu a.active-link {
+            color: var(--pains-accent) !important;
+            background: rgba(159,29,42,0.06) !important;
+        }
 
         body.pains-theme .overlay {
-<<<<<<< HEAD
             position: fixed !important;
             inset: 0;
             background: rgba(15, 23, 42, 0.28) !important;
@@ -362,16 +394,10 @@ function initGlobalStyles() {
         body.pains-theme .overlay.active {
             opacity: 1;
             visibility: visible;
-=======
-            position: fixed !important; inset: 0; background: rgba(15, 23, 42, 0.28) !important; opacity: 0; visibility: hidden;
-            transition: opacity 0.24s ease, visibility 0.24s ease; z-index: 1090 !important; display: block !important;
->>>>>>> efbc60d (Apply shared menu layout updates)
         }
-        body.pains-theme .overlay.active { opacity: 1; visibility: visible; }
 
         body.pains-theme footer,
         body.pains-theme .pains-footer {
-<<<<<<< HEAD
             width: 100%;
             max-width: none;
             margin: 56px 0 0;
@@ -395,22 +421,24 @@ function initGlobalStyles() {
             margin-bottom: 18px !important;
         }
 
-=======
-            width: 100%; max-width: none; margin: 56px 0 0; padding: 28px 24px !important;
-            border-top: 1px solid rgba(216, 222, 232, 0.95); border-left: none; border-right: none; border-bottom: none;
-            border-radius: 0; background: rgba(255,255,255,0.92) !important; box-shadow: var(--pains-shadow);
-            color: var(--pains-muted) !important; text-align: center; box-sizing: border-box;
-        }
-        body.pains-theme .footer-icons { display: flex !important; justify-content: center; gap: 14px; margin-bottom: 18px !important; }
->>>>>>> efbc60d (Apply shared menu layout updates)
         body.pains-theme .icon-btn {
-            width: 48px; height: 48px; border-radius: 14px; background: #fff !important; border: 1px solid rgba(216, 222, 232, 0.95) !important;
-            display: inline-flex !important; justify-content: center; align-items: center; box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: #fff !important;
+            border: 1px solid rgba(216, 222, 232, 0.95);
+            display: inline-flex !important;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
             transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
         }
 
         body.pains-theme .icon-btn:hover {
-            transform: translateY(-2px); border-color: rgba(159,29,42,0.28) !important; box-shadow: 0 12px 26px rgba(159,29,42,0.12); background: #fff !important;
+            transform: translateY(-2px);
+            border-color: rgba(159,29,42,0.28);
+            box-shadow: 0 12px 26px rgba(159,29,42,0.12);
+            background: #fff !important;
         }
 
         body.pains-theme .icon-btn img {
@@ -432,29 +460,28 @@ function initGlobalStyles() {
         body.pains-theme .fee-table-container,
         body.pains-theme .info-card,
         body.pains-theme .project-card,
-        body.pains-theme .event-btn { box-shadow: var(--pains-shadow); }
+        body.pains-theme .event-btn {
+            box-shadow: var(--pains-shadow);
+        }
 
         body.pains-theme section {
-<<<<<<< HEAD
             background: #ffffff;
             border: 1px solid rgba(216, 222, 232, 0.85);
             border-radius: 28px;
             padding: clamp(24px, 3vw, 40px) !important;
             margin-bottom: 28px;
-=======
-            background: #ffffff; border: 1px solid rgba(216, 222, 232, 0.85); border-radius: 28px;
-            padding: clamp(24px, 3vw, 40px) !important; margin-bottom: 28px;
->>>>>>> efbc60d (Apply shared menu layout updates)
         }
 
         body.pains-theme .hero {
             background: linear-gradient(135deg, var(--pains-accent-strong), var(--pains-accent)) !important;
-            border-radius: 30px; max-width: min(1000px, calc(100% - 32px)); margin: 0 auto 28px;
-            box-shadow: 0 24px 60px rgba(127, 22, 33, 0.28); overflow: hidden;
+            border-radius: 30px;
+            max-width: min(1120px, calc(100% - 32px));
+            margin: 0 auto 28px;
+            box-shadow: 0 24px 60px rgba(127, 22, 33, 0.28);
+            overflow: hidden;
         }
 
         body.pains-theme h2,
-<<<<<<< HEAD
         body.pains-theme h3 {
             color: #111827 !important;
             border-bottom-color: rgba(216, 222, 232, 0.95) !important;
@@ -474,32 +501,27 @@ function initGlobalStyles() {
             border-radius: 12px !important;
         }
 
-=======
-        body.pains-theme h3 { color: #111827 !important; border-bottom-color: rgba(216, 222, 232, 0.95) !important; }
-        body.pains-theme strong,
-        body.pains-theme .calendar-title,
-        body.pains-theme .calendar-nav-btn:hover,
-        body.pains-theme .inline-link:hover { color: var(--pains-accent) !important; }
-        body.pains-theme button,
-        body.pains-theme .btn,
-        body.pains-theme input[type="submit"],
-        body.pains-theme .btn-today-reset { border-radius: 12px !important; }
->>>>>>> efbc60d (Apply shared menu layout updates)
         body.pains-theme .btn:not(.btn-today-reset),
         body.pains-theme button[type="submit"],
         body.pains-theme input[type="submit"] {
             background: linear-gradient(135deg, var(--pains-accent), var(--pains-accent-strong)) !important;
-            color: #fff !important; border: none !important; box-shadow: 0 14px 26px rgba(159, 29, 42, 0.22);
+            color: #fff !important;
+            border: none !important;
+            box-shadow: 0 14px 26px rgba(159, 29, 42, 0.22);
         }
 
         body.pains-theme .btn-today-reset {
-            background: #fff !important; border: 1px solid rgba(216, 222, 232, 0.95) !important; color: var(--pains-text) !important;
+            background: #fff !important;
+            border: 1px solid rgba(216, 222, 232, 0.95) !important;
+            color: var(--pains-text) !important;
         }
 
         body.pains-theme input,
         body.pains-theme select,
         body.pains-theme textarea {
-            border-radius: 12px !important; border-color: rgba(216, 222, 232, 0.95) !important; box-shadow: none !important;
+            border-radius: 12px !important;
+            border-color: rgba(216, 222, 232, 0.95) !important;
+            box-shadow: none !important;
         }
 
         body.pains-theme table,
@@ -507,10 +529,11 @@ function initGlobalStyles() {
         body.pains-theme .rule-box,
         body.pains-theme .search-box,
         body.pains-theme .result-box,
-        body.pains-theme .fee-table-container { border-color: rgba(216, 222, 232, 0.95) !important; }
+        body.pains-theme .fee-table-container {
+            border-color: rgba(216, 222, 232, 0.95) !important;
+        }
 
         @media (max-width: 768px) {
-<<<<<<< HEAD
             :root {
                 --pains-header-height: 66px;
                 --pains-sidebar-width: min(88vw, 320px);
@@ -520,17 +543,12 @@ function initGlobalStyles() {
                 padding-top: calc(var(--pains-header-height) + 14px) !important;
             }
 
-=======
-            :root { --pains-header-height: 66px; --pains-sidebar-width: min(88vw, 320px); }
-            body.pains-theme { padding-top: calc(var(--pains-header-height) + 14px) !important; }
->>>>>>> efbc60d (Apply shared menu layout updates)
             body.pains-theme header,
             body.pains-theme .pains-header {
                 padding: 0 16px !important;
             }
 
             body.pains-theme section,
-<<<<<<< HEAD
             body.pains-theme .hero {
                 max-width: calc(100% - 20px);
                 border-radius: 22px;
@@ -541,11 +559,6 @@ function initGlobalStyles() {
                 max-width: 100%;
                 border-radius: 0;
             }
-=======
-            body.pains-theme .hero { max-width: calc(100% - 20px); border-radius: 22px; }
-            body.pains-theme footer,
-            body.pains-theme .pains-footer { max-width: 100%; border-radius: 0; }
->>>>>>> efbc60d (Apply shared menu layout updates)
         }
     `;
     document.head.appendChild(style);
@@ -567,15 +580,21 @@ function syncHeaderHeight() {
 function initScrollEvent() {
     if (window.__painsScrollInit) return;
     window.__painsScrollInit = true;
+
     let lastScrollTop = 0;
     const delta = 6;
     const header = document.querySelector('header');
     if (!header) return;
+
     window.addEventListener('scroll', function () {
         const st = window.scrollY || document.documentElement.scrollTop;
         if (Math.abs(lastScrollTop - st) <= delta) return;
-        if (st > lastScrollTop && st > header.offsetHeight + 20) header.classList.add('nav-up');
-        else header.classList.remove('nav-up');
+
+        if (st > lastScrollTop && st > header.offsetHeight + 20) {
+            header.classList.add('nav-up');
+        } else {
+            header.classList.remove('nav-up');
+        }
         lastScrollTop = st <= 0 ? 0 : st;
     }, { passive: true });
 }
@@ -583,6 +602,7 @@ function initScrollEvent() {
 function initEscapeClose() {
     if (window.__painsEscapeInit) return;
     window.__painsEscapeInit = true;
+
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') closeMenu();
     });
@@ -606,6 +626,7 @@ function toggleMenu() {
     const overlay = document.getElementById('overlay');
     const burger = document.querySelector('.hamburger-btn');
     if (!sidebar || !overlay) return;
+
     const willOpen = !sidebar.classList.contains('active');
     sidebar.classList.toggle('active', willOpen);
     overlay.classList.toggle('active', willOpen);
@@ -634,6 +655,7 @@ function toggleSubmenu(menuId, arrowId) {
     const submenu = document.getElementById(menuId);
     const arrow = document.getElementById(arrowId);
     if (!submenu) return;
+
     const isOpen = submenu.classList.contains('open');
     submenu.classList.toggle('open', !isOpen);
 
