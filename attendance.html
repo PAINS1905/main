@@ -173,7 +173,7 @@
                         $$\text{출석률}(\%)=\left(\frac{\text{정기활동 출석인정 수}+\lfloor 0.5 \times \text{비정기활동 출석 수}\rfloor}{\text{이번 기수의 정기활동 수}}\right)\times 100$$
                     </div>
                     <div class="rule-sub-text" style="border-top-color: #ddd;">
-                        <span style="color: #ab3333; font-weight: bold;">※ 결석계를 제출했을 경우, 아직 진행되지 않은 활동이 출석으로 처리되어 출석률이 높아보일 수 있습니다.</span><br>
+                        <span style="color: #ab3333; font-weight: bold;">※ 비정기활동에 여러 번 참여했을 경우, 출석률이 100%를 초과할 수 있습니다.</span><br>
                         <span style="color: #ab3333; font-weight: bold;">※ 11기의 정기활동은 총 7개입니다: 1, 2, 3차 정기활동, 학기 중 1, 2차 세미나, 방학 중 1, 2차 세미나.</span>
                     </div>
                 </div>
@@ -183,6 +183,7 @@
                     준회원 및 정회원은 <strong>한 기수에 결석계를 3번째 사용하는 시점부터 1회당 5,000원의 결석비를 납부</strong>하여야 합니다.
                     <div class="rule-sub-text">
                         ※ 제출한 결석계는 활동 이후 반영됩니다.<br>
+                        ※ 결석계 유형을 변경하거나, 결석계 취소를 원하실 경우 운영진에게 문의바랍니다.
                         ※ 활동 후 2일 이상 경과에도 결석계 반영이 되어 있지 않을 경우 운영진에게 문의바랍니다.
                     </div>
                 </div>
@@ -420,7 +421,7 @@
             const absenceType = document.getElementById('submit-type').value; 
             
             if (!id || !name) { alert("학번과 이름을 입력해주세요."); return; }
-            if (!selected) { alert("결석할 활동을 선택해주세요."); return; }
+            if (!selected) { alert("결석계를 제출할 활동을 선택해주세요."); return; }
 
             const btn = document.getElementById('btn-submit-form');
             const originalBtnText = btn.innerText;
@@ -439,7 +440,7 @@
                 const checkData = await checkResponse.json();
 
                 if (checkData.result === 'duplicate') {
-                    alert("이미 해당 활동에 대한 결석계를 제출하셨습니다.\n결석계 취소를 원하실 경우, 운영진에게 문의해주세요.");
+                    alert("이미 해당 활동에 대한 결석계를 제출하셨습니다.\n결석계 취소나 변경을 원하실 경우, 운영진에게 문의해주세요.");
                     btn.disabled = false;
                     btn.innerText = originalBtnText;
                     return; 
@@ -461,7 +462,7 @@
             }
 
             // [2] 검증 통과 -> 제출 진행
-            if (!confirm(`[${eventName}] 활동에 대해\n[${absenceType}]을(를) 제출하시겠습니까?`)) {
+            if (!confirm(`[${eventName}] 활동에 대해\n[${absenceType}] 결석계를 제출하시겠습니까?`)) {
                 btn.disabled = false;
                 btn.innerText = originalBtnText;
                 return;
@@ -482,7 +483,7 @@
                 })
             })
             .then(() => {
-                alert("결석계가 성공적으로 제출되었습니다.");
+                alert("결석계가 제출되었습니다.");
                 const checkedRadio = document.querySelector('input[name="selected_event"]:checked');
                 if(checkedRadio) checkedRadio.checked = false;
                 // 제출 후 결석계 종류 초기화
