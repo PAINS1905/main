@@ -1,4 +1,4 @@
-/* menu.js - v3.0 (공통 레이아웃/테마 통합) */
+/* menu.js - v3.1 (공통 레이아웃/테마 통합, blur 제거/푸터 전체폭) */
 
 const PAINS_LAYOUT = {
     brandText: 'Providing Academic INsights for Sports.',
@@ -131,7 +131,7 @@ function ensureLayoutShell() {
 }
 
 function loadSidebar(currentPage) {
-    console.log('PAINS Menu v3.0 Loaded');
+    console.log('PAINS Menu v3.1 Loaded');
 
     const { header, sidebar, overlay, footer } = ensureLayoutShell();
     if (!header || !sidebar || !overlay || !footer) return;
@@ -196,6 +196,7 @@ function initGlobalStyles() {
         }
 
         html { scroll-behavior: smooth; }
+
         body.pains-theme {
             background:
                 radial-gradient(circle at top left, rgba(159,29,42,0.07), transparent 28%),
@@ -217,15 +218,17 @@ function initGlobalStyles() {
             align-items: center;
             gap: 18px;
             background: #ffffff !important;
-            /* backdrop-filter: blur(18px); */
-            /* -webkit-backdrop-filter: blur(18px); */
             color: var(--pains-text) !important;
             border-bottom: 1px solid rgba(216, 222, 232, 0.95);
             box-shadow: 0 10px 35px rgba(15, 23, 42, 0.07);
             transition: transform 0.28s ease, box-shadow 0.28s ease;
             z-index: 1200 !important;
         }
-        body.pains-theme header.nav-up { transform: translateY(-100%); }
+
+        body.pains-theme header.nav-up {
+            transform: translateY(-100%);
+        }
+
         body.pains-theme header h1,
         body.pains-theme .pains-header h1 {
             font-size: clamp(1.05rem, 1.6vw, 1.4rem) !important;
@@ -233,6 +236,7 @@ function initGlobalStyles() {
             letter-spacing: -0.02em;
             margin: 0;
         }
+
         body.pains-theme header h1 a,
         body.pains-theme .pains-header h1 a {
             color: var(--pains-text) !important;
@@ -254,6 +258,7 @@ function initGlobalStyles() {
             box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
             cursor: pointer;
         }
+
         body.pains-theme .hamburger-btn span {
             width: 18px;
             height: 2px;
@@ -281,15 +286,25 @@ function initGlobalStyles() {
             flex-direction: column;
             gap: 6px;
         }
-        body.pains-theme .sidebar.active { left: 0 !important; }
-        body.pains-theme .sidebar::-webkit-scrollbar { width: 10px; }
+
+        body.pains-theme .sidebar.active {
+            left: 0 !important;
+        }
+
+        body.pains-theme .sidebar::-webkit-scrollbar {
+            width: 10px;
+        }
+
         body.pains-theme .sidebar::-webkit-scrollbar-thumb {
             background: rgba(100, 112, 132, 0.35);
             border-radius: 999px;
             border: 2px solid transparent;
             background-clip: padding-box;
         }
-        body.pains-theme .sidebar::-webkit-scrollbar-track { background: transparent; }
+
+        body.pains-theme .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
 
         body.pains-theme .sidebar a {
             display: flex;
@@ -307,12 +322,14 @@ function initGlobalStyles() {
             text-decoration: none;
             transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
         }
+
         body.pains-theme .sidebar a:hover {
             background: #fff !important;
             color: var(--pains-accent) !important;
             border-color: rgba(159, 29, 42, 0.14) !important;
             transform: translateX(2px);
         }
+
         body.pains-theme .sidebar a.active-link {
             background: linear-gradient(135deg, rgba(159,29,42,0.11), rgba(159,29,42,0.04)) !important;
             color: var(--pains-accent) !important;
@@ -320,7 +337,10 @@ function initGlobalStyles() {
             font-weight: 800 !important;
         }
 
-        body.pains-theme .sidebar a.menu-toggle { cursor: pointer; }
+        body.pains-theme .sidebar a.menu-toggle {
+            cursor: pointer;
+        }
+
         body.pains-theme .menu-arrow {
             font-size: 1.1rem;
             color: var(--pains-muted);
@@ -339,11 +359,13 @@ function initGlobalStyles() {
             background: transparent !important;
             transition: max-height 0.28s ease, opacity 0.22s ease, margin 0.22s ease;
         }
+
         body.pains-theme .submenu.open {
             max-height: 1000px;
             opacity: 1;
             margin: 2px 0 8px;
         }
+
         body.pains-theme .submenu a {
             font-size: 0.95rem !important;
             font-weight: 500 !important;
@@ -351,6 +373,7 @@ function initGlobalStyles() {
             padding-left: 16px !important;
             margin-left: 6px;
         }
+
         body.pains-theme .submenu a:hover,
         body.pains-theme .submenu a.active-link {
             color: var(--pains-accent) !important;
@@ -360,15 +383,14 @@ function initGlobalStyles() {
         body.pains-theme .overlay {
             position: fixed !important;
             inset: 0;
-            background: rgba(15, 23, 42, 0.38) !important;
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
+            background: rgba(15, 23, 42, 0.28) !important;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.24s ease, visibility 0.24s ease;
             z-index: 1090 !important;
             display: block !important;
         }
+
         body.pains-theme .overlay.active {
             opacity: 1;
             visibility: visible;
@@ -376,22 +398,29 @@ function initGlobalStyles() {
 
         body.pains-theme footer,
         body.pains-theme .pains-footer {
-            margin: 56px auto 0;
-            max-width: min(1120px, calc(100% - 32px));
+            width: 100%;
+            max-width: none;
+            margin: 56px 0 0;
             padding: 28px 24px !important;
-            border: 1px solid rgba(216, 222, 232, 0.95);
-            border-radius: var(--pains-radius-lg);
+            border-top: 1px solid rgba(216, 222, 232, 0.95);
+            border-left: none;
+            border-right: none;
+            border-bottom: none;
+            border-radius: 0;
             background: rgba(255,255,255,0.92) !important;
             box-shadow: var(--pains-shadow);
             color: var(--pains-muted) !important;
             text-align: center;
+            box-sizing: border-box;
         }
+
         body.pains-theme .footer-icons {
             display: flex !important;
             justify-content: center;
             gap: 14px;
             margin-bottom: 18px !important;
         }
+
         body.pains-theme .icon-btn {
             width: 48px;
             height: 48px;
@@ -404,13 +433,19 @@ function initGlobalStyles() {
             box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
             transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
         }
+
         body.pains-theme .icon-btn:hover {
             transform: translateY(-2px);
             border-color: rgba(159,29,42,0.28);
             box-shadow: 0 12px 26px rgba(159,29,42,0.12);
             background: #fff !important;
         }
-        body.pains-theme .icon-btn img { width: 22px; height: 22px; object-fit: contain; }
+
+        body.pains-theme .icon-btn img {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+        }
 
         body.pains-theme section,
         body.pains-theme .calendar-container,
@@ -430,14 +465,13 @@ function initGlobalStyles() {
         }
 
         body.pains-theme section {
-            background: rgba(255,255,255,0.82);
+            background: #ffffff;
             border: 1px solid rgba(216, 222, 232, 0.85);
             border-radius: 28px;
             padding: clamp(24px, 3vw, 40px) !important;
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
             margin-bottom: 28px;
         }
+
         body.pains-theme .hero {
             background: linear-gradient(135deg, var(--pains-accent-strong), var(--pains-accent)) !important;
             border-radius: 30px;
@@ -446,15 +480,19 @@ function initGlobalStyles() {
             box-shadow: 0 24px 60px rgba(127, 22, 33, 0.28);
             overflow: hidden;
         }
+
         body.pains-theme h2,
         body.pains-theme h3 {
             color: #111827 !important;
             border-bottom-color: rgba(216, 222, 232, 0.95) !important;
         }
+
         body.pains-theme strong,
         body.pains-theme .calendar-title,
         body.pains-theme .calendar-nav-btn:hover,
-        body.pains-theme .inline-link:hover { color: var(--pains-accent) !important; }
+        body.pains-theme .inline-link:hover {
+            color: var(--pains-accent) !important;
+        }
 
         body.pains-theme button,
         body.pains-theme .btn,
@@ -462,6 +500,7 @@ function initGlobalStyles() {
         body.pains-theme .btn-today-reset {
             border-radius: 12px !important;
         }
+
         body.pains-theme .btn:not(.btn-today-reset),
         body.pains-theme button[type="submit"],
         body.pains-theme input[type="submit"] {
@@ -470,11 +509,13 @@ function initGlobalStyles() {
             border: none !important;
             box-shadow: 0 14px 26px rgba(159, 29, 42, 0.22);
         }
+
         body.pains-theme .btn-today-reset {
             background: #fff !important;
             border: 1px solid rgba(216, 222, 232, 0.95) !important;
             color: var(--pains-text) !important;
         }
+
         body.pains-theme input,
         body.pains-theme select,
         body.pains-theme textarea {
@@ -482,6 +523,7 @@ function initGlobalStyles() {
             border-color: rgba(216, 222, 232, 0.95) !important;
             box-shadow: none !important;
         }
+
         body.pains-theme table,
         body.pains-theme .calendar-container,
         body.pains-theme .rule-box,
@@ -496,15 +538,26 @@ function initGlobalStyles() {
                 --pains-header-height: 66px;
                 --pains-sidebar-width: min(88vw, 320px);
             }
-            body.pains-theme { padding-top: calc(var(--pains-header-height) + 14px) !important; }
+
+            body.pains-theme {
+                padding-top: calc(var(--pains-header-height) + 14px) !important;
+            }
+
             body.pains-theme header,
-            body.pains-theme .pains-header { padding: 0 16px !important; }
+            body.pains-theme .pains-header {
+                padding: 0 16px !important;
+            }
+
             body.pains-theme section,
-            body.pains-theme footer,
-            body.pains-theme .pains-footer,
             body.pains-theme .hero {
                 max-width: calc(100% - 20px);
                 border-radius: 22px;
+            }
+
+            body.pains-theme footer,
+            body.pains-theme .pains-footer {
+                max-width: 100%;
+                border-radius: 0;
             }
         }
     `;
@@ -514,10 +567,12 @@ function initGlobalStyles() {
 function syncHeaderHeight() {
     const header = document.querySelector('header');
     if (!header) return;
+
     const update = () => {
         const height = Math.ceil(header.offsetHeight || 72);
         document.documentElement.style.setProperty('--pains-header-height', `${height}px`);
     };
+
     update();
     window.addEventListener('resize', update);
 }
@@ -556,6 +611,7 @@ function initEscapeClose() {
 function initHeaderKeyboardAccess() {
     const burger = document.querySelector('.hamburger-btn');
     if (!burger || burger.dataset.keyboardBound === 'true') return;
+
     burger.dataset.keyboardBound = 'true';
     burger.addEventListener('keydown', function (event) {
         if (event.key === 'Enter' || event.key === ' ') {
@@ -575,17 +631,24 @@ function toggleMenu() {
     sidebar.classList.toggle('active', willOpen);
     overlay.classList.toggle('active', willOpen);
     document.body.classList.toggle('menu-open', willOpen);
-    if (burger) burger.setAttribute('aria-expanded', String(willOpen));
+
+    if (burger) {
+        burger.setAttribute('aria-expanded', String(willOpen));
+    }
 }
 
 function closeMenu() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
     const burger = document.querySelector('.hamburger-btn');
+
     if (sidebar) sidebar.classList.remove('active');
     if (overlay) overlay.classList.remove('active');
     document.body.classList.remove('menu-open');
-    if (burger) burger.setAttribute('aria-expanded', 'false');
+
+    if (burger) {
+        burger.setAttribute('aria-expanded', 'false');
+    }
 }
 
 function toggleSubmenu(menuId, arrowId) {
@@ -595,5 +658,8 @@ function toggleSubmenu(menuId, arrowId) {
 
     const isOpen = submenu.classList.contains('open');
     submenu.classList.toggle('open', !isOpen);
-    if (arrow) arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+
+    if (arrow) {
+        arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
 }
