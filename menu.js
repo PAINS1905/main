@@ -521,7 +521,9 @@ function initGlobalStyles() {
 
         body.pains-theme input,
         body.pains-theme select,
-        body.pains-theme textarea {
+        body.pains-theme textarea,
+        body.pains-theme button {
+            font-family: inherit !important;
             border-radius: 12px !important;
             border-color: rgba(216, 222, 232, 0.95) !important;
             box-shadow: none !important;
