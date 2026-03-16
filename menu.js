@@ -216,9 +216,9 @@ function initGlobalStyles() {
             display: flex !important;
             align-items: center;
             gap: 18px;
-            background: rgba(255,255,255,0.9) !important;
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
+            background: #ffffff !important;
+            /* backdrop-filter: blur(18px); */
+            /* -webkit-backdrop-filter: blur(18px); */
             color: var(--pains-text) !important;
             border-bottom: 1px solid rgba(216, 222, 232, 0.95);
             box-shadow: 0 10px 35px rgba(15, 23, 42, 0.07);
