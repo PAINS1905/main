@@ -1,4 +1,4 @@
-/* menu.js - v3.2 (공통 레이아웃/테마 통합, Sticky Footer, 글로벌 폰트 관리) */
+/* menu.js - v3.3 (공통 레이아웃/테마 통합, Sticky Footer, 글로벌 폰트 관리 - ATOZ 적용) */
 
 const PAINS_LAYOUT = {
     brandText: 'Providing Academic INsights for Sports.',
@@ -131,7 +131,7 @@ function ensureLayoutShell() {
 }
 
 function loadSidebar(currentPage) {
-    console.log('PAINS Menu v3.2 Loaded');
+    console.log('PAINS Menu v3.3 Loaded (ATOZ Fonts)');
 
     const { header, sidebar, overlay, footer } = ensureLayoutShell();
     if (!header || !sidebar || !overlay || !footer) return;
@@ -181,18 +181,18 @@ function initGlobalStyles() {
         /* 1. 글로벌 폰트 불러오기 (@font-face)       */
         /* ========================================== */
         
-        /* 🎯 제목용 폰트 (KBO_Dia) */
+        /* 🎯 제목용 폰트 (ATOZ5) */
         @font-face { 
-            font-family: 'KBO_Dia'; 
-            src: url('KBO_medium.woff') format('woff'); 
+            font-family: 'ATOZ5'; 
+            src: url('ATOZ5.woff2') format('woff2'); 
             font-weight: normal; 
             font-style: normal; 
         }
 
-        /* 📖 본문용 폰트 (SCDream) */
+        /* 📖 본문용 폰트 (ATOZ4) */
         @font-face { 
-            font-family: 'SCDream'; 
-            src: url('SCDream5.otf'); 
+            font-family: 'ATOZ4'; 
+            src: url('ATOZ4.woff2') format('woff2'); 
             font-weight: normal; 
             font-style: normal; 
         }
@@ -221,9 +221,9 @@ function initGlobalStyles() {
         /* 2. 글로벌 폰트 및 레이아웃 적용            */
         /* ========================================== */
 
-        /* 📖 사이트 전체 본문 기본 폰트 적용 */
+        /* 📖 사이트 전체 본문 기본 폰트 적용 (ATOZ4) */
         body.pains-theme {
-            font-family: 'SCDream', sans-serif !important;
+            font-family: 'ATOZ4', sans-serif !important;
             background:
                 radial-gradient(circle at top left, rgba(159,29,42,0.07), transparent 28%),
                 linear-gradient(180deg, #f8f9fb 0%, var(--pains-bg) 100%) !important;
@@ -236,21 +236,21 @@ function initGlobalStyles() {
             flex-direction: column !important;
         }
 
-        /* 🎯 제목(h1, h2, h3) 등에 제목 폰트 적용 */
+        /* 🎯 제목(h1, h2, h3) 등에 제목 폰트 적용 (ATOZ5) */
         body.pains-theme h1,
         body.pains-theme h2,
         body.pains-theme h3,
         body.pains-theme .event-name, 
         body.pains-theme .title {      
-            font-family: 'KBO_Dia', sans-serif !important;
+            font-family: 'ATOZ5', sans-serif !important;
         }
 
-        /* 📖 폼 요소(입력창, 버튼)에 본문 폰트 상속 */
+        /* 📖 폼 요소(입력창, 버튼)에 본문 폰트 적용 (ATOZ4) */
         body.pains-theme input,
         body.pains-theme select,
         body.pains-theme textarea,
         body.pains-theme button {
-            font-family: 'SCDream', sans-serif !important;
+            font-family: 'ATOZ4', sans-serif !important;
             border-radius: 12px !important;
             border-color: rgba(216, 222, 232, 0.95) !important;
             box-shadow: none !important;
