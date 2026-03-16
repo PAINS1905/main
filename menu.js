@@ -177,6 +177,21 @@ function initGlobalStyles() {
     const style = document.createElement('style');
     style.id = 'pains-dynamic-style';
     style.innerHTML = `
+        @font-face {
+            font-family: 'ATOZ5';
+            src: url('ATOZ5.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body.pains-theme h1,
+        body.pains-theme h2,
+        body.pains-theme h3,
+        body.pains-theme .event-name,
+        body.pains-theme .title {
+            font-family: 'ATOZ5', sans-serif !important;
+        }
+        
         :root {
             --pains-accent: #9f1d2a;
             --pains-accent-strong: #7f1621;
