@@ -1,4 +1,4 @@
-/* menu.js - v3.1 (공통 레이아웃/테마 통합, blur 제거/푸터 전체폭) */
+/* menu.js - v3.2 (공통 레이아웃/테마 통합, Sticky Footer, 글로벌 폰트 관리) */
 
 const PAINS_LAYOUT = {
     brandText: 'Providing Academic INsights for Sports.',
@@ -131,7 +131,7 @@ function ensureLayoutShell() {
 }
 
 function loadSidebar(currentPage) {
-    console.log('PAINS Menu v3.1 Loaded');
+    console.log('PAINS Menu v3.2 Loaded');
 
     const { header, sidebar, overlay, footer } = ensureLayoutShell();
     if (!header || !sidebar || !overlay || !footer) return;
@@ -177,21 +177,26 @@ function initGlobalStyles() {
     const style = document.createElement('style');
     style.id = 'pains-dynamic-style';
     style.innerHTML = `
-        @font-face {
-            font-family: 'ATOZ5';
-            src: url('ATOZ5.woff2') format('woff2');
-            font-weight: normal;
-            font-style: normal;
+        /* ========================================== */
+        /* 1. 글로벌 폰트 불러오기 (@font-face)       */
+        /* ========================================== */
+        
+        /* 🎯 제목용 폰트 (KBO_Dia) */
+        @font-face { 
+            font-family: 'KBO_Dia'; 
+            src: url('KBO_medium.woff') format('woff'); 
+            font-weight: normal; 
+            font-style: normal; 
         }
 
-        body.pains-theme h1,
-        body.pains-theme h2,
-        body.pains-theme h3,
-        body.pains-theme .event-name,
-        body.pains-theme .title {
-            font-family: 'ATOZ5', sans-serif !important;
+        /* 📖 본문용 폰트 (SCDream) */
+        @font-face { 
+            font-family: 'SCDream'; 
+            src: url('SCDream5.otf'); 
+            font-weight: normal; 
+            font-style: normal; 
         }
-        
+
         :root {
             --pains-accent: #9f1d2a;
             --pains-accent-strong: #7f1621;
@@ -212,16 +217,48 @@ function initGlobalStyles() {
 
         html { scroll-behavior: smooth; }
 
+        /* ========================================== */
+        /* 2. 글로벌 폰트 및 레이아웃 적용            */
+        /* ========================================== */
+
+        /* 📖 사이트 전체 본문 기본 폰트 적용 */
         body.pains-theme {
+            font-family: 'SCDream', sans-serif !important;
             background:
                 radial-gradient(circle at top left, rgba(159,29,42,0.07), transparent 28%),
                 linear-gradient(180deg, #f8f9fb 0%, var(--pains-bg) 100%) !important;
             color: var(--pains-text) !important;
             padding-top: calc(var(--pains-header-height) + 18px) !important;
+            
+            /* Sticky Footer를 위한 속성 */
             min-height: 100vh;
             display: flex !important;
             flex-direction: column !important;
         }
+
+        /* 🎯 제목(h1, h2, h3) 등에 제목 폰트 적용 */
+        body.pains-theme h1,
+        body.pains-theme h2,
+        body.pains-theme h3,
+        body.pains-theme .event-name, 
+        body.pains-theme .title {      
+            font-family: 'KBO_Dia', sans-serif !important;
+        }
+
+        /* 📖 폼 요소(입력창, 버튼)에 본문 폰트 상속 */
+        body.pains-theme input,
+        body.pains-theme select,
+        body.pains-theme textarea,
+        body.pains-theme button {
+            font-family: 'SCDream', sans-serif !important;
+            border-radius: 12px !important;
+            border-color: rgba(216, 222, 232, 0.95) !important;
+            box-shadow: none !important;
+        }
+
+        /* ========================================== */
+        /* 3. 컴포넌트 세부 디자인                    */
+        /* ========================================== */
 
         body.pains-theme header,
         body.pains-theme .pains-header {
@@ -413,12 +450,12 @@ function initGlobalStyles() {
             visibility: visible;
         }
 
+        /* 📌 푸터 하단 고정 (Sticky Footer) */
         body.pains-theme footer,
         body.pains-theme .pains-footer {
             width: 100%;
             max-width: none;
-            margin-top: auto !important;
-            margin: 56px 0 0;
+            margin-top: auto !important; /* 항상 화면 맨 아래로 푸시 */
             padding: 28px 24px !important;
             border-top: 1px solid rgba(216, 222, 232, 0.95);
             border-left: none;
@@ -532,16 +569,6 @@ function initGlobalStyles() {
             background: #fff !important;
             border: 1px solid rgba(216, 222, 232, 0.95) !important;
             color: var(--pains-text) !important;
-        }
-
-        body.pains-theme input,
-        body.pains-theme select,
-        body.pains-theme textarea,
-        body.pains-theme button {
-            font-family: inherit !important;
-            border-radius: 12px !important;
-            border-color: rgba(216, 222, 232, 0.95) !important;
-            box-shadow: none !important;
         }
 
         body.pains-theme table,
