@@ -1,4 +1,4 @@
-/* menu.js - v4.1 (society 반영, Sticky Footer, 글로벌 폰트 관리, PC 여백 최적화 완료) */
+/* menu.js - v4.2 (society 반영, Sticky Footer, 글로벌 폰트 관리, 박스 너비 800px 최적화) */
 
 const PAINS_LAYOUT = {
     brandText: 'Providing Academic INsights for Sports.',
@@ -18,7 +18,7 @@ const PAINS_LAYOUT = {
             items: [
                 { href: 'activity.html', id: 'activity', label: '프로젝트 아카이브' },
                 { href: 'study.html', id: 'study', label: '신입부원 스터디' },
-                { href: 'javascript:void(0)', id:'society', label: '소모임', onclick: "alert('작업 중인 페이지입니다. 조금만 기다려주시면 감사하겠습니다.'); return false;" }
+                { href: 'society.html', id: 'society', label: '소모임' }
             ]
         },
         {
@@ -131,7 +131,7 @@ function ensureLayoutShell() {
 }
 
 function loadSidebar(currentPage) {
-    console.log('PAINS Menu v4.1 Loaded (Layout Optimized)');
+    console.log('PAINS Menu v4.2 Loaded (Box width 800px)');
 
     const { header, sidebar, overlay, footer } = ensureLayoutShell();
     if (!header || !sidebar || !overlay || !footer) return;
@@ -198,8 +198,8 @@ function initGlobalStyles() {
         }
 
         :root {
-            --pains-accent: #9f1d2a;
-            --pains-accent-strong: #7f1621;
+            --pains-accent: #ab3333;
+            --pains-accent-strong: #8f2a2a;
             --pains-accent-soft: #f4e9eb;
             --pains-text: #18202a;
             --pains-muted: #647084;
@@ -225,7 +225,7 @@ function initGlobalStyles() {
         body.pains-theme {
             font-family: 'ATOZ4', sans-serif !important;
             background:
-                radial-gradient(circle at top left, rgba(159,29,42,0.07), transparent 28%),
+                radial-gradient(circle at top left, rgba(171, 51, 51, 0.07), transparent 28%),
                 linear-gradient(180deg, #f8f9fb 0%, var(--pains-bg) 100%) !important;
             color: var(--pains-text) !important;
             padding-top: calc(var(--pains-header-height) + 18px) !important;
@@ -267,9 +267,9 @@ function initGlobalStyles() {
             padding: clamp(24px, 3vw, 40px) !important;
             box-shadow: var(--pains-shadow);
 
-            /* 👇 창 크기가 작아져도 좌우 여백 24px씩 보장, 최대 1000px 유지 */
+            /* 👇 창 크기가 작아져도 좌우 여백 24px씩 보장, 최대 너비를 기존 1000px의 80%인 800px로 축소 */
             margin: 0 auto 28px auto !important;
-            max-width: 1000px !important;
+            max-width: 800px !important;
             width: calc(100% - 48px) !important; 
         }
 
@@ -279,16 +279,16 @@ function initGlobalStyles() {
             box-shadow: 0 24px 60px rgba(127, 22, 33, 0.28);
             overflow: hidden;
 
-            /* 👇 section과 동일한 규격 적용 */
+            /* 👇 section과 동일한 800px 규격 적용 */
             margin: 0 auto 28px auto !important;
-            max-width: 1000px !important;
+            max-width: 800px !important;
             width: calc(100% - 48px) !important;
         }
 
         body.pains-theme .container {
-            /* 👇 fee.html, result.html, study.html 등 container 여백 통일 */
+            /* 👇 fee.html, result.html, study.html 등 container 여백 통일 (800px) */
             margin: 0 auto !important;
-            max-width: 1000px !important;
+            max-width: 800px !important;
             width: calc(100% - 48px) !important;
         }
 
@@ -412,14 +412,14 @@ function initGlobalStyles() {
         body.pains-theme .sidebar a:hover {
             background: #fff !important;
             color: var(--pains-accent) !important;
-            border-color: rgba(159, 29, 42, 0.14) !important;
+            border-color: rgba(171, 51, 51, 0.14) !important;
             transform: translateX(2px);
         }
 
         body.pains-theme .sidebar a.active-link {
-            background: linear-gradient(135deg, rgba(159,29,42,0.11), rgba(159,29,42,0.04)) !important;
+            background: linear-gradient(135deg, rgba(171, 51, 51, 0.11), rgba(171, 51, 51, 0.04)) !important;
             color: var(--pains-accent) !important;
-            border-color: rgba(159, 29, 42, 0.2) !important;
+            border-color: rgba(171, 51, 51, 0.2) !important;
             font-weight: 800 !important;
         }
 
@@ -441,7 +441,7 @@ function initGlobalStyles() {
             opacity: 0;
             margin: -2px 0 2px;
             padding-left: 8px;
-            border-left: 2px solid rgba(159, 29, 42, 0.09);
+            border-left: 2px solid rgba(171, 51, 51, 0.09);
             background: transparent !important;
             transition: max-height 0.28s ease, opacity 0.22s ease, margin 0.22s ease;
         }
@@ -463,7 +463,7 @@ function initGlobalStyles() {
         body.pains-theme .submenu a:hover,
         body.pains-theme .submenu a.active-link {
             color: var(--pains-accent) !important;
-            background: rgba(159,29,42,0.06) !important;
+            background: rgba(171, 51, 51, 0.06) !important;
         }
 
         body.pains-theme .overlay {
@@ -523,8 +523,8 @@ function initGlobalStyles() {
 
         body.pains-theme .icon-btn:hover {
             transform: translateY(-2px);
-            border-color: rgba(159,29,42,0.28);
-            box-shadow: 0 12px 26px rgba(159,29,42,0.12);
+            border-color: rgba(171, 51, 51, 0.28);
+            box-shadow: 0 12px 26px rgba(171, 51, 51, 0.12);
             background: #fff !important;
         }
 
@@ -574,7 +574,7 @@ function initGlobalStyles() {
             background: linear-gradient(135deg, var(--pains-accent), var(--pains-accent-strong)) !important;
             color: #fff !important;
             border: none !important;
-            box-shadow: 0 14px 26px rgba(159, 29, 42, 0.22);
+            box-shadow: 0 14px 26px rgba(171, 51, 51, 0.22);
         }
 
         body.pains-theme .btn-today-reset {
