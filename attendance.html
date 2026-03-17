@@ -6,81 +6,94 @@
     <title>PAINS - 활동 및 결석 현황</title>
     <style>
         /* ============================ */
-        /* [1] 폰트 및 공통 스타일        */
+        /* [1] 기본 레이아웃 초기화       */
         /* ============================ */
-        @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); font-weight: normal; font-style: normal; }
-        @font-face { font-family: 'SCDream'; src: url('SCDream5.otf'); font-weight: normal; font-style: normal; }
-        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'SCDream', sans-serif; line-height: 1.6; }
-        h1, h2, h3 { font-family: 'KBO_Dia', sans-serif; }
+        
+        /* menu.js에서 폰트(ATOZ)와 <section> 너비(최대 1000px, 100%-48px)를 
+           전역으로 관리하므로 중복 코드는 모두 삭제했습니다.
+        */
 
         /* ============================ */
-        /* [2] 메인 컨텐츠 세부 스타일    */
+        /* [2] 입력 폼 및 버튼 스타일     */
         /* ============================ */
-        .container { max-width: 800px; margin: 0 auto; padding: 0 1.5rem; }
-        
-        .section-card {
-            background: white; border-radius: 12px; padding: 2rem;
-            margin-bottom: 2rem;
-            /* 테두리와 그림자는 menu.js에서 동적 주입 */
-        }
-        .section-card h3 { font-size: 1.5rem; margin-bottom: 1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
-        
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
         .input-group input, .input-group select { 
-            width: 100%; padding: 12px; font-size: 1rem; font-family: 'SCDream', sans-serif; outline: none;
-            /* 테두리, 둥근 모서리 등은 menu.js 덮어씌움 */
+            width: 100%; padding: 12px; font-size: 1rem; outline: none;
+            /* 폰트, 테두리, 둥근 모서리 등은 menu.js가 덮어씌움 */
         }
         
-        /* 버튼 고유 색상 유지 (둥근 모서리는 menu.js 적용) */
+        /* 버튼 고유 색상 유지 (둥근 모서리와 폰트는 menu.js 적용) */
         .btn-check, .btn-submit { 
-            width: 100%; padding: 12px; color: white; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 10px;
+            width: 100%; padding: 12px; color: white; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s, transform 0.2s; margin-top: 10px;
         }
-        .btn-check { background-color: #333; }
-        .btn-submit { background-color: #ab3333; }
-        .btn-check:hover { background-color: #555; }
-        .btn-submit:hover { background-color: #8f2a2a; }
+        .btn-check { background-color: #444; } /* 조회 버튼은 짙은 회색 */
+        .btn-submit { background-color: #ab3333; } /* 제출 버튼은 PAINS 붉은색 */
+        
+        .btn-check:hover { background-color: #222; transform: translateY(-1px); }
+        .btn-submit:hover { background-color: #8f2a2a; transform: translateY(-1px); }
 
-        /* 결과 표시 영역 */
-        #result-area { display: none; margin-top: 20px; text-align: center; }
+        /* ============================ */
+        /* [3] 결과 표시 영역 (너비 고정) */
+        /* ============================ */
+        #result-area { 
+            display: none; 
+            margin-top: 25px; 
+            text-align: center; 
+            padding-top: 20px; 
+            border-top: 1px dashed #ddd; 
+            animation: fadeIn 0.4s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         
         /* 뱃지 컨테이너 */
-        .badge-container { display: flex; justify-content: center; gap: 15px; margin: 15px 0; flex-wrap: wrap; }
+        .badge-container { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
         
         .count-badge { 
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: 15px 20px; border-radius: 12px; background-color: #333; color: white; flex: 1; min-width: 100px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.3s ease;
+            padding: 15px 20px; border-radius: 12px; background-color: #333; color: white; flex: 1; min-width: 120px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08); transition: all 0.3s ease;
         }
         .count-badge .label-text { font-size: 0.85rem; color: #ccc; margin-bottom: 5px; }
-        .count-badge .value-wrap { display: flex; align-items: baseline; gap: 3px; }
-        .count-badge .number { font-family: 'KBO_Dia', sans-serif; font-size: 1.8rem; font-weight: bold; line-height: 1; color: #fff; }
-        .count-badge .text-status { font-family: 'SCDream', sans-serif; font-size: 1.3rem; font-weight: bold; line-height: 1; color: #fff; margin-top: 4px; }
-        .count-badge .unit { font-family: 'SCDream', sans-serif; font-size: 0.9rem; font-weight: normal; }
+        .count-badge .value-wrap { display: flex; align-items: baseline; gap: 4px; }
+        .count-badge .number { font-family: 'ATOZ5', sans-serif; font-size: 1.8rem; font-weight: bold; line-height: 1; color: #fff; }
+        .count-badge .text-status { font-size: 1.3rem; font-weight: bold; line-height: 1; color: #fff; margin-top: 4px; }
+        .count-badge .unit { font-size: 0.9rem; font-weight: normal; }
 
+        /* 안내 박스 */
         .rule-box {
             background-color: #fff5f5; border-left: 5px solid #ab3333;
-            border-radius: 8px; padding: 15px; margin-top: 15px; text-align: left; font-size: 0.9rem; color: #555; line-height: 1.6;
+            border-radius: 8px; padding: 18px; margin-top: 20px; text-align: left; font-size: 0.95rem; color: #555; line-height: 1.6;
+            word-break: keep-all; /* 텍스트 줄바꿈 깔끔하게 */
         }
         .rule-box strong { color: #ab3333; font-weight: bold; }
         .rule-sub-text {
-            font-size: 0.85rem; color: #888; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ffcccc;
+            font-size: 0.85rem; color: #888; margin-top: 12px; padding-top: 12px; border-top: 1px dashed #ffcccc;
         }
 
-        /* 결석계 제출 라디오 버튼 스타일 */
-        .event-list { margin-bottom: 15px; border-radius: 8px; padding: 10px; max-height: 200px; overflow-y: auto; background-color: #fafafa; }
-        .event-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; }
+        /* ============================ */
+        /* [4] 결석계 라디오 버튼 스타일  */
+        /* ============================ */
+        .event-list { margin-bottom: 15px; border-radius: 8px; padding: 10px; max-height: 220px; overflow-y: auto; background-color: #f9fafb; border: 1px solid #eee; }
+        .event-item { display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; border-radius: 6px; }
         .event-item:last-child { border-bottom: none; }
-        .event-item:hover { background-color: #fff; }
-        .event-item input { margin-right: 10px; width: 18px; height: 18px; accent-color: #ab3333; }
+        .event-item:hover { background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .event-item input { margin-right: 12px; width: 18px; height: 18px; accent-color: #ab3333; }
         .event-info { font-size: 0.95rem; }
         .event-date { font-weight: bold; color: #ab3333; margin-right: 5px; }
-        .no-event { text-align: center; color: #888; padding: 20px; font-size: 0.9rem; }
+        .no-event { text-align: center; color: #888; padding: 30px 20px; font-size: 0.95rem; }
 
+        /* ============================ */
+        /* [5] 모바일 반응형              */
+        /* ============================ */
         @media (max-width: 600px) { 
             .badge-container { flex-direction: column; }
+            .count-badge { min-width: 100%; }
         }
     </style>
     
@@ -93,116 +106,114 @@
     <div class="sidebar" id="sidebar"></div>
     <div class="overlay" id="overlay"></div>
 
-    <div class="container">
+    <section>
+        <h2>회원 정보 조회</h2>
+        <p style="text-align: center; color:#666; font-size:0.95rem; margin-bottom:25px; word-break: keep-all;">
+            학번과 이름을 입력하여 회원 정보를 확인하세요.
+        </p>
         
-        <div class="section-card">
-            <h3>회원 정보 조회</h3>
-            <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">학번과 이름을 입력하여 회원 정보를 확인하세요.</p>
-            
-            <div class="input-group">
-                <label>학번</label>
-                <input type="text" id="check-id" placeholder="예: 2024123456">
-            </div>
-            <div class="input-group">
-                <label>이름</label>
-                <input type="text" id="check-name" placeholder="예: 홍길동">
-            </div>
-            
-            <button class="btn-check" onclick="checkUsedCount()" id="btn-check-submit">조회하기</button>
+        <div class="input-group">
+            <label>학번</label>
+            <input type="text" id="check-id" placeholder="예: 2024123456">
+        </div>
+        <div class="input-group">
+            <label>이름</label>
+            <input type="text" id="check-name" placeholder="예: 홍길동">
+        </div>
+        
+        <button class="btn-check" onclick="checkUsedCount()" id="btn-check-submit">조회하기</button>
 
-            <div id="result-area">
-                <p class="result-msg"><span id="user-name-display" style="font-weight:bold;"></span>님의 정보 및 출석 현황</p>
-                
-                <div class="badge-container">
-                    <div class="count-badge" id="status-badge" style="background-color: #f5f5f5; box-shadow: none;">
-                        <span class="label-text" id="status-label" style="color: #666;">회원 자격</span>
-                        <div class="value-wrap">
-                            <span id="member-status" class="text-status" style="color: #333;">-</span>
-                        </div>
-                    </div>
-                    <div class="count-badge">
-                        <span class="label-text">사용한 결석계</span>
-                        <div class="value-wrap">
-                            <span id="used-count" class="number">0</span>
-                            <span class="unit">회</span>
-                        </div>
-                    </div>
-                    <div class="count-badge" id="attendance-badge" style="background-color: #ab3333; min-width: 140px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">
-                        <span class="label-text" style="color: #f5f5f5;">현재 출석률</span>
-                        <div class="value-wrap">
-                            <span id="attendance-rate" class="number">0</span>
-                            <span class="unit">%</span>
-                        </div>
+        <div id="result-area">
+            <p class="result-msg"><span id="user-name-display" style="font-weight:bold; color:#ab3333; font-size: 1.2rem;"></span>님의 정보 및 출석 현황</p>
+            
+            <div class="badge-container">
+                <div class="count-badge" id="status-badge" style="background-color: #f5f5f5; box-shadow: none;">
+                    <span class="label-text" id="status-label" style="color: #666;">회원 자격</span>
+                    <div class="value-wrap">
+                        <span id="member-status" class="text-status" style="color: #333;">-</span>
                     </div>
                 </div>
-
-                <div class="rule-box" style="background-color: #f8f9fa; border-color: #e9ecef; border-left-color: #333;">
-                    <strong>[출석률 계산 안내]</strong><br>
-                    현재 출석률은 다음 수식을 바탕으로 계산됩니다.
-                    <div style="text-align: center; margin: 15px 0; overflow-x: auto;">
-                        $$\text{출석률}(\%)=\left(\frac{\text{정기활동 출석인정 수}+\lfloor 0.5 \times \text{비정기활동 출석 수}\rfloor}{\text{이번 기수의 정기활동 수}}\right)\times 100$$
-                    </div>
-                    <div class="rule-sub-text" style="border-top-color: #ddd;">
-                        <span style="color: #ab3333; font-weight: bold;">※ 비정기활동에 여러 번 참여했을 경우, 출석률이 100%를 초과할 수 있습니다.</span><br>
-                        <span style="color: #ab3333; font-weight: bold;">※ 11기의 정기활동은 총 7개입니다: 1, 2, 3차 정기활동, 학기 중 1, 2차 세미나, 방학 중 1, 2차 세미나.</span>
+                <div class="count-badge">
+                    <span class="label-text">사용한 결석계</span>
+                    <div class="value-wrap">
+                        <span id="used-count" class="number">0</span>
+                        <span class="unit">회</span>
                     </div>
                 </div>
-
-                <div class="rule-box">
-                    <strong>[운영회칙 안내]</strong><br>
-                    준회원 및 정회원은 <strong>한 기수에 결석계를 3번째 사용하는 시점부터 1회당 5,000원의 결석비를 납부</strong>하여야 합니다.
-                    <div class="rule-sub-text">
-                        ※ 제출한 결석계는 활동 이후 반영됩니다.<br>
-                        ※ 결석계 유형을 변경하거나, 결석계 취소를 원하실 경우 운영진에게 문의바랍니다.
-                        ※ 활동 후 2일 이상 경과에도 결석계 반영이 되어 있지 않을 경우 운영진에게 문의바랍니다.
+                <div class="count-badge" id="attendance-badge" style="background-color: #ab3333; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">
+                    <span class="label-text" style="color: #f5f5f5;">현재 출석률</span>
+                    <div class="value-wrap">
+                        <span id="attendance-rate" class="number">0</span>
+                        <span class="unit">%</span>
                     </div>
+                </div>
+            </div>
+
+            <div class="rule-box" style="background-color: #f8f9fa; border-color: #e9ecef; border-left-color: #333;">
+                <strong>[출석률 계산 안내]</strong><br>
+                현재 출석률은 다음 수식을 바탕으로 계산됩니다.
+                <div style="text-align: center; margin: 15px 0; overflow-x: auto; max-width: 100%; padding-bottom: 10px;">
+                    $$\text{출석률}(\%)=\left(\frac{\text{정기활동 출석인정 수}+\lfloor 0.5 \times \text{비정기활동 출석 수}\rfloor}{\text{이번 기수의 정기활동 수}}\right)\times 100$$
+                </div>
+                <div class="rule-sub-text" style="border-top-color: #ddd;">
+                    <span style="color: #ab3333; font-weight: bold;">※ 비정기활동에 여러 번 참여했을 경우, 출석률이 100%를 초과할 수 있습니다.</span><br>
+                    <span style="color: #ab3333; font-weight: bold;">※ 11기의 정기활동은 총 7개입니다: 1, 2, 3차 정기활동, 학기 중 1, 2차 세미나, 방학 중 1, 2차 세미나.</span>
+                </div>
+            </div>
+
+            <div class="rule-box">
+                <strong>[운영회칙 안내]</strong><br>
+                준회원 및 정회원은 <strong>한 기수에 결석계를 3번째 사용하는 시점부터 1회당 5,000원의 결석비를 납부</strong>하여야 합니다.
+                <div class="rule-sub-text">
+                    ※ 제출한 결석계는 활동 이후 반영됩니다.<br>
+                    ※ 결석계 유형을 변경하거나, 결석계 취소를 원하실 경우 운영진에게 문의바랍니다.<br>
+                    ※ 활동 후 2일 이상 경과에도 결석계 반영이 되어 있지 않을 경우 운영진에게 문의바랍니다.
                 </div>
             </div>
         </div>
+    </section>
 
-        <div class="section-card">
-            <h3>결석계 제출</h3>
-            <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">
-                <strong>3주 내 예정된 정기활동</strong>에 대해서만 제출 가능합니다.<br>
-                21일 전부터 활동 전날까지만 제출이 가능하며, 당일에는 제출이 불가합니다.
-            </p>
+    <section>
+        <h2>결석계 제출</h2>
+        <p style="text-align: center; color:#666; font-size:0.95rem; margin-bottom:25px; word-break: keep-all;">
+            <strong>3주 내 예정된 정기활동</strong>에 대해서만 제출 가능합니다.<br>
+            21일 전부터 활동 전날까지만 제출이 가능하며, 당일에는 제출이 불가합니다.
+        </p>
 
-            <div class="input-group">
-                <label>학번</label>
-                <input type="text" id="submit-id" placeholder="예: 2024123456">
-            </div>
-            <div class="input-group">
-                <label>이름</label>
-                <input type="text" id="submit-name" placeholder="예: 홍길동">
-            </div>
-
-            <div class="input-group">
-                <label>결석할 활동 선택</label>
-                <div id="event-list-container" class="event-list">
-                    <div class="no-event">불러오는 중...</div>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label>결석계 종류</label>
-                <select id="submit-type">
-                    <option value="결석">결석</option>
-                    <option value="지각">지각</option>
-                    <option value="조퇴">조퇴</option>
-                    <option value="지각 및 조퇴">지각 및 조퇴</option>
-                </select>
-                <div style="font-size: 0.85rem; color: #777; margin-top: 10px; line-height: 1.5; padding: 10px; background: #f9f9f9; border-radius: 6px;">
-                    ▶ <strong>지각:</strong> 명시된 시작 시각 10분 이후 참여<br>
-                    ▶ <strong>조퇴:</strong> 명시된 종료 시각 10분 이전 퇴실<br>
-                    ▶ <strong>지각 및 조퇴:</strong> 지각 및 조퇴를 모두 해야하는 경우<br>
-                    <span style="color: #ab3333; font-weight: bold;">※ 단, 최소 전체 활동 시간의 50% 이상 활동하지 못하면 일부 참여했더라도 인정 결석으로 처리됩니다.</span>
-                </div>
-            </div>
-
-            <button class="btn-submit" onclick="submitAbsence()" id="btn-submit-form">제출하기</button>
+        <div class="input-group">
+            <label>학번</label>
+            <input type="text" id="submit-id" placeholder="예: 2024123456">
+        </div>
+        <div class="input-group">
+            <label>이름</label>
+            <input type="text" id="submit-name" placeholder="예: 홍길동">
         </div>
 
-    </div>
+        <div class="input-group">
+            <label>결석할 활동 선택</label>
+            <div id="event-list-container" class="event-list">
+                <div class="no-event">불러오는 중...</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>결석계 종류</label>
+            <select id="submit-type">
+                <option value="결석">결석</option>
+                <option value="지각">지각</option>
+                <option value="조퇴">조퇴</option>
+                <option value="지각 및 조퇴">지각 및 조퇴</option>
+            </select>
+            <div style="font-size: 0.85rem; color: #666; margin-top: 12px; line-height: 1.6; padding: 12px; background: #f9fafb; border-radius: 8px; border: 1px solid #eee;">
+                ▶ <strong>지각:</strong> 명시된 시작 시각 10분 이후 참여<br>
+                ▶ <strong>조퇴:</strong> 명시된 종료 시각 10분 이전 퇴실<br>
+                ▶ <strong>지각 및 조퇴:</strong> 지각 및 조퇴를 모두 해야하는 경우<br>
+                <span style="color: #ab3333; font-weight: bold; display: block; margin-top: 6px;">※ 단, 최소 전체 활동 시간의 50% 이상 활동하지 못하면 일부 참여했더라도 인정 결석으로 처리됩니다.</span>
+            </div>
+        </div>
+
+        <button class="btn-submit" onclick="submitAbsence()" id="btn-submit-form">제출하기</button>
+    </section>
 
     <footer></footer>
 
@@ -235,7 +246,6 @@
             btn.innerText = "조회 중...";
             
             try {
-                // 백엔드(doGet)에 Members 시트를 탐색하라고 명시: type=attendance
                 const response = await fetch(`${SCRIPT_URL}?type=attendance&id=${id}&name=${name}`);
                 const data = await response.json();
 
@@ -259,8 +269,8 @@
                     const attendanceBadge = document.getElementById('attendance-badge');
                     attendanceBadge.style.background = `linear-gradient(to right, #ab3333 ${rateNum}%, #dca5a5 ${rateNum}%)`;
                     
-                    // 색상 하드코딩 적용 로직 (사진 기준)
-                    const statusName = String(data.memberStatus).replace(/\s/g, ''); // 공백 제거 처리
+                    // 색상 하드코딩 적용 로직
+                    const statusName = String(data.memberStatus).replace(/\s/g, ''); 
                     const statusBadge = document.getElementById('status-badge');
                     const statusText = document.getElementById('member-status');
                     const statusLabel = document.getElementById('status-label');
@@ -289,7 +299,6 @@
                         statusText.style.color = textColor;
                         statusLabel.style.color = textColor;
                     } else {
-                        // 기본 예외 처리
                         statusBadge.style.backgroundColor = "#f5f5f5";
                         statusBadge.style.border = "1px solid #ddd";
                         statusText.style.color = "#333";
