@@ -1,4 +1,4 @@
-/* menu.js - v4.2 (society 반영, Sticky Footer, 글로벌 폰트 관리, 박스 너비 800px 최적화) */
+/* menu.js - v4.3 (너비 제어권 HTML로 위임, Sticky Footer, 글로벌 폰트 관리) */
 
 const PAINS_LAYOUT = {
     brandText: 'Providing Academic INsights for Sports.',
@@ -131,7 +131,7 @@ function ensureLayoutShell() {
 }
 
 function loadSidebar(currentPage) {
-    console.log('PAINS Menu v4.2 Loaded (Box width 800px)');
+    console.log('PAINS Menu v4.3 Loaded (Width Control Delegated to HTML)');
 
     const { header, sidebar, overlay, footer } = ensureLayoutShell();
     if (!header || !sidebar || !overlay || !footer) return;
@@ -257,7 +257,7 @@ function initGlobalStyles() {
         }
 
         /* ========================================== */
-        /* 3. 컴포넌트 세부 디자인 (여백 최적화)        */
+        /* 3. 컴포넌트 세부 디자인 (너비 제외, 테마만) */
         /* ========================================== */
 
         body.pains-theme section {
@@ -266,11 +266,6 @@ function initGlobalStyles() {
             border-radius: 28px;
             padding: clamp(24px, 3vw, 40px) !important;
             box-shadow: var(--pains-shadow);
-
-            /* 👇 창 크기가 작아져도 좌우 여백 24px씩 보장, 최대 너비를 기존 1000px의 80%인 800px로 축소 */
-            margin: 0 auto 28px auto !important;
-            max-width: 800px !important;
-            width: calc(100% - 48px) !important; 
         }
 
         body.pains-theme .hero {
@@ -278,18 +273,6 @@ function initGlobalStyles() {
             border-radius: 30px;
             box-shadow: 0 24px 60px rgba(127, 22, 33, 0.28);
             overflow: hidden;
-
-            /* 👇 section과 동일한 800px 규격 적용 */
-            margin: 0 auto 28px auto !important;
-            max-width: 800px !important;
-            width: calc(100% - 48px) !important;
-        }
-
-        body.pains-theme .container {
-            /* 👇 fee.html, result.html, study.html 등 container 여백 통일 (800px) */
-            margin: 0 auto !important;
-            max-width: 800px !important;
-            width: calc(100% - 48px) !important;
         }
 
         body.pains-theme header,
@@ -607,13 +590,11 @@ function initGlobalStyles() {
                 padding: 0 16px !important;
             }
 
-            /* 모바일 화면에서는 여백을 약간 줄여 최적화 */
             body.pains-theme section,
             body.pains-theme .hero,
             body.pains-theme .container {
                 border-radius: 22px;
                 padding: 20px !important; 
-                width: calc(100% - 32px) !important; /* 모바일은 좌우 16px 여백 보장 */
             }
 
             body.pains-theme footer,
