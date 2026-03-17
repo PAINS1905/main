@@ -6,13 +6,32 @@
     <title>PAINS - 활동 및 결석 현황</title>
     <style>
         /* ============================ */
-        /* [1] 기본 레이아웃 초기화       */
+        /* [1] 깜빡임(FOUC) 방지 뼈대 스타일 */
         /* ============================ */
+        /* 로딩 순간에 레이아웃이 튀는 것을 막기 위해 최소한의 폰트와 너비를 미리 선언해 둡니다. */
+        @font-face { font-family: 'ATOZ5'; src: url('ATOZ5.woff2') format('woff2'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'ATOZ4'; src: url('ATOZ4.woff2') format('woff2'); font-weight: normal; font-style: normal; }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        /* menu.js에서 폰트(ATOZ)와 <section> 너비(최대 1000px, 100%-48px)를 
-           전역으로 관리하므로 중복 코드는 모두 삭제했습니다.
-        */
+        body { font-family: 'ATOZ4', sans-serif; background-color: #f3f5f8; }
+        h1, h2, h3, .number { font-family: 'ATOZ5', sans-serif; }
+        input, select, button { font-family: 'ATOZ4', sans-serif; }
+
+        section {
+            max-width: 800px !important;
+            width: calc(100% - 48px) !important;
+            margin: 0 auto 28px auto !important;
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 40px;
+        }
+
+        @media (max-width: 768px) {
+            section {
+                width: calc(100% - 32px) !important;
+                padding: 20px !important;
+            }
+        }
 
         /* ============================ */
         /* [2] 입력 폼 및 버튼 스타일     */
@@ -21,7 +40,7 @@
         .input-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
         .input-group input, .input-group select { 
             width: 100%; padding: 12px; font-size: 1rem; outline: none;
-            /* 폰트, 테두리, 둥근 모서리 등은 menu.js가 덮어씌움 */
+            /* 테두리, 둥근 모서리 등은 menu.js가 덮어씌움 */
         }
         
         /* 버튼 고유 색상 유지 (둥근 모서리와 폰트는 menu.js 적용) */
