@@ -18,10 +18,25 @@
     /* ============================ */
     /* [2] 본문 및 세부 콘텐츠 스타일*/
     /* ============================ */
-    section { 
+    /* section { 
       max-width: 1100px; 
       margin: 0 auto; 
-      /* 배경, 테두리, 패딩 등은 menu.js에서 동적 주입 */
+      
+    } */
+    section {
+        max-width: 800px !important;
+        width: calc(100% - 48px) !important;
+        margin: 0 auto 28px auto !important;
+        background: #ffffff;
+        border-radius: 28px;
+        padding: 40px;
+    }
+
+    @media (max-width: 768px) {
+        section {
+            width: calc(100% - 32px) !important;
+            padding: 20px !important;
+        }
     }
     
     h2 { font-size: 2rem; margin-bottom: 12px; text-align: center; }
