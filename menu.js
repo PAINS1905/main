@@ -549,6 +549,7 @@ function initGlobalStyles() {
         body.pains-theme input[type="submit"],
         body.pains-theme .btn-today-reset {
             border-radius: 12px !important;
+            text-decoration: none !important;
         }
 
         body.pains-theme .btn:not(.btn-today-reset),
