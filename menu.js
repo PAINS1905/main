@@ -18,7 +18,8 @@ const PAINS_LAYOUT = {
             items: [
                 { href: 'activity.html', id: 'activity', label: '프로젝트 아카이브' },
                 { href: 'study.html', id: 'study', label: '신입부원 스터디' },
-                { href: 'society.html', id: 'society', label: '이벤트' }
+                /* { href: 'society.html', id: 'society', label: '소모임' } */
+                { href: 'javascript:void(0)', id:'society', label: '소모임', onclick: "alert('작업 중인 페이지입니다.\n조금만 기다려주시면 감사하겠습니다.'); return false;" }
             ]
         },
         {
