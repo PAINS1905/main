@@ -6,31 +6,31 @@
     <title>PAINS - 이벤트</title>
     <style>
         /* ============================ */
-        /* [1] 폰트 및 기본 스타일        */
+        /* [1] 기본 스타일 및 레이아웃 너비 설정 */
         /* ============================ */
-        @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); font-weight: normal; font-style: normal; }
-        @font-face { font-family: 'SCDream'; src: url('SCDream5.otf'); font-weight: normal; font-style: normal; }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'SCDream', sans-serif; line-height: 1.6; }
-        h1, h2 { font-family: 'KBO_Dia', sans-serif; }
+        
+        /* menu.js에서 글로벌 폰트(ATOZ 폰트)를 일괄 관리하므로 로컬 폰트 설정은 삭제되었습니다. */
 
-        /* ============================ */
-        /* [2] 섹션 및 타이틀 스타일      */
-        /* ============================ */
-        section { max-width: 900px; margin: 0 auto; min-height: calc(100vh - 200px); }
+        section { 
+            /* 모든 html 파일과 동일한 1000px 규격 */
+            max-width: 1000px !important; 
+            width: 100%;
+            margin: 0 auto 28px auto !important; 
+        }
+        
         h2 { font-size: 2.2rem; margin-bottom: 40px; text-align: center; }
 
         /* ============================ */
-        /* [3] 이벤트 리스트 전용 스타일  */
+        /* [2] Society 리스트 전용 스타일 */
         /* ============================ */
-        .event-list {
+        .society-list {
             display: flex;
             flex-direction: column;
             gap: 25px; /* 버튼 사이 간격 */
         }
 
-        .event-btn {
+        .society-btn {
             position: relative;
             display: block;
             width: 100%;
@@ -45,7 +45,7 @@
         }
 
         /* 사진을 어둡게 만드는 반투명 검은색 오버레이 */
-        .event-btn::before {
+        .society-btn::before {
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -55,16 +55,17 @@
         }
 
         /* 마우스 호버(오버) 시 약간 위로 떠오르면서 밝아지는 효과 */
-        .event-btn:hover {
+        .society-btn:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.15); /* 떠오를 때의 그림자 강조 */
         }
-        .event-btn:hover::before {
+        
+        .society-btn:hover::before {
             background-color: rgba(0, 0, 0, 0.4); 
         }
 
-        /* 이벤트 텍스트 스타일 */
-        .event-btn .event-name {
+        /* Society 텍스트 스타일 */
+        .society-btn .society-name {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -73,7 +74,7 @@
             color: #ffffff;
             font-size: 2.5rem;
             font-weight: bold;
-            font-family: 'KBO_Dia', sans-serif;
+            /* font-family는 menu.js에 의해 자동으로 ATOZ5 폰트로 적용됩니다. */
             text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
             width: 100%;
             text-align: center;
@@ -81,12 +82,12 @@
         }
 
         /* ============================ */
-        /* [4] 반응형 스타일              */
+        /* [3] 반응형 스타일              */
         /* ============================ */
         @media (max-width: 600px) { 
             h2 { font-size: 1.8rem; margin-bottom: 25px; }
-            .event-btn { height: 140px; }
-            .event-btn .event-name { font-size: 1.8rem; }
+            .society-btn { height: 140px; }
+            .society-btn .society-name { font-size: 1.8rem; }
         }
     </style>
 </head>
@@ -99,18 +100,18 @@
     <section>
         <h2>진행 중인 이벤트</h2>
         
-        <div class="event-list">
+        <div class="society-list">
             
-            <a href="https://namu.wiki/w/%EC%9D%B4%EB%AF%B8%EC%A7%80%28%EA%B0%95%EC%82%AC%29" target="_blank" class="event-btn" style="background-image: url('eventex1.png');">
-                <span class="event-name">이미지1</span>
+            <a href="https://namu.wiki/w/%EC%9D%B4%EB%AF%B8%EC%A7%80%28%EA%B0%95%EC%82%AC%29" target="_blank" class="society-btn" style="background-image: url('eventex1.png');">
+                <span class="society-name">이미지1</span>
             </a>
 
-            <a href="https://www.youtube.com" target="_blank" class="event-btn" style="background-image: url('eventex2.png');">
-                <span class="event-name">이벤트1</span>
+            <a href="https://www.youtube.com" target="_blank" class="society-btn" style="background-image: url('eventex2.png');">
+                <span class="society-name">이벤트1</span>
             </a>
 
-            <a href="https://www.google.com" target="_blank" class="event-btn" style="background-image: url('eventex3.png');">
-                <span class="event-name">이미지2</span>
+            <a href="https://www.google.com" target="_blank" class="society-btn" style="background-image: url('eventex3.png');">
+                <span class="society-name">이미지2</span>
             </a>
 
         </div>
@@ -123,9 +124,8 @@
     </script>
     
     <script>
-        // 사이드바에서 현재 페이지에 불 들어오게 하기 위한 설정
         if (typeof loadSidebar === 'function') {
-            loadSidebar('event');
+            loadSidebar('society');
         }
     </script>
 </body>
