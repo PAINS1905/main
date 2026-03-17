@@ -548,8 +548,12 @@ function initGlobalStyles() {
         body.pains-theme .btn,
         body.pains-theme input[type="submit"],
         body.pains-theme .btn-today-reset {
+            font-family: 'ATOZ4', sans-serif !important;
+            font-weight: normal !important;
             border-radius: 12px !important;
             text-decoration: none !important;
+            border-color: rgba(216, 222, 232, 0.95) !important;
+            box-shadow: none !important;
         }
 
         body.pains-theme .btn:not(.btn-today-reset),
