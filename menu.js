@@ -1,4 +1,4 @@
-/* menu.js - v3.3 (공통 레이아웃/테마 통합, Sticky Footer, 글로벌 폰트 관리 - ATOZ 적용) */
+/* menu.js - v3.4 (society 클래스명 대응, Sticky Footer, 글로벌 폰트 관리 - ATOZ 적용) */
 
 const PAINS_LAYOUT = {
     brandText: 'Providing Academic INsights for Sports.',
@@ -18,7 +18,7 @@ const PAINS_LAYOUT = {
             items: [
                 { href: 'activity.html', id: 'activity', label: '프로젝트 아카이브' },
                 { href: 'study.html', id: 'study', label: '신입부원 스터디' },
-                { href: 'javascript:void(0)', id: 'event', label: '이벤트', onclick: "alert('현재 진행하고 있는 이벤트가 없습니다. 곧 새로운 이벤트로 찾아뵙겠습니다.'); return false;" }
+                { href: 'society.html', id: 'society', label: '이벤트' }
             ]
         },
         {
@@ -131,7 +131,7 @@ function ensureLayoutShell() {
 }
 
 function loadSidebar(currentPage) {
-    console.log('PAINS Menu v3.3 Loaded (ATOZ Fonts)');
+    console.log('PAINS Menu v3.4 Loaded (society integrated)');
 
     const { header, sidebar, overlay, footer } = ensureLayoutShell();
     if (!header || !sidebar || !overlay || !footer) return;
@@ -240,7 +240,7 @@ function initGlobalStyles() {
         body.pains-theme h1,
         body.pains-theme h2,
         body.pains-theme h3,
-        body.pains-theme .event-name, 
+        body.pains-theme .society-name, 
         body.pains-theme .title {      
             font-family: 'ATOZ5', sans-serif !important;
         }
@@ -515,7 +515,7 @@ function initGlobalStyles() {
         body.pains-theme .fee-table-container,
         body.pains-theme .info-card,
         body.pains-theme .project-card,
-        body.pains-theme .event-btn {
+        body.pains-theme .society-btn {
             box-shadow: var(--pains-shadow);
         }
 
