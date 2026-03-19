@@ -2,7 +2,7 @@
 
 const PAINS_LAYOUT = {
     brandText: 'Providing Academic INsights for Sports.',
-    homeHref: 'index.html',
+    homeHref: 'index',
     footerText: '&copy; 2026 PAINS. All rights reserved.',
     socials: [
         { href: 'https://www.instagram.com/ku_pains', title: 'Instagram', icon: 'instagram.png', alt: 'Instagram' },
@@ -10,14 +10,14 @@ const PAINS_LAYOUT = {
         { href: 'https://blog.naver.com/painsports', title: 'Blog', icon: 'naver_blog.png', alt: 'Naver Blog' }
     ],
     menuGroups: [
-        { type: 'link', href: 'index.html', id: 'home', label: '홈' },
+        { type: 'link', href: 'index', id: 'home', label: '홈' },
         {
             type: 'group',
             id: 'activities',
             label: '활동',
             items: [
-                { href: 'activity.html', id: 'activity', label: '프로젝트 아카이브' },
-                { href: 'study.html', id: 'study', label: '신입부원 스터디' },
+                { href: 'activity', id: 'activity', label: '프로젝트 아카이브' },
+                { href: 'study', id: 'study', label: '신입부원 스터디' },
                 { href : 'society', id: 'society', label: '소모임' }
                 /* { href: 'javascript:void(0)', id: 'society', label: '소모임', onclick: "alert('작업 중인 페이지입니다. 추후 개시될 예정이오니 잠시만 기다려주시면 감사하겠습니다.'); return false;" } */
             ]
@@ -27,9 +27,9 @@ const PAINS_LAYOUT = {
             id: 'members',
             label: '운영',
             items: [
-                { href: 'members.html', id: 'members', label: '운영진 소개' },
-                { href: 'attendance.html', id: 'attendance', label: '회원 정보 / 결석계' },
-                { href: 'fee.html', id: 'fee', label: '회비 내역 조회' },
+                { href: 'members', id: 'members', label: '운영진 소개' },
+                { href: 'attendance', id: 'attendance', label: '회원 정보 / 결석계' },
+                { href: 'fee', id: 'fee', label: '회비 내역 조회' },
                 { href: 'javascript:void(0)', id: 'rule', label: '회칙', onclick: "alert('작업 중인 페이지입니다. 자세한 회칙 내용은 노션을 우선 참조해주시기 바랍니다.'); return false;" }
             ]
         },
