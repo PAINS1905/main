@@ -56,7 +56,7 @@
             text-decoration: none;
             background-size: cover;
             background-position: center;
-            cursor: pointer; /* 클릭 가능한 요소임을 표시 */
+            cursor: pointer; 
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -66,7 +66,7 @@
             top: 0; left: 0; right: 0; bottom: 0;
             background-color: rgba(0, 0, 0, 0.55); 
             z-index: 1;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.4s ease;
         }
 
         .society-btn:hover {
@@ -74,12 +74,13 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
         }
         
-        /* [수정] 호버 시, 그리고 클릭(active)되었을 때 배경이 밝아지도록 설정 */
+        /* [수정] 마우스 오버 시 또는 모바일 터치(active) 시 배경이 더 어두워짐 (글씨 가독성 확보) */
         .society-btn:hover::before,
         .society-btn.active::before {
-            background-color: rgba(0, 0, 0, 0.3); 
+            background-color: rgba(0, 0, 0, 0.75); 
         }
 
+        /* 큰 제목 스타일 */
         .society-btn .society-name {
             position: absolute;
             top: 50%; left: 50%;
@@ -92,12 +93,18 @@
             width: 100%;
             text-align: center;
             letter-spacing: 2px;
-            /* [추가] 자연스럽게 사라지는 효과를 위한 트랜지션 */
             transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
+        /* [핵심] 마우스 오버 또는 모바일 터치 시 큰 제목 사라짐 */
+        .society-btn:hover .society-name,
+        .society-btn.active .society-name {
+            opacity: 0;
+            visibility: hidden;
+        }
+
         /* ============================ */
-        /* [추가] 클릭 시 나타나는 상세 설명 레이아웃 */
+        /* [3] 상세 설명 레이아웃 스타일 */
         /* ============================ */
         .society-details {
             position: absolute;
@@ -105,34 +112,56 @@
             width: 100%; height: 100%;
             z-index: 3;
             display: flex;
+            flex-direction: column; /* 제목과 아래 설명(모임장,선,내용)을 위아래로 배치 */
             align-items: center;
             justify-content: center;
             padding: 0 40px;
             color: #ffffff;
-            /* 초기에는 숨겨둠 */
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
-        /* 왼쪽 모임장 영역 */
+        /* 마우스 오버 또는 모바일 터치 시 상세 설명 나타남 */
+        .society-btn:hover .society-details,
+        .society-btn.active .society-details {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* 상세 설명 안의 상단 제목 */
+        .detail-title {
+            font-size: 1.4rem; /* 설명문(1.05rem)보다 크고 기존 제목(2.5rem)보다 작음 */
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        /* 모임장, 구분선, 설명을 가로로 묶어주는 박스 */
+        .detail-content-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
         .detail-leader {
             flex: 0 0 120px;
             text-align: right;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
             text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
         }
 
-        /* 중간 구분선 */
         .detail-divider {
             width: 2px;
-            height: 50%;
+            height: 40px;
             background-color: rgba(255, 255, 255, 0.7);
             margin: 0 30px;
         }
 
-        /* 오른쪽 설명 영역 */
         .detail-desc {
             flex: 1;
             text-align: left;
@@ -142,39 +171,29 @@
             text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
         }
 
-        /* [핵심] 클래스에 active가 붙었을 때의 상태 변화 */
-        .society-btn.active .society-name {
-            opacity: 0;
-            visibility: hidden;
-        }
-        
-        .society-btn.active .society-details {
-            opacity: 1;
-            visibility: visible;
-        }
-
         /* ============================ */
-        /* [3] 반응형 스타일 */
+        /* [4] 반응형 스타일 (모바일) */
         /* ============================ */
         @media (max-width: 600px) { 
             h2 { font-size: 1.8rem; margin-bottom: 25px; }
-            .society-btn { height: 160px; } /* 모바일에서는 텍스트를 위해 높이를 살짝 키움 */
+            .society-btn { height: 200px; } /* 모바일에서는 위아래 요소가 많아져 높이를 조금 더 키움 */
             .society-btn .society-name { font-size: 1.8rem; }
             
-            /* 모바일 환경에서는 텍스트를 위아래로 배치 */
-            .society-details {
+            .society-details { padding: 15px; }
+            .detail-title { font-size: 1.2rem; margin-bottom: 10px; }
+            
+            .detail-content-row {
                 flex-direction: column;
-                padding: 20px;
             }
             .detail-leader {
                 flex: auto;
                 text-align: center;
-                margin-bottom: 10px;
+                margin-bottom: 8px;
             }
             .detail-divider {
                 width: 60%;
-                height: 2px;
-                margin: 0 0 15px 0;
+                height: 1px; /* 모바일에서는 가로선으로 변경 */
+                margin: 0 0 12px 0;
             }
             .detail-desc {
                 text-align: center;
@@ -191,7 +210,6 @@
 
     <section>
         <h2>PAINS 소모임 안내</h2>
-        
         <p class="event-description">PAINS에서는 다양한 소모임을 통해 비슷한 관심사를 가진 부원들 간의 친목을 장려하고 있습니다. 아래 현재 개설된 소모임을 확인해보세요! <br>
         자세한 내용은 PAINS 공지방과 잡담방을 확인해주시기 바랍니다.</p>
         
@@ -199,28 +217,41 @@
             
             <div class="society-btn" onclick="toggleDetails(this)" style="background-image: url('eventex1.png');">
                 <span class="society-name">이미지1</span>
+                
                 <div class="society-details">
-                    <div class="detail-leader">모임장: 홍길동</div>
-                    <div class="detail-divider"></div>
-                    <div class="detail-desc">매주 금요일 오후 7시에 모여 함께 사진을 찍고 보정하는 모임입니다. 카메라가 없어도 스마트폰만 있으면 누구나 환영합니다!</div>
+                    <div class="detail-title">이미지1</div>
+                    
+                    <div class="detail-content-row">
+                        <div class="detail-leader">모임장: 홍길동</div>
+                        <div class="detail-divider"></div>
+                        <div class="detail-desc">매주 금요일 오후 7시에 모여 함께 사진을 찍고 보정하는 모임입니다. 카메라가 없어도 스마트폰만 있으면 누구나 환영합니다!</div>
+                    </div>
                 </div>
             </div>
 
             <div class="society-btn" onclick="toggleDetails(this)" style="background-image: url('eventex2.png');">
                 <span class="society-name">이벤트1</span>
+                
                 <div class="society-details">
-                    <div class="detail-leader">모임장: 김철수</div>
-                    <div class="detail-divider"></div>
-                    <div class="detail-desc">월 1회 오프라인 모임을 가집니다. 회비는 매월 1만원이며, 무단 불참 시 페널티가 있으니 유의해주세요.</div>
+                    <div class="detail-title">이벤트1</div>
+                    <div class="detail-content-row">
+                        <div class="detail-leader">모임장: 김철수</div>
+                        <div class="detail-divider"></div>
+                        <div class="detail-desc">월 1회 오프라인 모임을 가집니다. 회비는 매월 1만원이며, 무단 불참 시 페널티가 있으니 유의해주세요.</div>
+                    </div>
                 </div>
             </div>
 
             <div class="society-btn" onclick="toggleDetails(this)" style="background-image: url('eventex3.png');">
                 <span class="society-name">이미지2</span>
+                
                 <div class="society-details">
-                    <div class="detail-leader">모임장: 이영희</div>
-                    <div class="detail-divider"></div>
-                    <div class="detail-desc">자유로운 분위기 속에서 각자의 취미를 공유합니다. 특별한 규칙 없이 편하게 소통하는 것을 지향합니다.</div>
+                    <div class="detail-title">이미지2</div>
+                    <div class="detail-content-row">
+                        <div class="detail-leader">모임장: 이영희</div>
+                        <div class="detail-divider"></div>
+                        <div class="detail-desc">자유로운 분위기 속에서 각자의 취미를 공유합니다. 특별한 규칙 없이 편하게 소통하는 것을 지향합니다.</div>
+                    </div>
                 </div>
             </div>
 
@@ -232,13 +263,9 @@
     <script>
         document.write('<script src="menu.js?v=' + new Date().getTime() + '"><\/script>');
         
-        // [추가된 자바스크립트] 상자를 클릭하면 active 클래스를 껐다 켜주는 기능
+        // 모바일 터치 대응을 위한 자바스크립트
         function toggleDetails(element) {
-            // 다른 상자가 열려있다면 닫고 싶을 경우 아래 주석을 해제하세요.
-            // document.querySelectorAll('.society-btn').forEach(btn => {
-            //     if(btn !== element) btn.classList.remove('active');
-            // });
-            
+            // 터치 시 해당 요소에 active 클래스 토글 (PC에서는 CSS :hover로 이미 작동함)
             element.classList.toggle('active');
         }
     </script>
