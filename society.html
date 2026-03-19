@@ -10,10 +10,7 @@
         /* ============================ */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* menu.js에서 글로벌 폰트(ATOZ 폰트)를 일괄 관리하므로 로컬 폰트 설정은 삭제되었습니다. */
-
         section { 
-            /* 모든 html 파일과 동일한 1000px 규격 */
             max-width: 1000px !important; 
             width: 100%;
             margin: 0 auto 28px auto !important; 
@@ -46,24 +43,23 @@
         .society-list {
             display: flex;
             flex-direction: column;
-            gap: 25px; /* 버튼 사이 간격 */
+            gap: 25px; 
         }
 
         .society-btn {
             position: relative;
             display: block;
             width: 100%;
-            height: 180px; /* 버튼 높이 */
+            height: 180px; 
             border-radius: 16px;
             overflow: hidden;
             text-decoration: none;
             background-size: cover;
             background-position: center;
+            cursor: pointer; /* 클릭 가능한 요소임을 표시 */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            /* 기본 box-shadow는 menu.js에서 동적 주입 */
         }
 
-        /* 사진을 어둡게 만드는 반투명 검은색 오버레이 */
         .society-btn::before {
             content: "";
             position: absolute;
@@ -73,40 +69,117 @@
             transition: background-color 0.3s ease;
         }
 
-        /* 마우스 호버(오버) 시 약간 위로 떠오르면서 밝아지는 효과 */
         .society-btn:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15); /* 떠오를 때의 그림자 강조 */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
         }
         
-        .society-btn:hover::before {
-            background-color: rgba(0, 0, 0, 0.4); 
+        /* [수정] 호버 시, 그리고 클릭(active)되었을 때 배경이 밝아지도록 설정 */
+        .society-btn:hover::before,
+        .society-btn.active::before {
+            background-color: rgba(0, 0, 0, 0.3); 
         }
 
-        /* Society 텍스트 스타일 */
         .society-btn .society-name {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             z-index: 2;
             color: #ffffff;
             font-size: 2.5rem;
             font-weight: bold;
-            /* font-family는 menu.js에 의해 자동으로 ATOZ5 폰트로 적용됩니다. */
             text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
             width: 100%;
             text-align: center;
             letter-spacing: 2px;
+            /* [추가] 자연스럽게 사라지는 효과를 위한 트랜지션 */
+            transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
         /* ============================ */
-        /* [3] 반응형 스타일              */
+        /* [추가] 클릭 시 나타나는 상세 설명 레이아웃 */
+        /* ============================ */
+        .society-details {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 40px;
+            color: #ffffff;
+            /* 초기에는 숨겨둠 */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        /* 왼쪽 모임장 영역 */
+        .detail-leader {
+            flex: 0 0 120px;
+            text-align: right;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+        }
+
+        /* 중간 구분선 */
+        .detail-divider {
+            width: 2px;
+            height: 50%;
+            background-color: rgba(255, 255, 255, 0.7);
+            margin: 0 30px;
+        }
+
+        /* 오른쪽 설명 영역 */
+        .detail-desc {
+            flex: 1;
+            text-align: left;
+            font-size: 1.05rem;
+            line-height: 1.5;
+            word-break: keep-all;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+        }
+
+        /* [핵심] 클래스에 active가 붙었을 때의 상태 변화 */
+        .society-btn.active .society-name {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .society-btn.active .society-details {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ============================ */
+        /* [3] 반응형 스타일 */
         /* ============================ */
         @media (max-width: 600px) { 
             h2 { font-size: 1.8rem; margin-bottom: 25px; }
-            .society-btn { height: 140px; }
+            .society-btn { height: 160px; } /* 모바일에서는 텍스트를 위해 높이를 살짝 키움 */
             .society-btn .society-name { font-size: 1.8rem; }
+            
+            /* 모바일 환경에서는 텍스트를 위아래로 배치 */
+            .society-details {
+                flex-direction: column;
+                padding: 20px;
+            }
+            .detail-leader {
+                flex: auto;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            .detail-divider {
+                width: 60%;
+                height: 2px;
+                margin: 0 0 15px 0;
+            }
+            .detail-desc {
+                text-align: center;
+                font-size: 0.95rem;
+            }
         }
     </style>
 </head>
@@ -117,23 +190,39 @@
     <div class="overlay" id="overlay"></div>
 
     <section>
-        <h2>진행 중인 이벤트</h2>
-        <p class="event-discription">PAINS에서는 다양한 소모임을 통해 비슷한 관심사를 가진 부원들 간의 친목을 장려하고 있습니다. 아래 현재 개설된 소모임을 확인해보세요! <br>
+        <h2>PAINS 소모임 안내</h2>
+        
+        <p class="event-description">PAINS에서는 다양한 소모임을 통해 비슷한 관심사를 가진 부원들 간의 친목을 장려하고 있습니다. 아래 현재 개설된 소모임을 확인해보세요! <br>
         자세한 내용은 PAINS 공지방과 잡담방을 확인해주시기 바랍니다.</p>
         
         <div class="society-list">
             
-            <a href="https://namu.wiki/w/%EC%9D%B4%EB%AF%B8%EC%A7%80%28%EA%B0%95%EC%82%AC%29" target="_blank" class="society-btn" style="background-image: url('eventex1.png');">
+            <div class="society-btn" onclick="toggleDetails(this)" style="background-image: url('eventex1.png');">
                 <span class="society-name">이미지1</span>
-            </a>
+                <div class="society-details">
+                    <div class="detail-leader">모임장: 홍길동</div>
+                    <div class="detail-divider"></div>
+                    <div class="detail-desc">매주 금요일 오후 7시에 모여 함께 사진을 찍고 보정하는 모임입니다. 카메라가 없어도 스마트폰만 있으면 누구나 환영합니다!</div>
+                </div>
+            </div>
 
-            <a href="https://www.youtube.com" target="_blank" class="society-btn" style="background-image: url('eventex2.png');">
+            <div class="society-btn" onclick="toggleDetails(this)" style="background-image: url('eventex2.png');">
                 <span class="society-name">이벤트1</span>
-            </a>
+                <div class="society-details">
+                    <div class="detail-leader">모임장: 김철수</div>
+                    <div class="detail-divider"></div>
+                    <div class="detail-desc">월 1회 오프라인 모임을 가집니다. 회비는 매월 1만원이며, 무단 불참 시 페널티가 있으니 유의해주세요.</div>
+                </div>
+            </div>
 
-            <a href="https://www.google.com" target="_blank" class="society-btn" style="background-image: url('eventex3.png');">
+            <div class="society-btn" onclick="toggleDetails(this)" style="background-image: url('eventex3.png');">
                 <span class="society-name">이미지2</span>
-            </a>
+                <div class="society-details">
+                    <div class="detail-leader">모임장: 이영희</div>
+                    <div class="detail-divider"></div>
+                    <div class="detail-desc">자유로운 분위기 속에서 각자의 취미를 공유합니다. 특별한 규칙 없이 편하게 소통하는 것을 지향합니다.</div>
+                </div>
+            </div>
 
         </div>
     </section>
@@ -142,6 +231,16 @@
 
     <script>
         document.write('<script src="menu.js?v=' + new Date().getTime() + '"><\/script>');
+        
+        // [추가된 자바스크립트] 상자를 클릭하면 active 클래스를 껐다 켜주는 기능
+        function toggleDetails(element) {
+            // 다른 상자가 열려있다면 닫고 싶을 경우 아래 주석을 해제하세요.
+            // document.querySelectorAll('.society-btn').forEach(btn => {
+            //     if(btn !== element) btn.classList.remove('active');
+            // });
+            
+            element.classList.toggle('active');
+        }
     </script>
     
     <script>
