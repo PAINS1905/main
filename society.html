@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAINS - 이벤트</title>
+    <title>PAINS - 소모임</title>
     <style>
         /* ============================ */
         /* [1] 기본 스타일 및 레이아웃 너비 설정 */
@@ -20,6 +20,24 @@
         }
         
         h2 { font-size: 2.2rem; margin-bottom: 40px; text-align: center; }
+
+        .event-description {
+            text-align: left;
+            font-size: 1.1rem;
+            color: #333333;
+            margin-top: -20px;
+            line-height: 1.5;
+            word-break: keep-all;
+            padding: 0 5px;
+        }
+
+        @media (max-width: 600px) {
+            .event-description {
+                font-size: 0.95rem;
+                margin-top: -10px;
+                margin-bottom: 20px;
+            }
+        }
 
         /* ============================ */
         /* [2] Society 리스트 전용 스타일 */
@@ -99,6 +117,7 @@
 
     <section>
         <h2>진행 중인 이벤트</h2>
+        <p class="event-discription">PAINS에서는 다양한 소모임을 통해 비슷한 관심사를 가진 부원들 간의 친목을 장려하고 있습니다. 아래 현재 개설된 소모임을 확인해보세요! 참여를 원하시면 각 소모임장에게 연락하거나, 운영위에 문의하시기 바랍니다. 원하는 소모임이 없다면 직접 만드실 수도 있으니, 많은 참여 부탁드립니다!</p>
         
         <div class="society-list">
             
