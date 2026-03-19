@@ -18,7 +18,8 @@ const PAINS_LAYOUT = {
             items: [
                 { href: 'activity.html', id: 'activity', label: '프로젝트 아카이브' },
                 { href: 'study.html', id: 'study', label: '신입부원 스터디' },
-                { href: 'javascript:void(0)', id: 'society', label: '소모임', onclick: "alert('작업 중인 페이지입니다. 추후 개시될 예정이오니 잠시만 기다려주시면 감사하겠습니다.'); return false;" }
+                { href : 'society', id: 'society', label: '소모임' }
+                /* { href: 'javascript:void(0)', id: 'society', label: '소모임', onclick: "alert('작업 중인 페이지입니다. 추후 개시될 예정이오니 잠시만 기다려주시면 감사하겠습니다.'); return false;" } */
             ]
         },
         {
@@ -38,7 +39,7 @@ const PAINS_LAYOUT = {
             label: '지원',
             items: [
                 { href: 'javascript:void(0)', id: 'apply', label: '지원하기', onclick: "alert('지원 기간이 아닙니다.'); return false;" },
-                { href: 'result.html', id: 'result', label: '지원 결과 안내' }
+                { href: 'javascript:void(0)', id: 'result', label: '지원 결과 안내', onclick: "alert('지원 결과 조회 기간이 아닙니다.'); return false;" }
             ]
         }
     ]
