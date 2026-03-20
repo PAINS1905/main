@@ -231,7 +231,7 @@
       btnViewer.href = previewUrl; 
       btnViewer.target = '_blank';
       btnViewer.rel = 'noopener';
-      btnViewer.textContent = '뷰어로 보기';
+      btnViewer.textContent = '뷰어';
 
       const btnDownload = document.createElement('a');
       btnDownload.className = 'btn btn-download';
