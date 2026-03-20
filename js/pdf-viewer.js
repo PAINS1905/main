@@ -11,6 +11,8 @@
   const title = params.get('title') || params.get('file') || 'PDF 미리보기';
   const file = params.get('file') || '';
 
+  const fromPage = params.get('from') || 'activity';
+
   const $ = (id) => document.getElementById(id);
 
   const els = {
@@ -26,11 +28,16 @@
     zoomOut: $('btn-zoom-out'),
     download: $('btn-download'),
     error: $('error-box'),
+    listBtn: $('btn-list'),
   };
 
   // UI 세팅
   document.title = title;
   if (els.title) els.title.textContent = title;
+
+  if (els.listBtn) {
+    els.listBtn.href = fromPage === 'notice' ? 'notice.html' : 'activity.html';
+  }
 
   if (els.download) {
     els.download.href = download || '#';
