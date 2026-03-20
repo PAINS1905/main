@@ -154,6 +154,7 @@
     if (srcUrl) params.set('src', srcUrl);      
     if (directUrl) params.set('direct', directUrl); 
     if (downloadUrl) params.set('download', downloadUrl);
+    params.set('from', 'notice');
     return `${VIEWER_PAGE}?${params.toString()}`;
   }
 
