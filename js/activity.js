@@ -225,13 +225,13 @@
       const actions = document.createElement('div');
       actions.className = 'project-actions';
 
-      // "뷰어로 보기" 버튼 추가
+      // "열기" 버튼 추가
       const btnViewer = document.createElement('a');
       btnViewer.className = 'btn'; 
       btnViewer.href = previewUrl; 
       btnViewer.target = '_blank';
       btnViewer.rel = 'noopener';
-      btnViewer.textContent = '뷰어';
+      btnViewer.textContent = '열기';
 
       const btnDownload = document.createElement('a');
       btnDownload.className = 'btn btn-download';
