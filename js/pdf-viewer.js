@@ -108,9 +108,18 @@
       const canvas = els.canvas;
       const ctx = canvas.getContext('2d', { alpha: false });
 
-      // 캔버스 픽셀 비율 보정(레티나 대응)
-      const qualityMultiplier = 2;
-      const outputScale = (window.devicePixelRatio || 1) * qualityMultiplier;
+      const baseScale = window.devicePixelRatio || 1;
+      
+      // 기기가 이미 고해상도(레티나 등)라면 무리하게 올리지 않고 1.5배만, 일반 모니터면 2배 적용
+      const qualityMultiplier = baseScale >= 2 ? 1.5 : 2; 
+      let outputScale = baseScale * qualityMultiplier;
+
+      // 캔버스 최대 픽셀 제한 (브라우저 메모리 초과로 인한 검은 화면 뻗음 방지)
+      const MAX_DIMENSION = 4000; 
+      if (viewport.width * outputScale > MAX_DIMENSION || viewport.height * outputScale > MAX_DIMENSION) {
+        outputScale = Math.min(MAX_DIMENSION / viewport.width, MAX_DIMENSION / viewport.height);
+      }
+
       canvas.width = Math.floor(viewport.width * outputScale);
       canvas.height = Math.floor(viewport.height * outputScale);
       canvas.style.width = `${Math.floor(viewport.width)}px`;
