@@ -109,7 +109,8 @@
       const ctx = canvas.getContext('2d', { alpha: false });
 
       // 캔버스 픽셀 비율 보정(레티나 대응)
-      const outputScale = window.devicePixelRatio || 1;
+      const qulityMultiplier = 2;
+      const outputScale = (window.devicePixelRatio || 1) * qualityMultiplier;
       canvas.width = Math.floor(viewport.width * outputScale);
       canvas.height = Math.floor(viewport.height * outputScale);
       canvas.style.width = `${Math.floor(viewport.width)}px`;
