@@ -41,7 +41,7 @@
     /* 필터 영역 */
     .filters {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
       background: white;
       border: 1px solid #eee;
@@ -64,17 +64,12 @@
       outline: none;
     }
 
-    .date-range-container {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
     .filter-actions {
       display: flex;
       align-items: end;
       justify-content: flex-end;
     }
+    
     .btn {
       display: inline-flex;
       align-items: center;
@@ -148,8 +143,7 @@
     /* 반응형 */
     @media (max-width: 900px) {
       .filters { grid-template-columns: 1fr 1fr; }
-      .filter-item.date-filter { grid-column: 1 / -1; } /* 날짜 필터는 모바일에서 전체 너비 사용 */
-      .filter-actions { justify-content: stretch; }
+      .filter-actions { grid-column: 1 / -1 !important; justify-content: stretch; }
       .filter-actions .btn { width: 100%; }
     }
     @media (max-width: 520px) {
@@ -171,13 +165,9 @@
     </p>
 
     <div class="filters" aria-label="공지 필터">
-      <div class="filter-item date-filter" style="grid-column: span 2;">
-        <label>기간 (시작일 ~ 종료일)</label>
-        <div class="date-range-container">
-          <input id="filter-date-start" type="date" aria-label="시작일" />
-          <span>~</span>
-          <input id="filter-date-end" type="date" aria-label="종료일" />
-        </div>
+      <div class="filter-item">
+        <label for="filter-date-start">시작일 (부터)</label>
+        <input id="filter-date-start" type="date" aria-label="시작일" />
       </div>
       <div class="filter-item">
         <label for="filter-generation">기수</label>
@@ -192,7 +182,12 @@
         <input id="filter-q" type="search" placeholder="검색어 입력…" />
       </div>
 
-      <div class="filter-actions" style="grid-column: 1 / -1;">
+      <div class="filter-item">
+        <label for="filter-date-end">종료일 (까지)</label>
+        <input id="filter-date-end" type="date" aria-label="종료일" />
+      </div>
+
+      <div class="filter-actions" style="grid-column: 2 / -1;">
         <button class="btn" id="btn-reset" type="button">필터 초기화</button>
       </div>
     </div>
