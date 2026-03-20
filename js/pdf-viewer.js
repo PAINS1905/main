@@ -242,6 +242,56 @@
       if (e.key === '+' || e.key === '=') zoomIn();
       if (e.key === '-') zoomOut();
     });
+
+    // ==========================================
+    // 마우스 클릭-유지 후 드래그(팬) 이동 기능
+    // ==========================================
+    let isDragging = false;
+    let startX, startY;
+
+    if (els.canvas) {
+      // 캔버스 위에 마우스가 있을 때 펼친 손바닥 모양 유지
+      els.canvas.style.cursor = 'grab';
+
+      els.canvas.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        els.canvas.style.cursor = 'grabbing'; // 누르면 움켜쥔 손바닥 모양으로
+        startX = e.clientX;
+        startY = e.clientY;
+      });
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      
+      e.preventDefault(); // 드래그 중 텍스트 선택 등 방지
+
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+
+      // 스크롤을 담당하는 컨테이너 확인 (부모 요소 혹은 window 전체)
+      const scrollContainer = (els.canvas && els.canvas.parentElement && els.canvas.parentElement.scrollHeight > els.canvas.parentElement.clientHeight)
+        ? els.canvas.parentElement
+        : window;
+
+      // 움직인 반대 방향으로 스크롤 이동
+      scrollContainer.scrollBy(-dx, -dy);
+
+      // 위치 갱신
+      startX = e.clientX;
+      startY = e.clientY;
+    });
+
+    // 마우스를 떼거나 화면 밖으로 나가면 드래그 종료
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+      if (els.canvas) els.canvas.style.cursor = 'grab';
+    });
+    
+    window.addEventListener('mouseleave', () => {
+      isDragging = false;
+      if (els.canvas) els.canvas.style.cursor = 'grab';
+    });
   }
 
   async function init() {
