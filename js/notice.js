@@ -208,7 +208,7 @@
       
       // 중요 공지면 배지 추가
       if (n.important) {
-        aTitle.innerHTML = `<span class="badge-important">[중요]</span>${title}`;
+        aTitle.innerHTML = `<span class="badge-important">📌</span>${title}`;
       } else {
         aTitle.textContent = title;
       }
