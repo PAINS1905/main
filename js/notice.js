@@ -32,8 +32,20 @@
   }
 
   function coerceNotices(json) {
-    // API에서 반환하는 notices 배열을 바로 반환
-    if (json && Array.isArray(json.notices)) return json.notices;
+    if (json && Array.isArray(json.notices)) {
+      return json.notices.map(n => {
+        if (n.date) {
+          const d = new Date(n.date);
+          if (!isNaN(d.getTime())) {
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            n.date = `${yyyy}-${mm}-${dd}`;
+          }
+        }
+        return n;
+      });
+    }
     return [];
   }
 
@@ -78,7 +90,14 @@
 
   function noticeMeta(n) {
     const parts = [];
-    if (norm(n.date)) parts.push(norm(n.date));
+    if (norm(n.date)) {
+      const dateParts = norm(n.date).split('-');
+      if (dateParts.length === 3) {
+        parts.push(`${dateParts[0]}년 ${dateParts[1]}월 ${dateParts[2]}일`);
+      } else {
+        parts.push(norm(n.date));
+      }
+    }
     if (norm(n.generation)) parts.push(norm(n.generation));
     if (norm(n.department)) parts.push(norm(n.department));
     return parts.join(' · ');
