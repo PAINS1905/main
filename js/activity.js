@@ -228,7 +228,7 @@
       // "뷰어로 보기" 버튼 추가
       const btnViewer = document.createElement('a');
       btnViewer.className = 'btn'; 
-      btnViewer.href = srcUrl; 
+      btnViewer.href = previewUrl; 
       btnViewer.target = '_blank';
       btnViewer.rel = 'noopener';
       btnViewer.textContent = '뷰어로 보기';
