@@ -225,7 +225,7 @@
 
       const btnViewer = document.createElement('a');
       btnViewer.className = 'btn'; 
-      btnViewer.href = previewUrl; 
+      btnViewer.href = scrUrl; 
       btnViewer.target = '_blank';
       btnViewer.rel = 'noopener';
       btnViewer.textContent = '뷰어로 보기';
