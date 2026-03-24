@@ -5,9 +5,9 @@ const PAINS_LAYOUT = {
     homeHref: 'index',
     footerText: '&copy; 2026 PAINS. All rights reserved.',
     socials: [
-        { href: 'https://www.instagram.com/ku_pains', title: 'Instagram', icon: 'instagram.png', alt: 'Instagram' },
-        { href: 'https://www.notion.so/painsports/PAINS-a9294ba2a44b4ea6a53f0d5ae069749e', title: 'Notion', icon: 'notion.png', alt: 'Notion' },
-        { href: 'https://blog.naver.com/painsports', title: 'Blog', icon: 'naver_blog.png', alt: 'Naver Blog' }
+        { href: 'https://www.instagram.com/ku_pains', title: 'Instagram', icon: 'images/instagram.png', alt: 'Instagram' },
+        { href: 'https://www.notion.so/painsports/PAINS-a9294ba2a44b4ea6a53f0d5ae069749e', title: 'Notion', icon: 'images/notion.png', alt: 'Notion' },
+        { href: 'https://blog.naver.com/painsports', title: 'Blog', icon: 'images/naver_blog.png', alt: 'Naver Blog' }
     ],
     menuGroups: [
         { type: 'link', href: 'index', id: 'home', label: '홈' },
