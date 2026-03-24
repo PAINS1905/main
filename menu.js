@@ -185,7 +185,7 @@ function initGlobalStyles() {
         /* 🎯 제목용 폰트 (ATOZ5) */
         @font-face { 
             font-family: 'ATOZ5'; 
-            src: url('ATOZ5.woff2') format('woff2'); 
+            src: url('fonts/ATOZ5.woff2') format('woff2'); 
             font-weight: normal; 
             font-style: normal; 
         }
@@ -193,7 +193,7 @@ function initGlobalStyles() {
         /* 📖 본문용 폰트 (ATOZ4) */
         @font-face { 
             font-family: 'ATOZ4'; 
-            src: url('ATOZ4.woff2') format('woff2'); 
+            src: url('fonts/ATOZ4.woff2') format('woff2'); 
             font-weight: normal; 
             font-style: normal; 
         }
