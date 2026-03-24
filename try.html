@@ -102,8 +102,7 @@
         }
 
         .attendance-box-title {
-            color: #d22;
-            font-family: 'ATOZ5', sans-serif;
+            color: #ab3333;
             font-size: 1.05rem;
             font-weight: bold;
             margin-bottom: 14px;
@@ -147,6 +146,13 @@
         .status-yellow { color: #b88a1f; }
         .status-default { color: #444; }
 
+        .status-hoverable {
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 2px;
+        }
+
         @media (max-width: 600px) {
             .badge-container { flex-direction: column; }
             .count-badge { min-width: 100%; }
@@ -180,6 +186,72 @@
         .event-info { font-size: 0.95rem; }
         .event-date { font-weight: bold; color: #ab3333; margin-right: 5px; }
         .no-event { text-align: center; color: #888; padding: 30px 20px; font-size: 0.95rem; }
+
+        /* ============================ */
+        /* [5] 출석 상태 설명 모달        */
+        /* ============================ */
+        .status-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.22);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.18s ease;
+            z-index: 9998;
+        }
+
+        .status-modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .status-modal {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.96);
+            width: min(420px, calc(100% - 40px));
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.20);
+            padding: 20px 18px;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            text-align: left;
+        }
+
+        .status-modal.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .status-modal-title {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .status-modal-desc {
+            font-size: 0.94rem;
+            color: #555;
+            line-height: 1.6;
+            word-break: keep-all;
+        }
+
+        .status-modal-close {
+            margin-top: 14px;
+            display: inline-block;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 10px;
+            background: #444;
+            color: #fff;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
     </style>
     
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -261,13 +333,8 @@
             <div class="rule-box" style="background-color: #f8f9fa; border-color: #e9ecef; border-left-color: #333;">
                 <strong>[출석률 계산 안내]</strong><br>
                 현재 출석률은 다음 수식을 바탕으로 계산됩니다.
-                <div style="text-align: center; margin: 15px 0; overflow-x: auto; max-width: 100%; padding-bottom: 10px;">
+                <div style="text-align: center; margin: 15px 0; max-width: 100%;">
                     $$\text{출석률}(\%)=\left(\frac{\text{정기활동 출석인정 수}+\lfloor 0.5 \times \text{비정기활동 출석 수}\rfloor}{\text{이번 기수의 정기활동 수}}\right)\times 100$$
-                </div>
-                <div class="rule-sub-text" style="border-top-color: #ddd;">
-                    <span style="color: #ab3333; font-weight: bold;">※ 비정기활동에 여러 번 참여했을 경우, 출석률이 100%를 초과할 수 있습니다.</span><br>
-                    <span style="color: #ab3333; font-weight: bold;">※ 11기의 정기활동은 총 7개입니다: 1, 2, 3차 정기활동, 학기 중 1, 2차 세미나, 방학 중 1, 2차 세미나.</span>
-                    <span style="color: #ab3333; font-weight: bold;">※ 활동 별 출석 처리 세부사항은 운영진에게 문의주시기 바랍니다.</span>
                 </div>
             </div>
 
@@ -328,6 +395,14 @@
 
     <footer></footer>
 
+    <!-- 출석 상태 설명 모달 -->
+    <div id="status-modal-overlay" class="status-modal-overlay"></div>
+    <div id="status-modal" class="status-modal" role="dialog" aria-modal="true" aria-labelledby="status-modal-title">
+        <div id="status-modal-title" class="status-modal-title">출석 상태 안내</div>
+        <div id="status-modal-desc" class="status-modal-desc">상태 설명</div>
+        <button id="status-modal-close" class="status-modal-close" type="button">닫기</button>
+    </div>
+
     <script>
         document.write('<script src="menu.js?v=' + new Date().getTime() + '"><\/script>');
     </script>
@@ -338,6 +413,20 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7shd9op70ZSSuEYe3Iod6wSoRfQ_UKLs7DU1TdOAWoFr1Xr-d8ZDzBBQ_Iq1kEivPg/exec";
         const SCHEDULE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBnuUvyE2CDV-hG26xCVdnt88JhQgtusdEndJwTzaI62TXPdWTNldVvua9RLkXj1s34qiM0CEcNvbr/pub?gid=305458048&single=true&output=csv";
 
+        const STATUS_DESCRIPTIONS = {
+            "출석": "활동에 정상적으로 참여하여 출석으로 처리된 상태입니다.",
+            "인정 결석": "사유가 인정되어 결석으로 기록되었지만, 운영 기준에 따라 인정 처리된 상태입니다.",
+            "인정 지각": "사유가 인정되어 지각으로 기록되었지만, 운영 기준에 따라 인정 처리된 상태입니다.",
+            "인정 조퇴": "사유가 인정되어 조퇴로 기록되었지만, 운영 기준에 따라 인정 처리된 상태입니다.",
+            "사전 통지 결석": "활동 전에 미리 알린 결석으로 접수된 상태입니다.",
+            "사전 통지 지각": "활동 전에 미리 알린 지각으로 접수된 상태입니다.",
+            "사전 통지 조퇴": "활동 전에 미리 알린 조퇴로 접수된 상태입니다.",
+            "무단 결석": "사전 안내 없이 활동에 참여하지 않아 무단 결석으로 처리된 상태입니다.",
+            "무단 지각": "사전 안내 없이 늦게 참여하여 무단 지각으로 처리된 상태입니다.",
+            "무단 조퇴": "사전 안내 없이 중도 퇴실하여 무단 조퇴로 처리된 상태입니다.",
+            "결석": "비정기 활동에 참여하지 않은 상태입니다."
+        };
+
         // ============================================
         // 상태값 해석 및 색상 클래스 반환
         // ============================================
@@ -345,15 +434,15 @@
             const status = String(rawStatus || "").trim();
 
             if (!status) {
-                return { text: "-", className: "status-default" };
+                return { text: "-", className: "status-default", hoverable: false };
             }
 
             if (status === "출석") {
-                return { text: status, className: "status-blue" };
+                return { text: status, className: "status-blue", hoverable: true };
             }
 
             if (isIrregular && status === "결석") {
-                return { text: status, className: "status-red" };
+                return { text: status, className: "status-red", hoverable: true };
             }
 
             if (
@@ -361,7 +450,7 @@
                 status === "사전 통지 지각" ||
                 status === "사전 통지 조퇴"
             ) {
-                return { text: status, className: "status-green" };
+                return { text: status, className: "status-green", hoverable: true };
             }
 
             if (
@@ -369,7 +458,7 @@
                 status === "무단 조퇴" ||
                 status === "무단 결석"
             ) {
-                return { text: status, className: "status-red" };
+                return { text: status, className: "status-red", hoverable: true };
             }
 
             if (
@@ -377,10 +466,10 @@
                 status === "인정 결석" ||
                 status === "인정 조퇴"
             ) {
-                return { text: status, className: "status-yellow" };
+                return { text: status, className: "status-yellow", hoverable: true };
             }
 
-            return { text: "-", className: "status-default" };
+            return { text: "-", className: "status-default", hoverable: false };
         }
 
         // ============================================
@@ -405,15 +494,21 @@
                 const title = String(item.title || "").trim() || "-";
                 const meta = getAttendanceStatusMeta(item.status, isIrregular);
 
+                let statusHtml = escapeHtml(meta.text);
+                if (meta.hoverable && meta.text !== "-") {
+                    statusHtml = `<span class="status-hoverable" data-status="${escapeHtml(meta.text)}">${escapeHtml(meta.text)}</span>`;
+                }
+
                 html += `
                     <tr>
                         <td class="activity-name">${escapeHtml(title)}</td>
-                        <td class="activity-status ${meta.className}">${escapeHtml(meta.text)}</td>
+                        <td class="activity-status ${meta.className}">${statusHtml}</td>
                     </tr>
                 `;
             });
 
             tbody.innerHTML = html;
+            bindStatusHoverEvents();
         }
 
         // ============================================
@@ -427,6 +522,53 @@
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
         }
+
+        // ============================================
+        // 상태 설명 모달
+        // ============================================
+        function showStatusModal(statusText) {
+            const overlay = document.getElementById("status-modal-overlay");
+            const modal = document.getElementById("status-modal");
+            const title = document.getElementById("status-modal-title");
+            const desc = document.getElementById("status-modal-desc");
+
+            title.textContent = statusText;
+            desc.textContent = STATUS_DESCRIPTIONS[statusText] || "출석 상태에 대한 설명입니다.";
+
+            overlay.classList.add("show");
+            modal.classList.add("show");
+        }
+
+        function hideStatusModal() {
+            document.getElementById("status-modal-overlay").classList.remove("show");
+            document.getElementById("status-modal").classList.remove("show");
+        }
+
+        function bindStatusHoverEvents() {
+            const hoverables = document.querySelectorAll(".status-hoverable");
+
+            hoverables.forEach(el => {
+                el.onmouseenter = () => {
+                    const status = el.getAttribute("data-status");
+                    showStatusModal(status);
+                };
+                el.onmouseleave = () => {
+                    hideStatusModal();
+                };
+                el.onclick = () => {
+                    const status = el.getAttribute("data-status");
+                    showStatusModal(status);
+                };
+            });
+        }
+
+        document.getElementById("status-modal-overlay").addEventListener("mouseenter", hideStatusModal);
+        document.getElementById("status-modal-overlay").addEventListener("click", hideStatusModal);
+        document.getElementById("status-modal-close").addEventListener("click", hideStatusModal);
+
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Escape") hideStatusModal();
+        });
 
         // ============================================
         // 1. 회원 정보, 결석 횟수 및 출석률 조회
@@ -456,7 +598,6 @@
                     document.getElementById('member-status').innerText = data.memberStatus; 
                     document.getElementById('used-count').innerText = data.usedCount;
                     
-                    // 출석률 파싱 및 보정
                     let rawRate = String(data.attendanceRate).replace('%', '').trim();
                     let rateNum = parseFloat(rawRate);
 
@@ -466,11 +607,9 @@
 
                     document.getElementById('attendance-rate').innerText = rawRate;
 
-                    // 출석률에 맞춰 배경 프로그레스 바 적용
                     const attendanceBadge = document.getElementById('attendance-badge');
                     attendanceBadge.style.background = `linear-gradient(to right, #ab3333 ${rateNum}%, #dca5a5 ${rateNum}%)`;
                     
-                    // 회원 자격 뱃지 색상 적용
                     const statusName = String(data.memberStatus).replace(/\s/g, ''); 
                     const statusBadge = document.getElementById('status-badge');
                     const statusText = document.getElementById('member-status');
@@ -506,7 +645,6 @@
                         statusLabel.style.color = "#666";
                     }
 
-                    // 정기 / 비정기 활동 출석 현황 렌더링
                     renderAttendanceTable("regular-attendance-body", data.regularAttendance || [], false);
                     renderAttendanceTable("irregular-attendance-body", data.irregularAttendance || [], true);
 
@@ -609,7 +747,6 @@
             const dateMatch = eventName.match(/\((\d{4}-\d{2}-\d{2})\)$/);
             const dateStr = dateMatch ? dateMatch[1] : ""; 
 
-            // [1] 제출 전 사전 검증
             btn.disabled = true;
             btn.innerText = "정보 확인 중...";
 
@@ -640,7 +777,6 @@
                 return;
             }
 
-            // [2] 검증 통과 -> 제출 진행
             if (!confirm(`[${eventName}] 활동에 대해\n[${absenceType}] 결석계를 제출하시겠습니까?`)) {
                 btn.disabled = false;
                 btn.innerText = originalBtnText;
