@@ -5,16 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PAINS - 활동 및 결석 현황</title>
     <style>
-        /* ============================ */
-        /* [1] 깜빡임(FOUC) 방지 및 너비 개별 지정 */
-        /* ============================ */
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'ATOZ4', sans-serif; background-color: #f3f5f8; }
         h1, h2, h3, .number { font-family: 'ATOZ5', sans-serif; }
         input, select, button { font-family: 'ATOZ4', sans-serif; }
 
-        /* 👇 여기서 attendance.html만의 너비와 여백을 지정합니다 */
         section {
             max-width: 800px !important;
             width: calc(100% - 48px) !important;
@@ -31,9 +26,6 @@
             }
         }
 
-        /* ============================ */
-        /* [2] 입력 폼 및 버튼 스타일     */
-        /* ============================ */
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
         .input-group input, .input-group select { 
@@ -49,9 +41,6 @@
         .btn-check:hover { background-color: #222; transform: translateY(-1px); }
         .btn-submit:hover { background-color: #8f2a2a; transform: translateY(-1px); }
 
-        /* ============================ */
-        /* [3] 결과 표시 영역             */
-        /* ============================ */
         #result-area { 
             display: none; 
             margin-top: 25px; 
@@ -85,13 +74,89 @@
             word-break: keep-all; 
         }
         .rule-box strong { color: #ab3333; font-weight: bold; }
-        .rule-sub-text {
-            font-size: 0.85rem; color: #888; margin-top: 12px; padding-top: 12px; border-top: 1px dashed #ffcccc;
+
+        .attendance-box {
+            background: #f7f7f8;
+            border-radius: 20px;
+            padding: 22px 22px 18px 22px;
+            margin-top: 22px;
+            text-align: left;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+            border: 1px solid #ececec;
         }
 
-        /* ============================ */
-        /* [4] 결석계 라디오 버튼 스타일  */
-        /* ============================ */
+        .attendance-box-title {
+            color: #ab3333;
+            font-size: 1.05rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+            word-break: keep-all;
+        }
+
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .attendance-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .attendance-table td {
+            padding: 11px 10px;
+            border-bottom: 1px solid #bfbfbf;
+            vertical-align: middle;
+            font-size: 0.98rem;
+        }
+
+        .attendance-table .activity-name {
+            width: 72%;
+            color: #111;
+            font-weight: bold;
+            word-break: keep-all;
+        }
+
+        .attendance-table .activity-status {
+            width: 28%;
+            text-align: center;
+            font-weight: bold;
+            border-left: 1px solid #bfbfbf;
+            word-break: keep-all;
+        }
+
+        .status-blue { color: #2f7fbf; }
+        .status-green { color: #5d9f47; }
+        .status-red { color: #c64242; }
+        .status-yellow { color: #b88a1f; }
+        .status-default { color: #444; }
+
+        .status-hoverable {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .badge-container { flex-direction: column; }
+            .count-badge { min-width: 100%; }
+
+            .attendance-box {
+                padding: 18px 14px 14px 14px;
+            }
+
+            .attendance-table td {
+                padding: 10px 8px;
+                font-size: 0.92rem;
+            }
+
+            .attendance-table .activity-name {
+                width: 65%;
+            }
+
+            .attendance-table .activity-status {
+                width: 35%;
+            }
+        }
+
         .event-list { margin-bottom: 15px; border-radius: 8px; padding: 10px; max-height: 220px; overflow-y: auto; background-color: #f9fafb; border: 1px solid #eee; }
         .event-item { display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; border-radius: 6px; }
         .event-item:last-child { border-bottom: none; }
@@ -101,9 +166,67 @@
         .event-date { font-weight: bold; color: #ab3333; margin-right: 5px; }
         .no-event { text-align: center; color: #888; padding: 30px 20px; font-size: 0.95rem; }
 
-        @media (max-width: 600px) { 
-            .badge-container { flex-direction: column; }
-            .count-badge { min-width: 100%; }
+        .status-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.22);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.18s ease;
+            z-index: 9998;
+        }
+
+        .status-modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .status-modal {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.96);
+            width: min(420px, calc(100% - 40px));
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.20);
+            padding: 20px 18px;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            text-align: left;
+        }
+
+        .status-modal.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .status-modal-title {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .status-modal-desc {
+            font-size: 0.94rem;
+            color: #555;
+            line-height: 1.6;
+            word-break: keep-all;
+        }
+
+        .status-modal-close {
+            margin-top: 14px;
+            display: inline-block;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 10px;
+            background: #444;
+            color: #fff;
+            font-size: 0.9rem;
+            cursor: pointer;
         }
     </style>
     
@@ -159,16 +282,35 @@
                 </div>
             </div>
 
+            <div class="attendance-box">
+                <div class="attendance-box-title">[정기 활동 출석 현황 안내]</div>
+                <table class="attendance-table">
+                    <tbody id="regular-attendance-body">
+                        <tr>
+                            <td class="activity-name">-</td>
+                            <td class="activity-status status-default">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="attendance-box">
+                <div class="attendance-box-title">[비정기 활동 출석 현황 안내]</div>
+                <table class="attendance-table">
+                    <tbody id="irregular-attendance-body">
+                        <tr>
+                            <td class="activity-name">-</td>
+                            <td class="activity-status status-default">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
             <div class="rule-box" style="background-color: #f8f9fa; border-color: #e9ecef; border-left-color: #333;">
                 <strong>[출석률 계산 안내]</strong><br>
                 현재 출석률은 다음 수식을 바탕으로 계산됩니다.
-                <div style="text-align: center; margin: 15px 0; overflow-x: auto; max-width: 100%; padding-bottom: 10px;">
+                <div style="text-align: center; margin: 15px 0; max-width: 100%;">
                     $$\text{출석률}(\%)=\left(\frac{\text{정기활동 출석인정 수}+\lfloor 0.5 \times \text{비정기활동 출석 수}\rfloor}{\text{이번 기수의 정기활동 수}}\right)\times 100$$
-                </div>
-                <div class="rule-sub-text" style="border-top-color: #ddd;">
-                    <span style="color: #ab3333; font-weight: bold;">※ 비정기활동에 여러 번 참여했을 경우, 출석률이 100%를 초과할 수 있습니다.</span><br>
-                    <span style="color: #ab3333; font-weight: bold;">※ 11기의 정기활동은 총 7개입니다: 1, 2, 3차 정기활동, 학기 중 1, 2차 세미나, 방학 중 1, 2차 세미나.</span>
-                    <span style="color: #ab3333; font-weight: bold;">※ 활동 별 출석 처리 세부사항은 운영진에게 문의주시기 바랍니다.</span>
                 </div>
             </div>
 
@@ -229,6 +371,13 @@
 
     <footer></footer>
 
+    <div id="status-modal-overlay" class="status-modal-overlay"></div>
+    <div id="status-modal" class="status-modal" role="dialog" aria-modal="true" aria-labelledby="status-modal-title">
+        <div id="status-modal-title" class="status-modal-title">출석 상태 안내</div>
+        <div id="status-modal-desc" class="status-modal-desc">상태 설명</div>
+        <button id="status-modal-close" class="status-modal-close" type="button">닫기</button>
+    </div>
+
     <script>
         document.write('<script src="menu.js?v=' + new Date().getTime() + '"><\/script>');
     </script>
@@ -239,9 +388,148 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7shd9op70ZSSuEYe3Iod6wSoRfQ_UKLs7DU1TdOAWoFr1Xr-d8ZDzBBQ_Iq1kEivPg/exec";
         const SCHEDULE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBnuUvyE2CDV-hG26xCVdnt88JhQgtusdEndJwTzaI62TXPdWTNldVvua9RLkXj1s34qiM0CEcNvbr/pub?gid=305458048&single=true&output=csv";
 
-        // ============================================
-        // 1. 회원 정보, 결석 횟수 및 출석률 조회
-        // ============================================
+        const STATUS_DESCRIPTIONS = {
+            "출석": "활동에 정상적으로 참여하여 출석으로 처리된 상태입니다. 정기활동의 경우 지각과 조퇴에 모두 해당하지 않은 출석자에 해당하며, 비정기활동의 경우 전체 진행 시간의 50% 이상 참여한 자에게 부여됩니다.",
+            "인정 결석": "실제 결석하였으나, 사유가 인정되어 운영 기준에 따라 출석 인정 처리된 상태입니다.",
+            "인정 지각": "실제 지각하였으나, 사유가 인정되어 운영 기준에 따라 출석 인정 처리된 상태입니다.",
+            "인정 조퇴": "실제 조퇴하였으나, 사유가 인정되어 운영 기준에 따라 출석 인정 처리된 상태입니다.",
+            "사전 통지 결석": "활동 전에 결석계가 접수된 상태입니다. 출석률에는 결석으로 계산됩니다.",
+            "사전 통지 지각": "활동 전에 지각계가 접수된 상태입니다.",
+            "사전 통지 조퇴": "활동 전에 조퇴계가 접수된 상태입니다.",
+            "무단 결석": "사전 안내 없이 활동에 참여하지 않아 무단 결석으로 처리된 상태입니다.",
+            "무단 지각": "사전 안내 없이 10분 이상 늦게 참여하여 무단 지각으로 처리된 상태입니다.",
+            "무단 조퇴": "사전 안내 없이 10분 이상 일찍 퇴실하여 무단 조퇴로 처리된 상태입니다.",
+            "결석": "비정기 활동에 참여하지 않은 상태입니다."
+        };
+
+        function getAttendanceStatusMeta(rawStatus, isIrregular = false) {
+            const status = String(rawStatus || "").trim();
+
+            if (!status) {
+                return { text: "-", className: "status-default", hoverable: false };
+            }
+
+            if (status === "출석") {
+                return { text: status, className: "status-blue", hoverable: true };
+            }
+
+            if (isIrregular && status === "결석") {
+                return { text: status, className: "status-red", hoverable: true };
+            }
+
+            if (
+                status === "사전 통지 결석" ||
+                status === "사전 통지 지각" ||
+                status === "사전 통지 조퇴"
+            ) {
+                return { text: status, className: "status-green", hoverable: true };
+            }
+
+            if (
+                status === "무단 지각" ||
+                status === "무단 조퇴" ||
+                status === "무단 결석"
+            ) {
+                return { text: status, className: "status-red", hoverable: true };
+            }
+
+            if (
+                status === "인정 지각" ||
+                status === "인정 결석" ||
+                status === "인정 조퇴"
+            ) {
+                return { text: status, className: "status-yellow", hoverable: true };
+            }
+
+            return { text: "-", className: "status-default", hoverable: false };
+        }
+
+        function renderAttendanceTable(containerId, items, isIrregular = false) {
+            const tbody = document.getElementById(containerId);
+
+            if (!Array.isArray(items) || items.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td class="activity-name">-</td>
+                        <td class="activity-status status-default">-</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let html = "";
+
+            items.forEach(item => {
+                const title = String(item.title || "").trim() || "-";
+                const meta = getAttendanceStatusMeta(item.status, isIrregular);
+
+                let statusHtml = escapeHtml(meta.text);
+                if (meta.hoverable && meta.text !== "-") {
+                    statusHtml = `<span class="status-hoverable" data-status="${escapeHtml(meta.text)}">${escapeHtml(meta.text)}</span>`;
+                }
+
+                html += `
+                    <tr>
+                        <td class="activity-name">${escapeHtml(title)}</td>
+                        <td class="activity-status ${meta.className}">${statusHtml}</td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+            bindStatusModalEvents();
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function showStatusModal(statusText) {
+            const overlay = document.getElementById("status-modal-overlay");
+            const modal = document.getElementById("status-modal");
+            const title = document.getElementById("status-modal-title");
+            const desc = document.getElementById("status-modal-desc");
+
+            title.textContent = statusText;
+            desc.textContent = STATUS_DESCRIPTIONS[statusText] || "출석 상태에 대한 설명입니다.";
+
+            overlay.classList.add("show");
+            modal.classList.add("show");
+        }
+
+        function hideStatusModal() {
+            document.getElementById("status-modal-overlay").classList.remove("show");
+            document.getElementById("status-modal").classList.remove("show");
+        }
+
+        function bindStatusModalEvents() {
+            const clickableStatuses = document.querySelectorAll(".status-hoverable");
+
+            clickableStatuses.forEach(el => {
+                el.onclick = (e) => {
+                    e.stopPropagation();
+                    const status = el.getAttribute("data-status");
+                    showStatusModal(status);
+                };
+            });
+        }
+
+        document.getElementById("status-modal-overlay").addEventListener("click", hideStatusModal);
+        document.getElementById("status-modal-close").addEventListener("click", hideStatusModal);
+
+        document.getElementById("status-modal").addEventListener("click", function(e) {
+            e.stopPropagation();
+        });
+
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Escape") hideStatusModal();
+        });
+
         async function checkUsedCount() {
             document.getElementById('check-id').blur();
             document.getElementById('check-name').blur();
@@ -258,17 +546,15 @@
             btn.innerText = "조회 중...";
             
             try {
-                const response = await fetch(`${SCRIPT_URL}?type=attendance&id=${id}&name=${name}`);
+                const response = await fetch(`${SCRIPT_URL}?type=attendance&id=${encodeURIComponent(id)}&name=${encodeURIComponent(name)}`);
                 const data = await response.json();
 
                 if (data.result === "success") {
                     document.getElementById('user-name-display').innerText = name;
-                    
                     document.getElementById('member-status').innerText = data.memberStatus; 
                     document.getElementById('used-count').innerText = data.usedCount;
                     
-                    // 출석률 파싱 및 보정
-                    let rawRate = String(data.attendanceRate).replace('%', '');
+                    let rawRate = String(data.attendanceRate).replace('%', '').trim();
                     let rateNum = parseFloat(rawRate);
 
                     if (isNaN(rateNum)) rateNum = 0;
@@ -277,11 +563,9 @@
 
                     document.getElementById('attendance-rate').innerText = rawRate;
 
-                    // 출석률에 맞춰 배경 프로그레스 바 적용
                     const attendanceBadge = document.getElementById('attendance-badge');
                     attendanceBadge.style.background = `linear-gradient(to right, #ab3333 ${rateNum}%, #dca5a5 ${rateNum}%)`;
                     
-                    // 색상 하드코딩 적용 로직
                     const statusName = String(data.memberStatus).replace(/\s/g, ''); 
                     const statusBadge = document.getElementById('status-badge');
                     const statusText = document.getElementById('member-status');
@@ -317,7 +601,14 @@
                         statusLabel.style.color = "#666";
                     }
 
+                    renderAttendanceTable("regular-attendance-body", data.regularAttendance || [], false);
+                    renderAttendanceTable("irregular-attendance-body", data.irregularAttendance || [], true);
+
                     resultArea.style.display = "block";
+
+                    if (window.MathJax && window.MathJax.typesetPromise) {
+                        MathJax.typesetPromise();
+                    }
                 } else {
                     alert("일치하는 부원 정보가 없습니다.");
                     resultArea.style.display = "none";
@@ -331,9 +622,6 @@
             }
         }
 
-        // ============================================
-        // 2. 일정 불러오기
-        // ============================================
         async function loadUpcomingEvents() {
             const container = document.getElementById('event-list-container');
             
@@ -342,16 +630,14 @@
                 const data = await response.text();
                 const rows = data.split("\n").map(row => row.trim()).filter(row => row.length > 0);
                 
-                const now = new Date();
-                const kstOffset = 9 * 60 * 60 * 1000;
                 const today = new Date();
                 today.setHours(0,0,0,0); 
                 
                 let availableEvents = [];
 
-                for(let i=1; i<rows.length; i++) {
+                for(let i = 1; i < rows.length; i++) {
                     const cols = rows[i].split(",");
-                    if(cols.length < 7) continue; 
+                    if (cols.length < 7) continue; 
 
                     const eventName = cols[0].trim();
                     const dateStr = cols[1].trim(); 
@@ -364,14 +650,14 @@
                     const diffTime = eventDate.getTime() - today.getTime();
                     const diffDays = Math.round(diffTime / (1000 * 3600 * 24));
 
-                    if(type.includes("정기") && !type.includes("비정기") && diffDays >= 1 && diffDays <= 21) {
+                    if (type.includes("정기") && !type.includes("비정기") && diffDays >= 1 && diffDays <= 21) {
                         availableEvents.push({ date: eventDate, dateStr: dateStr, name: eventName });
                     }
                 }
 
                 availableEvents.sort((a, b) => a.date - b.date);
 
-                if(availableEvents.length === 0) {
+                if (availableEvents.length === 0) {
                     container.innerHTML = '<div class="no-event">제출 가능한 정기활동이 없습니다.<br>(활동 21일 전부터 전날까지만 가능합니다)</div>';
                 } else {
                     let html = "";
@@ -379,9 +665,9 @@
                         const valueStr = `${evt.name} (${evt.dateStr})`;
                         html += `
                             <label class="event-item">
-                                <input type="radio" name="selected_event" value="${valueStr}">
+                                <input type="radio" name="selected_event" value="${escapeHtml(valueStr)}">
                                 <span class="event-info">
-                                    <span class="event-date">${evt.dateStr}</span> ${evt.name}
+                                    <span class="event-date">${escapeHtml(evt.dateStr)}</span> ${escapeHtml(evt.name)}
                                 </span>
                             </label>
                         `;
@@ -395,9 +681,6 @@
             }
         }
 
-        // ============================================
-        // 3. 결석계 제출
-        // ============================================
         async function submitAbsence() {
             const id = document.getElementById('submit-id').value.trim();
             const name = document.getElementById('submit-name').value.trim();
@@ -414,13 +697,12 @@
             const dateMatch = eventName.match(/\((\d{4}-\d{2}-\d{2})\)$/);
             const dateStr = dateMatch ? dateMatch[1] : ""; 
 
-            // [1] 제출 전 사전 검증 (중복 제출 및 멤버 확인)
             btn.disabled = true;
             btn.innerText = "정보 확인 중...";
 
             try {
                 const encodedEventName = encodeURIComponent(eventName);
-                const checkResponse = await fetch(`${SCRIPT_URL}?type=attendance&id=${id}&name=${name}&eventName=${encodedEventName}`);
+                const checkResponse = await fetch(`${SCRIPT_URL}?type=attendance&id=${encodeURIComponent(id)}&name=${encodeURIComponent(name)}&eventName=${encodedEventName}`);
                 const checkData = await checkResponse.json();
 
                 if (checkData.result === 'duplicate') {
@@ -445,7 +727,6 @@
                 return;
             }
 
-            // [2] 검증 통과 -> 제출 진행
             if (!confirm(`[${eventName}] 활동에 대해\n[${absenceType}] 결석계를 제출하시겠습니까?`)) {
                 btn.disabled = false;
                 btn.innerText = originalBtnText;
@@ -469,8 +750,7 @@
             .then(() => {
                 alert("결석계가 제출되었습니다.");
                 const checkedRadio = document.querySelector('input[name="selected_event"]:checked');
-                if(checkedRadio) checkedRadio.checked = false;
-                // 제출 후 결석계 종류 초기화
+                if (checkedRadio) checkedRadio.checked = false;
                 document.getElementById('submit-type').value = "결석";
             })
             .catch(err => {
@@ -484,7 +764,6 @@
         }
 
         loadUpcomingEvents();
-
     </script>
 
 </body>
