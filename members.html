@@ -141,7 +141,7 @@
                 const role = card.getAttribute('data-role');
                 const imgDiv = card.querySelector('.org-img');
                 if (role && imgDiv) {
-                    imgDiv.style.backgroundImage = `url('${role}.png')`;
+                    imgDiv.style.backgroundImage = `url("${encodeURI('images/' + role + '.png')}")`;
                 }
             });
         });
