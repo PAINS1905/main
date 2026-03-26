@@ -137,9 +137,19 @@
     .multi-filter-actions {
       display: flex;
       align-items: center;
-      gap: 22px;
-      margin-bottom: 14px;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
       flex-wrap: nowrap;
+    }
+    
+    .multi-filter-actions .mini-btn:first-child {
+      text-align: left;
+    }
+    
+    .multi-filter-actions .mini-btn:last-child {
+      text-align: right;
+      margin-left: auto !important;
     }
 
     .mini-btn {
@@ -175,13 +185,13 @@
     .check-option {
       display: flex;
       align-items: center;
-      gap: 14px;
-      min-height: 44px;
-      padding: 8px 0;
+      gap: 10px;
+      min-height: 30px;
+      padding: 3px 0;
       font-size: 0.92rem;
       color: #2f4f6f;
       word-break: keep-all;
-      line-height: 1.2;
+      line-height: 1.15;
       cursor: pointer;
     }
 
@@ -189,14 +199,14 @@
       appearance: none !important;
       -webkit-appearance: none !important;
       -moz-appearance: none !important;
-
+    
       width: 16px !important;
       height: 16px !important;
       min-width: 16px !important;
       max-width: 16px !important;
       min-height: 16px !important;
       max-height: 16px !important;
-
+    
       margin: 0 !important;
       padding: 0 !important;
       border: 1.5px solid #9a9a9a !important;
@@ -204,11 +214,12 @@
       outline: none !important;
       box-shadow: none !important;
       background: #fff !important;
-
+    
       display: inline-block !important;
       vertical-align: middle !important;
       flex: 0 0 16px !important;
       position: relative;
+      top: 0;
     }
 
     .check-option input[type="checkbox"]:checked {
@@ -230,7 +241,7 @@
 
     .check-option span {
       display: inline-block;
-      line-height: 1.2;
+      line-height: 1.1;
       vertical-align: middle;
       color: #355675;
       font-size: 0.96rem;
