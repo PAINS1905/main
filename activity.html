@@ -14,25 +14,37 @@
     /* [2] 본문 및 세부 콘텐츠 스타일*/
     /* ============================ */
     section {
-        max-width: 800px !important;
-        width: calc(100% - 48px) !important;
-        margin: 0 auto 28px auto !important;
-        background: #ffffff;
-        border-radius: 28px;
-        padding: 40px;
+      max-width: 800px !important;
+      width: calc(100% - 48px) !important;
+      margin: 0 auto 28px auto !important;
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 40px;
     }
 
     @media (max-width: 768px) {
-        section {
-            width: calc(100% - 32px) !important;
-            padding: 20px !important;
-        }
+      section {
+        width: calc(100% - 32px) !important;
+        padding: 20px !important;
+      }
     }
     
-    h2 { font-size: 2rem; margin-bottom: 12px; text-align: center; }
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 12px;
+      text-align: center;
+    }
     
-    .subnote { text-align: center; color: #666; font-size: 0.95rem; margin-bottom: 28px; }
-    .subnote strong { color: #ab3333; }
+    .subnote {
+      text-align: center;
+      color: #666;
+      font-size: 0.95rem;
+      margin-bottom: 28px;
+    }
+
+    .subnote strong {
+      color: #ab3333;
+    }
 
     /* 필터 영역 */
     .filters {
@@ -133,82 +145,117 @@
       background-clip: padding-box;
     }
 
+    /* 전체 선택 / 전체 해제 */
     .multi-filter-actions {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 6px;
-      flex-wrap: nowrap;
+      column-gap: 8px;
+      margin-bottom: 4px;
     }
-    
+
+    .mini-btn {
+      appearance: none !important;
+      -webkit-appearance: none !important;
+      border: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+
+      display: inline-block !important;
+      width: auto !important;
+      min-width: 0 !important;
+      max-width: none !important;
+
+      padding: 0 !important;
+      margin: 0 !important;
+
+      color: #6b6b6b !important;
+      font-size: 0.82rem !important;
+      font-weight: 700 !important;
+      line-height: 1.2 !important;
+      white-space: nowrap !important;
+      cursor: pointer;
+      border-radius: 0 !important;
+      text-decoration: none !important;
+    }
+
     .multi-filter-actions .mini-btn:first-child {
+      justify-self: start;
       text-align: left;
     }
-    
+
     .multi-filter-actions .mini-btn:last-child {
-      margin-left: auto !important;
+      justify-self: end;
       text-align: right;
     }
-    
+
+    .mini-btn:hover {
+      color: #404040 !important;
+      text-decoration: underline !important;
+      text-underline-offset: 2px;
+      background: transparent !important;
+    }
+
+    /* 옵션 목록 */
     .multi-filter-options {
       display: flex;
       flex-direction: column;
       gap: 0 !important;
       align-content: start;
     }
-    
+
     .check-option {
       display: grid !important;
       grid-template-columns: 16px 1fr !important;
       column-gap: 12px !important;
       align-items: center !important;
-    
+
       min-height: 24px !important;
       padding: 1px 0 !important;
       margin: 0 !important;
-    
+
       font-size: 0.92rem;
       color: #2f4f6f;
       line-height: 1 !important;
       cursor: pointer;
       word-break: keep-all;
     }
-    
+
     .check-option input[type="checkbox"] {
       appearance: none !important;
       -webkit-appearance: none !important;
       -moz-appearance: none !important;
-    
+
       width: 16px !important;
       height: 16px !important;
       min-width: 16px !important;
       max-width: 16px !important;
       min-height: 16px !important;
       max-height: 16px !important;
-    
+
       display: block !important;
       margin: 0 !important;
       padding: 0 !important;
-    
+
       border: 1.5px solid #9a9a9a !important;
       border-radius: 4px !important;
       outline: none !important;
       box-shadow: none !important;
       background: #fff !important;
-    
-      position: static !important;
+
+      position: relative !important;
       top: auto !important;
       left: auto !important;
       justify-self: start !important;
       align-self: center !important;
+      flex: none !important;
     }
-    
+
     .check-option input[type="checkbox"]:checked {
       border-color: #ab3333 !important;
       background: #ab3333 !important;
     }
-    
+
     .check-option input[type="checkbox"]:checked::after {
       content: "";
       position: absolute;
@@ -220,17 +267,17 @@
       border-width: 0 2px 2px 0;
       transform: rotate(45deg);
     }
-    
+
     .check-option span {
       display: block !important;
       margin: 0 !important;
       padding: 0 !important;
-    
+
       line-height: 1.05 !important;
       color: #355675;
       font-size: 0.96rem;
       font-weight: 500;
-    
+
       justify-self: start !important;
       align-self: center !important;
     }
@@ -280,10 +327,23 @@
       padding: 0 2px;
     }
 
-    .results-count { color: #666; font-size: 0.95rem; font-weight: bold; }
-    .results-hint { color: #888; font-size: 0.9rem; }
+    .results-count {
+      color: #666;
+      font-size: 0.95rem;
+      font-weight: bold;
+    }
 
-    .project-list { list-style: none; display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .results-hint {
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    .project-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
 
     .project-card {
       background: white;
@@ -296,7 +356,9 @@
       gap: 14px;
     }
 
-    .project-main { min-width: 0; }
+    .project-main {
+      min-width: 0;
+    }
 
     .project-title {
       display: inline-block;
@@ -312,9 +374,17 @@
       text-decoration-color: rgba(171, 51, 51, 0.6);
     }
 
-    .project-meta { margin-top: 6px; color: #777; font-size: 0.9rem; }
+    .project-meta {
+      margin-top: 6px;
+      color: #777;
+      font-size: 0.9rem;
+    }
 
-    .project-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .project-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
 
     .project-actions .btn {
       border-radius: 6px !important;
@@ -331,22 +401,39 @@
 
     /* 반응형 */
     @media (max-width: 900px) {
-      .filters { grid-template-columns: 1fr 1fr; }
-      .filter-actions { justify-content: stretch; }
-      .filter-actions .btn { width: 100%; }
+      .filters {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .filter-actions {
+        justify-content: stretch;
+      }
+
+      .filter-actions .btn {
+        width: 100%;
+      }
     }
 
     @media (max-width: 520px) {
-      .project-card { flex-direction: column; align-items: stretch; }
-      .project-actions { justify-content: flex-end; }
-      .filters { grid-template-columns: 1fr; }
+      .project-card {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .project-actions {
+        justify-content: flex-end;
+      }
+
+      .filters {
+        grid-template-columns: 1fr;
+      }
 
       .multi-filter-actions {
-        gap: 16px;
+        column-gap: 6px;
       }
 
       .check-option {
-        gap: 12px;
+        column-gap: 10px !important;
       }
     }
   </style>
