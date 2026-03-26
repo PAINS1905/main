@@ -2,7 +2,6 @@
 (() => {
   'use strict';
 
-  // 구글 앱스 스크립트 웹 앱 URL (동일한 API 사용)
   const API_URL = "https://script.google.com/macros/s/AKfycbwuNda5HuzwNhp7ecL0BTMt4eCgE8z9y1F8_kDR-ZaEp72mYngLp0DQ4ibWcKDEZyg/exec";
   const VIEWER_PAGE = 'pdf-viewer.html';
 
@@ -11,8 +10,13 @@
   const els = {
     dateStart: $('filter-date-start'),
     dateEnd: $('filter-date-end'),
-    gen: $('filter-generation'),
-    dept: $('filter-department'),
+
+    genWrap: $('filter-generation'),
+    deptWrap: $('filter-department'),
+
+    gen: $('filter-generation-options'),
+    dept: $('filter-department-options'),
+
     q: $('filter-q'),
     reset: $('btn-reset'),
     list: $('project-list'),
@@ -21,7 +25,17 @@
   };
 
   let allNotices = [];
-  let releaseCfg = null; 
+  let releaseCfg = null;
+
+  const selected = {
+    gen: new Set(),
+    dept: new Set(),
+  };
+
+  const filterValues = {
+    gen: [],
+    dept: [],
+  };
 
   function norm(v) {
     return (v ?? '').toString().trim();
@@ -33,17 +47,18 @@
 
   function coerceNotices(json) {
     if (json && Array.isArray(json.notices)) {
-      return json.notices.map(n => {
-        if (n.date) {
-          const d = new Date(n.date);
+      return json.notices.map((n) => {
+        const item = { ...n };
+        if (item.date) {
+          const d = new Date(item.date);
           if (!isNaN(d.getTime())) {
             const yyyy = d.getFullYear();
             const mm = String(d.getMonth() + 1).padStart(2, '0');
             const dd = String(d.getDate()).padStart(2, '0');
-            n.date = `${yyyy}-${mm}-${dd}`;
+            item.date = `${yyyy}-${mm}-${dd}`;
           }
         }
-        return n;
+        return item;
       });
     }
     return [];
@@ -64,28 +79,102 @@
     return Array.from(new Set(values.filter((v) => norm(v) !== '').map((v) => norm(v))));
   }
 
-  function fillSelect(selectEl, values, allLabel = '전체') {
-    if (!selectEl) return;
-    selectEl.innerHTML = '';
-    const optAll = document.createElement('option');
-    optAll.value = '';
-    optAll.textContent = allLabel;
-    selectEl.appendChild(optAll);
+  function buildCheckboxOptions(container, values, key) {
+    if (!container) return;
+    container.innerHTML = '';
 
-    values.forEach((v) => {
-      const opt = document.createElement('option');
-      opt.value = v;
-      opt.textContent = v;
-      selectEl.appendChild(opt);
+    values.forEach((value, idx) => {
+      const label = document.createElement('label');
+      label.className = 'check-option';
+
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.value = value;
+      input.dataset.filterKey = key;
+      input.id = `${key}-${idx}`;
+
+      const span = document.createElement('span');
+      span.textContent = value;
+
+      label.appendChild(input);
+      label.appendChild(span);
+      container.appendChild(label);
     });
   }
 
-  function buildFilters(notices) {
-    const gens = unique(notices.map((n) => n.generation)).sort(byNumberPrefix);
-    const depts = unique(notices.map((n) => n.department)).sort((a, b) => a.localeCompare(b, 'ko'));
+  function updateSummaryText(key) {
+    const wrapMap = {
+      gen: els.genWrap,
+      dept: els.deptWrap,
+    };
 
-    fillSelect(els.gen, gens, '전체');
-    fillSelect(els.dept, depts, '전체');
+    const wrap = wrapMap[key];
+    if (!wrap) return;
+
+    const summaryText = wrap.querySelector('.multi-filter-summary-text');
+    if (!summaryText) return;
+
+    const total = filterValues[key].length;
+    const checked = selected[key].size;
+
+    if (checked === 0 || checked === total) {
+      summaryText.textContent = '전체';
+      return;
+    }
+
+    if (checked === 1) {
+      summaryText.textContent = Array.from(selected[key])[0];
+      return;
+    }
+
+    const first = Array.from(selected[key])[0];
+    summaryText.textContent = `${first} 외 ${checked - 1}개`;
+  }
+
+  function syncCheckboxes(key) {
+    const containerMap = {
+      gen: els.gen,
+      dept: els.dept,
+    };
+
+    const container = containerMap[key];
+    if (!container) return;
+
+    const boxes = container.querySelectorAll('input[type="checkbox"]');
+    const isAllSelected = selected[key].size === filterValues[key].length;
+
+    boxes.forEach((box) => {
+      box.checked = isAllSelected || selected[key].has(box.value);
+    });
+
+    updateSummaryText(key);
+  }
+
+  function selectAll(key) {
+    selected[key].clear();
+    filterValues[key].forEach((v) => selected[key].add(v));
+    syncCheckboxes(key);
+    applyFilters();
+  }
+
+  function clearAll(key) {
+    selected[key].clear();
+    syncCheckboxes(key);
+    applyFilters();
+  }
+
+  function buildFilters(notices) {
+    filterValues.gen = unique(notices.map((n) => n.generation)).sort(byNumberPrefix);
+    filterValues.dept = unique(notices.map((n) => n.department)).sort((a, b) => a.localeCompare(b, 'ko'));
+
+    buildCheckboxOptions(els.gen, filterValues.gen, 'gen');
+    buildCheckboxOptions(els.dept, filterValues.dept, 'dept');
+
+    selected.gen.clear();
+    selected.dept.clear();
+
+    updateSummaryText('gen');
+    updateSummaryText('dept');
   }
 
   function noticeMeta(n) {
@@ -105,7 +194,7 @@
 
   function localPdfUrl(file) {
     const f = norm(file);
-    return encodeURI(`pdfs/${f}`); // 필요하다면 notices 폴더로 변경 가능
+    return encodeURI(`pdfs/${f}`);
   }
 
   function parseReleaseCfg(json) {
@@ -114,7 +203,6 @@
 
     const owner = norm(rel.owner);
     const repo = norm(rel.repo);
-    // 공지사항 페이지에서는 기본 태그를 무시하고 'NOTICEs'로 고정
     const tag = "NOTICEs";
     const useLatest = !!(rel.useLatest ?? rel.use_latest);
     const proxy = norm(rel.proxy);
@@ -151,8 +239,8 @@
     const params = new URLSearchParams();
     if (title) params.set('title', title);
     if (file) params.set('file', file);
-    if (srcUrl) params.set('src', srcUrl);      
-    if (directUrl) params.set('direct', directUrl); 
+    if (srcUrl) params.set('src', srcUrl);
+    if (directUrl) params.set('direct', directUrl);
     if (downloadUrl) params.set('download', downloadUrl);
     params.set('from', 'notice');
     return `${VIEWER_PAGE}?${params.toString()}`;
@@ -202,11 +290,10 @@
 
       const aTitle = document.createElement('a');
       aTitle.className = 'project-title';
-      aTitle.href = previewUrl;    
+      aTitle.href = previewUrl;
       aTitle.target = '_blank';
       aTitle.rel = 'noopener';
-      
-      // 중요 공지면 배지 추가
+
       if (n.important) {
         aTitle.innerHTML = `<span class="badge-important">📌</span>${title}`;
       } else {
@@ -224,15 +311,15 @@
       actions.className = 'project-actions';
 
       const btnViewer = document.createElement('a');
-      btnViewer.className = 'btn'; 
-      btnViewer.href = previewUrl; 
+      btnViewer.className = 'btn';
+      btnViewer.href = previewUrl;
       btnViewer.target = '_blank';
       btnViewer.rel = 'noopener';
       btnViewer.textContent = '열기';
 
       const btnDownload = document.createElement('a');
       btnDownload.className = 'btn btn-download';
-      btnDownload.href = downloadUrl; 
+      btnDownload.href = downloadUrl;
       btnDownload.target = '_blank';
       btnDownload.rel = 'noopener';
       btnDownload.setAttribute('download', '');
@@ -248,21 +335,25 @@
     });
   }
 
+  function matchMulti(selectedSet, value, allCount) {
+    const v = norm(value);
+    if (selectedSet.size === 0) return true;
+    if (selectedSet.size === allCount) return true;
+    return selectedSet.has(v);
+  }
+
   function applyFilters() {
     const ds = norm(els.dateStart?.value);
     const de = norm(els.dateEnd?.value);
-    const g = norm(els.gen?.value);
-    const d = norm(els.dept?.value);
     const q = norm(els.q?.value).toLowerCase();
 
     const filtered = allNotices.filter((n) => {
-      // 중요 공지는 어떠한 필터 조건에도 불구하고 무조건 노출
       if (n.important) return true;
 
       if (ds && norm(n.date) < ds) return false;
       if (de && norm(n.date) > de) return false;
-      if (g && norm(n.generation) !== g) return false;
-      if (d && norm(n.department) !== d) return false;
+      if (!matchMulti(selected.gen, n.generation, filterValues.gen.length)) return false;
+      if (!matchMulti(selected.dept, n.department, filterValues.dept.length)) return false;
 
       if (q) {
         const t = norm(n.title).toLowerCase();
@@ -271,21 +362,56 @@
       return true;
     });
 
-    // 정렬 규칙: 1순위 (중요 공지), 2순위 (날짜 최신순)
     filtered.sort((a, b) => {
       if (a.important && !b.important) return -1;
       if (!a.important && b.important) return 1;
-      // 둘 다 중요하거나, 둘 다 일반인 경우 날짜 내림차순(최신순) 정렬
       return norm(b.date).localeCompare(norm(a.date));
     });
 
     render(filtered);
   }
 
+  function attachFilterCheckboxEvents(container, key) {
+    if (!container) return;
+
+    container.addEventListener('change', (e) => {
+      const target = e.target;
+      if (!(target instanceof HTMLInputElement) || target.type !== 'checkbox') return;
+
+      if (target.checked) {
+        selected[key].add(target.value);
+      } else {
+        selected[key].delete(target.value);
+      }
+
+      updateSummaryText(key);
+      applyFilters();
+    });
+  }
+
   function attachEvents() {
-    [els.dateStart, els.dateEnd, els.gen, els.dept].forEach((el) => {
+    [els.dateStart, els.dateEnd].forEach((el) => {
       if (!el) return;
       el.addEventListener('change', applyFilters);
+    });
+
+    attachFilterCheckboxEvents(els.gen, 'gen');
+    attachFilterCheckboxEvents(els.dept, 'dept');
+
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.mini-btn');
+      if (!btn) return;
+
+      const action = btn.dataset.action;
+      const target = btn.dataset.target;
+
+      if (!action || !target || !selected[target]) return;
+
+      if (action === 'select-all') {
+        selectAll(target);
+      } else if (action === 'clear-all') {
+        clearAll(target);
+      }
     });
 
     if (els.q) els.q.addEventListener('input', applyFilters);
@@ -294,12 +420,26 @@
       els.reset.addEventListener('click', () => {
         if (els.dateStart) els.dateStart.value = '';
         if (els.dateEnd) els.dateEnd.value = '';
-        if (els.gen) els.gen.value = '';
-        if (els.dept) els.dept.value = '';
         if (els.q) els.q.value = '';
+
+        selected.gen.clear();
+        selected.dept.clear();
+
+        syncCheckboxes('gen');
+        syncCheckboxes('dept');
+
         applyFilters();
       });
     }
+
+    document.addEventListener('click', (e) => {
+      const detailsList = document.querySelectorAll('.multi-filter');
+      detailsList.forEach((details) => {
+        if (!details.contains(e.target)) {
+          details.removeAttribute('open');
+        }
+      });
+    });
   }
 
   async function init() {
