@@ -111,7 +111,7 @@
 
     .multi-filter-panel {
       border-top: 1px solid #ededed;
-      padding: 14px 16px 14px;
+      padding: 10px 14px 10px;
       max-height: 430px;
       overflow-y: auto;
       background: #fff;
@@ -133,13 +133,12 @@
       background-clip: padding-box;
     }
 
-    /* 전체 선택 / 전체 해제 */
     .multi-filter-actions {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 8px;
+      gap: 8px;
+      margin-bottom: 6px;
       flex-wrap: nowrap;
     }
     
@@ -148,53 +147,34 @@
     }
     
     .multi-filter-actions .mini-btn:last-child {
-      text-align: right;
       margin-left: auto !important;
+      text-align: right;
     }
-
-    .mini-btn {
-      border: none !important;
-      background: transparent !important;
-      box-shadow: none !important;
-      padding: 0 !important;
-      margin: 0 !important;
-      border-radius: 0 !important;
-      cursor: pointer;
-      color: #6b6b6b;
-      font-size: 0.8rem;
-      font-weight: 700;
-      line-height: 1.2;
-      white-space: nowrap;
-    }
-
-    .mini-btn:hover {
-      background: transparent !important;
-      color: #404040;
-      text-decoration: underline;
-      text-underline-offset: 2px;
-    }
-
-    /* 옵션 목록 */
+    
     .multi-filter-options {
       display: flex;
       flex-direction: column;
-      gap: 0;
+      gap: 0 !important;
       align-content: start;
     }
-
+    
     .check-option {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-height: 30px;
-      padding: 3px 0;
+      display: grid !important;
+      grid-template-columns: 16px 1fr !important;
+      column-gap: 12px !important;
+      align-items: center !important;
+    
+      min-height: 24px !important;
+      padding: 1px 0 !important;
+      margin: 0 !important;
+    
       font-size: 0.92rem;
       color: #2f4f6f;
-      word-break: keep-all;
-      line-height: 1.15;
+      line-height: 1 !important;
       cursor: pointer;
+      word-break: keep-all;
     }
-
+    
     .check-option input[type="checkbox"] {
       appearance: none !important;
       -webkit-appearance: none !important;
@@ -207,26 +187,28 @@
       min-height: 16px !important;
       max-height: 16px !important;
     
+      display: block !important;
       margin: 0 !important;
       padding: 0 !important;
+    
       border: 1.5px solid #9a9a9a !important;
       border-radius: 4px !important;
       outline: none !important;
       box-shadow: none !important;
       background: #fff !important;
     
-      display: inline-block !important;
-      vertical-align: middle !important;
-      flex: 0 0 16px !important;
-      position: relative;
-      top: 0;
+      position: static !important;
+      top: auto !important;
+      left: auto !important;
+      justify-self: start !important;
+      align-self: center !important;
     }
-
+    
     .check-option input[type="checkbox"]:checked {
       border-color: #ab3333 !important;
       background: #ab3333 !important;
     }
-
+    
     .check-option input[type="checkbox"]:checked::after {
       content: "";
       position: absolute;
@@ -238,14 +220,19 @@
       border-width: 0 2px 2px 0;
       transform: rotate(45deg);
     }
-
+    
     .check-option span {
-      display: inline-block;
-      line-height: 1.1;
-      vertical-align: middle;
+      display: block !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    
+      line-height: 1.05 !important;
       color: #355675;
       font-size: 0.96rem;
       font-weight: 500;
+    
+      justify-self: start !important;
+      align-self: center !important;
     }
 
     .filter-actions {
