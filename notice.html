@@ -87,6 +87,7 @@
       border-radius: 14px;
       background: #fff;
       box-sizing: border-box;
+      position: relative;
     }
 
     .multi-filter summary {
@@ -139,6 +140,16 @@
       background: #fff;
       border-bottom-left-radius: 14px;
       border-bottom-right-radius: 14px;
+
+      position: absolute;
+      top: 100%;
+      left: -1px;
+      width: calc(100% + 2px);
+      z-index: 999;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e3e3e3;
+      border-top: none; 
+      box-sizing: border-box;
     }
 
     .multi-filter-panel::-webkit-scrollbar {
