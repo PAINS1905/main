@@ -193,16 +193,12 @@
     buildCheckboxOptions(els.period, filterValues.period, 'period');
     buildCheckboxOptions(els.sport, filterValues.sport, 'sport');
 
-    // 기본 상태는 "전체"
-    selected.year.clear();
-    selected.gen.clear();
-    selected.period.clear();
-    selected.sport.clear();
-
-    updateSummaryText('year');
-    updateSummaryText('gen');
-    updateSummaryText('period');
-    updateSummaryText('sport');
+    // 기본 상태는 "전체" (모든 항목 체크)
+    ['year', 'gen', 'period', 'sport'].forEach(key => {
+      selected[key].clear();
+      filterValues[key].forEach(v => selected[key].add(v));
+      syncCheckboxes(key);
+    });
   }
 
   function projectMeta(p) {
@@ -427,15 +423,11 @@
 
     if (els.reset) {
       els.reset.addEventListener('click', () => {
-        selected.year.clear();
-        selected.gen.clear();
-        selected.period.clear();
-        selected.sport.clear();
-
-        syncCheckboxes('year');
-        syncCheckboxes('gen');
-        syncCheckboxes('period');
-        syncCheckboxes('sport');
+        ['year', 'gen', 'period', 'sport'].forEach(key => {
+          selected[key].clear();
+          filterValues[key].forEach(v => selected[key].add(v));
+          syncCheckboxes(key);
+        });
 
         if (els.q) els.q.value = '';
         applyFilters();
