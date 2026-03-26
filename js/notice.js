@@ -170,11 +170,12 @@
     buildCheckboxOptions(els.gen, filterValues.gen, 'gen');
     buildCheckboxOptions(els.dept, filterValues.dept, 'dept');
 
-    selected.gen.clear();
-    selected.dept.clear();
-
-    updateSummaryText('gen');
-    updateSummaryText('dept');
+    // 기본 상태는 "전체" (모든 항목 체크)
+    ['gen', 'dept'].forEach(key => {
+      selected[key].clear();
+      filterValues[key].forEach(v => selected[key].add(v));
+      syncCheckboxes(key);
+    });
   }
 
   function noticeMeta(n) {
@@ -422,11 +423,11 @@
         if (els.dateEnd) els.dateEnd.value = '';
         if (els.q) els.q.value = '';
 
-        selected.gen.clear();
-        selected.dept.clear();
-
-        syncCheckboxes('gen');
-        syncCheckboxes('dept');
+        ['gen', 'dept'].forEach(key => {
+          selected[key].clear();
+          filterValues[key].forEach(v => selected[key].add(v));
+          syncCheckboxes(key);
+        });
 
         applyFilters();
       });
