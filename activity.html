@@ -88,6 +88,10 @@
       position: relative;
     }
 
+    .multi-filter[open] {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+
     .multi-filter summary {
       list-style: none;
       cursor: pointer;
@@ -144,8 +148,10 @@
       width: calc(100% + 2px);
       z-index: 999;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+      
       border: 1px solid #e3e3e3;
-      border-top: none;
+      border-top: 1px solid #ededed;
+      border-top: -1px;
       box-sizing: border-box;
     }
 
