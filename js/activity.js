@@ -1,5 +1,6 @@
 // PAINS 활동 아카이브 (GitHub Pages용)
 // - 구글 앱스 스크립트 API에서 프로젝트 목록을 불러와 필터/검색 후 렌더링합니다.
+// - 다중 선택 필터 지원 (전체 선택 / 전체 해제 포함)
 
 (() => {
   'use strict';
@@ -11,10 +12,16 @@
   const $ = (id) => document.getElementById(id);
 
   const els = {
-    year: $('filter-year'),
-    gen: $('filter-generation'),
-    period: $('filter-period'),
-    sport: $('filter-sport'),
+    yearWrap: $('filter-year'),
+    genWrap: $('filter-generation'),
+    periodWrap: $('filter-period'),
+    sportWrap: $('filter-sport'),
+
+    year: $('filter-year-options'),
+    gen: $('filter-generation-options'),
+    period: $('filter-period-options'),
+    sport: $('filter-sport-options'),
+
     q: $('filter-q'),
     reset: $('btn-reset'),
     list: $('project-list'),
@@ -23,7 +30,21 @@
   };
 
   let allProjects = [];
-  let releaseCfg = null; 
+  let releaseCfg = null;
+
+  const selected = {
+    year: new Set(),
+    gen: new Set(),
+    period: new Set(),
+    sport: new Set(),
+  };
+
+  const filterValues = {
+    year: [],
+    gen: [],
+    period: [],
+    sport: [],
+  };
 
   function norm(v) {
     return (v ?? '').toString().trim();
@@ -64,41 +85,124 @@
     return Array.from(new Set(values.filter((v) => norm(v) !== '').map((v) => norm(v))));
   }
 
-  function fillSelect(selectEl, values, allLabel = '전체') {
-    if (!selectEl) return;
-    selectEl.innerHTML = '';
-    const optAll = document.createElement('option');
-    optAll.value = '';
-    optAll.textContent = allLabel;
-    selectEl.appendChild(optAll);
+  function buildCheckboxOptions(container, values, key) {
+    if (!container) return;
+    container.innerHTML = '';
 
-    values.forEach((v) => {
-      const opt = document.createElement('option');
-      opt.value = v;
-      opt.textContent = v;
-      selectEl.appendChild(opt);
+    values.forEach((value, idx) => {
+      const label = document.createElement('label');
+      label.className = 'check-option';
+
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.value = value;
+      input.dataset.filterKey = key;
+      input.id = `${key}-${idx}`;
+
+      const span = document.createElement('span');
+      span.textContent = value;
+
+      label.appendChild(input);
+      label.appendChild(span);
+      container.appendChild(label);
     });
   }
 
+  function updateSummaryText(key) {
+    const wrapMap = {
+      year: els.yearWrap,
+      gen: els.genWrap,
+      period: els.periodWrap,
+      sport: els.sportWrap,
+    };
+
+    const wrap = wrapMap[key];
+    if (!wrap) return;
+
+    const summaryText = wrap.querySelector('.multi-filter-summary-text');
+    if (!summaryText) return;
+
+    const total = filterValues[key].length;
+    const checked = selected[key].size;
+
+    if (checked === 0 || checked === total) {
+      summaryText.textContent = '전체';
+      return;
+    }
+
+    if (checked === 1) {
+      summaryText.textContent = Array.from(selected[key])[0];
+      return;
+    }
+
+    const first = Array.from(selected[key])[0];
+    summaryText.textContent = `${first} 외 ${checked - 1}개`;
+  }
+
+  function syncCheckboxes(key) {
+    const containerMap = {
+      year: els.year,
+      gen: els.gen,
+      period: els.period,
+      sport: els.sport,
+    };
+
+    const container = containerMap[key];
+    if (!container) return;
+
+    const boxes = container.querySelectorAll('input[type="checkbox"]');
+    const isAllSelected = selected[key].size === filterValues[key].length;
+
+    boxes.forEach((box) => {
+      box.checked = isAllSelected || selected[key].has(box.value);
+    });
+
+    updateSummaryText(key);
+  }
+
+  function selectAll(key) {
+    selected[key].clear();
+    filterValues[key].forEach((v) => selected[key].add(v));
+    syncCheckboxes(key);
+    applyFilters();
+  }
+
+  function clearAll(key) {
+    selected[key].clear();
+    syncCheckboxes(key);
+    applyFilters();
+  }
+
   function buildFilters(projects) {
-    const years = unique(projects.map((p) => p.year))
+    filterValues.year = unique(projects.map((p) => p.year))
       .sort((a, b) => {
         const na = parseInt(a, 10);
         const nb = parseInt(b, 10);
         const aIsNum = !Number.isNaN(na);
         const bIsNum = !Number.isNaN(nb);
-        if (aIsNum && bIsNum) return nb - na; 
+        if (aIsNum && bIsNum) return nb - na;
         return b.localeCompare(a, 'ko');
       });
 
-    const gens = unique(projects.map((p) => p.generation)).sort(byNumberPrefix);
-    const periods = unique(projects.map((p) => p.period)).sort((a, b) => a.localeCompare(b, 'ko'));
-    const sports = unique(projects.map((p) => p.sport)).sort((a, b) => a.localeCompare(b, 'ko'));
+    filterValues.gen = unique(projects.map((p) => p.generation)).sort(byNumberPrefix);
+    filterValues.period = unique(projects.map((p) => p.period)).sort((a, b) => a.localeCompare(b, 'ko'));
+    filterValues.sport = unique(projects.map((p) => p.sport)).sort((a, b) => a.localeCompare(b, 'ko'));
 
-    fillSelect(els.year, years, '전체');
-    fillSelect(els.gen, gens, '전체');
-    fillSelect(els.period, periods, '전체');
-    fillSelect(els.sport, sports, '전체');
+    buildCheckboxOptions(els.year, filterValues.year, 'year');
+    buildCheckboxOptions(els.gen, filterValues.gen, 'gen');
+    buildCheckboxOptions(els.period, filterValues.period, 'period');
+    buildCheckboxOptions(els.sport, filterValues.sport, 'sport');
+
+    // 기본 상태는 "전체"
+    selected.year.clear();
+    selected.gen.clear();
+    selected.period.clear();
+    selected.sport.clear();
+
+    updateSummaryText('year');
+    updateSummaryText('gen');
+    updateSummaryText('period');
+    updateSummaryText('sport');
   }
 
   function projectMeta(p) {
@@ -159,8 +263,8 @@
     const params = new URLSearchParams();
     if (title) params.set('title', title);
     if (file) params.set('file', file);
-    if (srcUrl) params.set('src', srcUrl);      
-    if (directUrl) params.set('direct', directUrl); 
+    if (srcUrl) params.set('src', srcUrl);
+    if (directUrl) params.set('direct', directUrl);
     if (downloadUrl) params.set('download', downloadUrl);
     params.set('from', 'activity');
     return `${VIEWER_PAGE}?${params.toString()}`;
@@ -210,7 +314,7 @@
 
       const aTitle = document.createElement('a');
       aTitle.className = 'project-title';
-      aTitle.href = previewUrl;    
+      aTitle.href = previewUrl;
       aTitle.target = '_blank';
       aTitle.rel = 'noopener';
       aTitle.textContent = title;
@@ -225,23 +329,21 @@
       const actions = document.createElement('div');
       actions.className = 'project-actions';
 
-      // "열기" 버튼 추가
       const btnViewer = document.createElement('a');
-      btnViewer.className = 'btn'; 
-      btnViewer.href = previewUrl; 
+      btnViewer.className = 'btn';
+      btnViewer.href = previewUrl;
       btnViewer.target = '_blank';
       btnViewer.rel = 'noopener';
       btnViewer.textContent = '열기';
 
       const btnDownload = document.createElement('a');
       btnDownload.className = 'btn btn-download';
-      btnDownload.href = downloadUrl; 
+      btnDownload.href = downloadUrl;
       btnDownload.target = '_blank';
       btnDownload.rel = 'noopener';
       btnDownload.setAttribute('download', '');
       btnDownload.textContent = '다운로드';
 
-      // 뷰어로 보기 버튼을 다운로드 버튼보다 먼저(왼쪽) 추가합니다.
       actions.appendChild(btnViewer);
       actions.appendChild(btnDownload);
 
@@ -252,47 +354,103 @@
     });
   }
 
+  function matchMulti(selectedSet, value, allCount) {
+    const v = norm(value);
+    if (selectedSet.size === 0) return true;           // 아무것도 선택 안 했으면 전체
+    if (selectedSet.size === allCount) return true;    // 전부 선택한 상태도 전체와 동일
+    return selectedSet.has(v);
+  }
+
   function applyFilters() {
-    const y = norm(els.year?.value);
-    const g = norm(els.gen?.value);
-    const p = norm(els.period?.value);
-    const s = norm(els.sport?.value);
     const q = norm(els.q?.value).toLowerCase();
 
     const filtered = allProjects.filter((proj) => {
-      if (y && norm(proj.year) !== y) return false;
-      if (g && norm(proj.generation) !== g) return false;
-      if (p && norm(proj.period) !== p) return false;
-      if (s && norm(proj.sport) !== s) return false;
+      if (!matchMulti(selected.year, proj.year, filterValues.year.length)) return false;
+      if (!matchMulti(selected.gen, proj.generation, filterValues.gen.length)) return false;
+      if (!matchMulti(selected.period, proj.period, filterValues.period.length)) return false;
+      if (!matchMulti(selected.sport, proj.sport, filterValues.sport.length)) return false;
 
       if (q) {
         const t = norm(proj.title).toLowerCase();
         if (!t.includes(q)) return false;
       }
+
       return true;
     });
 
     render(filtered);
   }
 
+  function attachFilterCheckboxEvents(container, key) {
+    if (!container) return;
+
+    container.addEventListener('change', (e) => {
+      const target = e.target;
+      if (!(target instanceof HTMLInputElement) || target.type !== 'checkbox') return;
+
+      if (target.checked) {
+        selected[key].add(target.value);
+      } else {
+        selected[key].delete(target.value);
+      }
+
+      updateSummaryText(key);
+      applyFilters();
+    });
+  }
+
   function attachEvents() {
-    [els.year, els.gen, els.period, els.sport].forEach((sel) => {
-      if (!sel) return;
-      sel.addEventListener('change', applyFilters);
+    attachFilterCheckboxEvents(els.year, 'year');
+    attachFilterCheckboxEvents(els.gen, 'gen');
+    attachFilterCheckboxEvents(els.period, 'period');
+    attachFilterCheckboxEvents(els.sport, 'sport');
+
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.mini-btn');
+      if (!btn) return;
+
+      const action = btn.dataset.action;
+      const target = btn.dataset.target;
+
+      if (!action || !target || !selected[target]) return;
+
+      if (action === 'select-all') {
+        selectAll(target);
+      } else if (action === 'clear-all') {
+        clearAll(target);
+      }
     });
 
-    if (els.q) els.q.addEventListener('input', applyFilters);
+    if (els.q) {
+      els.q.addEventListener('input', applyFilters);
+    }
 
     if (els.reset) {
       els.reset.addEventListener('click', () => {
-        if (els.year) els.year.value = '';
-        if (els.gen) els.gen.value = '';
-        if (els.period) els.period.value = '';
-        if (els.sport) els.sport.value = '';
+        selected.year.clear();
+        selected.gen.clear();
+        selected.period.clear();
+        selected.sport.clear();
+
+        syncCheckboxes('year');
+        syncCheckboxes('gen');
+        syncCheckboxes('period');
+        syncCheckboxes('sport');
+
         if (els.q) els.q.value = '';
         applyFilters();
       });
     }
+
+    // 다른 곳 클릭 시 열린 details 닫기
+    document.addEventListener('click', (e) => {
+      const detailsList = document.querySelectorAll('.multi-filter');
+      detailsList.forEach((details) => {
+        if (!details.contains(e.target)) {
+          details.removeAttribute('open');
+        }
+      });
+    });
   }
 
   async function init() {
