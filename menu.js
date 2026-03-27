@@ -18,6 +18,7 @@ const PAINS_LAYOUT = {
                 { href: 'ci', id: 'ci', label: 'CI' },
                 { href: 'members', id: 'members', label: '조직도' }
             ]
+        },
         {
             type: 'group',
             id: 'activities',
