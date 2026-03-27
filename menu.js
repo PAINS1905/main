@@ -10,7 +10,14 @@ const PAINS_LAYOUT = {
         { href: 'https://blog.naver.com/painsports', title: 'Blog', icon: 'images/naver_blog.png', alt: 'Naver Blog' }
     ],
     menuGroups: [
-        { type: 'link', href: 'index', id: 'home', label: '홈' },
+        {
+            type: 'group',
+            id: 'aboutpains',
+            label: 'PAINS 소개',
+            items: [
+                { href: 'ci', id: 'ci', label: 'CI' },
+                { href: 'members', id: 'members', label: '조직도' }
+            ]
         {
             type: 'group',
             id: 'activities',
@@ -25,17 +32,16 @@ const PAINS_LAYOUT = {
         },
         {
             type: 'group',
-            id: 'members',
+            id: 'operating',
             label: '운영',
             items: [
-                { href: 'members', id: 'members', label: '운영진 소개' },
                 { href: 'attendance', id: 'attendance', label: '회원 정보 / 결석계' },
                 { href: 'fee', id: 'fee', label: '회비 내역 조회' }
             ]
         },
         {
             type: 'group',
-            id: 'support',
+            id: 'applying',
             label: '지원',
             items: [
                 { href: 'javascript:void(0)', id: 'apply', label: '지원하기', onclick: "alert('지원 기간이 아닙니다.'); return false;" },
