@@ -43,7 +43,7 @@
         .input-group {
             display: flex;
             flex-direction: column;
-            width: 100%; /* 부모 너비에 맞춤 */
+            width: 100%;
         }
 
         .input-group label {
@@ -54,7 +54,7 @@
         }
 
         .input-group input {
-            width: 100%; /* 입력칸이 상자를 벗어나지 않도록 강제 */
+            width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 6px;
@@ -69,7 +69,6 @@
             box-shadow: 0 0 0 2px rgba(153, 0, 0, 0.1);
         }
 
-        /* 버튼 스타일 */
         .calc-btn {
             display: block;
             width: 100%;
@@ -108,7 +107,6 @@
             font-family: 'KBO_Dia', sans-serif;
         }
         
-        /* 토글(Details/Summary) 스타일 */
         details.stat-box {
             background: #f0f0f0;
             padding: 15px;
@@ -122,14 +120,12 @@
         details.stat-box summary {
             font-weight: bold;
             outline: none;
-            list-style: none; /* 기본 화살표 숨김 */
+            list-style: none;
             font-size: 0.95rem;
             color: #333;
         }
         
-        details.stat-box summary::-webkit-details-marker {
-            display: none; /* Safari 기본 화살표 숨김 */
-        }
+        details.stat-box summary::-webkit-details-marker { display: none; }
         
         details.stat-box summary::before {
             content: '▶ ';
@@ -139,9 +135,7 @@
             font-size: 0.8rem;
         }
         
-        details.stat-box[open] summary::before {
-            transform: rotate(90deg);
-        }
+        details.stat-box[open] summary::before { transform: rotate(90deg); }
         
         details.stat-box p {
             margin-top: 15px;
@@ -151,9 +145,7 @@
         }
 
         @media (max-width: 600px) { 
-            .input-grid {
-                grid-template-columns: 1fr; /* 모바일에서는 1열로 변경 */
-            }
+            .input-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -168,8 +160,9 @@
         <div class="section-card">
             <h3>내가 바로 승리요정? 🧚‍♂️</h3>
             <p class="content-text">
-                팀이 전체 시즌 동안 기록한 성적과 내가 직접 경기장에 가서 본 직관 성적을 비교합니다.<br>
-                **카이제곱 적합도 검정** 을 통해 나의 직관 결과가 팀의 평균적인 실력에 비해 얼마나 통계적으로 '유의미하게' 운이 좋았는지 계산해 드립니다.
+                팀의 전체 시즌 성적과 나의 직관 성적을 비교합니다.<br>
+                **카이제곱 적합도 검정(조정 승률 모델)** 을 통해 나의 직관 결과가 팀의 평균적인 실력에 비해 얼마나 통계적으로 운이 좋았는지 계산해 드립니다.<br>
+                *(야구와 축구 모두 적용 가능하도록 무승부는 0.5승과 0.5패로 나누어 분석합니다.)*
             </p>
         </div>
 
@@ -213,15 +206,12 @@
 
         <div class="section-card" id="result-card">
             <h3>분석 결과 📊</h3>
-            <div class="result-highlight" id="result-title">
-                </div>
-            <p class="content-text" id="result-desc" style="text-align: center; font-size: 1.1rem; font-weight: bold;">
-                </p>
+            <div class="result-highlight" id="result-title"></div>
+            <p class="content-text" id="result-desc" style="text-align: center; font-size: 1.1rem; font-weight: bold;"></p>
             
             <details class="stat-box">
                 <summary>통계적 분석 상세 보기</summary>
-                <p id="result-stats">
-                    </p>
+                <p id="result-stats"></p>
             </details>
         </div>
 
@@ -237,9 +227,21 @@
             loadSidebar('fairy_test');
         }
 
-        // 카이제곱 계산 로직
+        // 정규분포 누적확률함수(CDF) 근사 알고리즘 (자유도 1 카이제곱 p-value 도출용)
+        function normCDF(x) {
+            const b1 = 0.319381530, b2 = -0.356563782, b3 = 1.781477937, b4 = -1.821255978, b5 = 1.330274429;
+            const p = 0.2316419, c = 0.39894228;
+            if (x >= 0.0) {
+                let t = 1.0 / (1.0 + p * x);
+                return (1.0 - c * Math.exp(-x * x / 2.0) * t * (t * (t * (t * (t * b5 + b4) + b3) + b2) + b1));
+            } else {
+                let t = 1.0 / (1.0 - p * x);
+                return (c * Math.exp(-x * x / 2.0) * t * (t * (t * (t * (t * b5 + b4) + b3) + b2) + b1));
+            }
+        }
+
         function calculateFairy() {
-            // 1. 값 가져오기 (입력이 없으면 빈 문자열 대신 0으로 처리)
+            // 1. 입력값 가져오기 (빈칸은 0 처리)
             const tw = parseInt(document.getElementById('team_w').value) || 0;
             const td = parseInt(document.getElementById('team_d').value) || 0;
             const tl = parseInt(document.getElementById('team_l').value) || 0;
@@ -251,47 +253,49 @@
             const teamTotal = tw + td + tl;
             const attTotal = aw + ad + al;
 
-            // 예외 처리 1: 경기를 전혀 입력하지 않은 경우
+            // 예외 처리
             if(teamTotal === 0 || attTotal === 0) {
                 alert("팀 전체 성적과 직관 성적을 1경기 이상 입력해주세요.");
                 return;
             }
-
-            // 예외 처리 2: 직관 성적이 팀 성적을 초과한 경우
             if(aw > tw || ad > td || al > tl) {
-                alert("입력 오류: 직관한 승/무/패 횟수가 팀 전체의 승/무/패 횟수보다 클 수 없습니다.\n입력하신 숫자를 다시 확인해주세요.");
+                alert("입력 오류: 직관한 승/무/패 횟수가 팀 전체의 승/무/패 횟수보다 클 수 없습니다.");
                 return;
             }
 
-            // 2. 기댓값 계산 (Expected)
-            const ew = attTotal * (tw / teamTotal);
-            const ed = attTotal * (td / teamTotal);
-            const el = attTotal * (tl / teamTotal);
-
-            // 분모가 0이 되는 것을 방지 (무승부가 아예 없는 종목 고려)
-            const safe_ew = ew === 0 ? 0.0001 : ew;
-            const safe_ed = ed === 0 ? 0.0001 : ed;
-            const safe_el = el === 0 ? 0.0001 : el;
-
-            // 3. 카이제곱 통계량 (Chi-square statistic)
-            const chiSq = Math.pow(aw - safe_ew, 2) / safe_ew + 
-                          Math.pow(ad - safe_ed, 2) / safe_ed + 
-                          Math.pow(al - safe_el, 2) / safe_el;
-
-            // 4. p-value 계산 (자유도 df=2 인 카이제곱 분포의 CDF 활용)
-            const pValue = Math.exp(-chiSq / 2);
-
-            // 5. 승리요정/패배요정 판별
-            const actualPoints = (aw * 3) + (ad * 1);
-            const expectedPoints = (ew * 3) + (ed * 1);
+            // 2. 무승부 분배 (조정 승/패 계산)
+            const teamAdjW = tw + (td * 0.5);
+            const teamAdjL = tl + (td * 0.5);
             
+            const attAdjW = aw + (ad * 0.5);
+            const attAdjL = al + (ad * 0.5);
+
+            // 3. 기대값 계산
+            const winProb = teamAdjW / teamTotal;
+            const lossProb = teamAdjL / teamTotal;
+
+            let expW = attTotal * winProb;
+            let expL = attTotal * lossProb;
+
+            // 분모 0 방지
+            if (expW === 0) expW = 0.0001;
+            if (expL === 0) expL = 0.0001;
+
+            // 4. 카이제곱 통계량 (자유도 df=1)
+            const chiSq = Math.pow(attAdjW - expW, 2) / expW + Math.pow(attAdjL - expL, 2) / expL;
+
+            // 5. p-value 계산 (자유도 1인 카이제곱은 표준정규분포 Z^2 와 같음)
+            const z = Math.sqrt(chiSq);
+            const pValue = 2 * (1 - normCDF(z));
+
+            // 6. 요정 판별 및 백분율
+            const isVictoryFairy = attAdjW >= expW;
             let percentile = (pValue / 2) * 100;
             if(percentile < 0.01) percentile = 0.01; 
             
-            const isVictoryFairy = actualPoints >= expectedPoints;
             const displayPercent = percentile.toFixed(2);
 
-            // 6. 결과 출력
+            // 7. 결과 출력
             const resultCard = document.getElementById('result-card');
             const resultTitle = document.getElementById('result-title');
             const resultDesc = document.getElementById('result-desc');
@@ -310,13 +314,13 @@
             }
 
             resultStats.innerHTML = `
-                • <strong>직관 횟수</strong>: ${attTotal}전 ${aw}승 ${ad}무 ${al}패<br>
-                • <strong>통계적 기대 승수</strong>: ${ew.toFixed(1)}승 ${ed.toFixed(1)}무 ${el.toFixed(1)}패<br>
-                • <strong>카이제곱 통계량(χ²)</strong>: ${chiSq.toFixed(3)}<br>
+                • <strong>실제 직관 기록</strong>: ${attTotal}전 ${aw}승 ${ad}무 ${al}패<br>
+                • <strong>조정 직관 성적 (무승부 0.5 반영)</strong>: ${attAdjW}승 ${attAdjL}패<br>
+                • <strong>통계적 기대 성적</strong>: ${expW.toFixed(2)}승 ${expL.toFixed(2)}패<br>
+                • <strong>카이제곱 통계량(χ²)</strong>: ${chiSq.toFixed(3)} (자유도: 1)<br>
                 • <strong>유의확률(p-value)</strong>: ${pValue.toFixed(4)}
             `;
 
-            // 스크롤 이동
             resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     </script>
