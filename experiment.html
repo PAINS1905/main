@@ -43,6 +43,7 @@
         .input-group {
             display: flex;
             flex-direction: column;
+            width: 100%; /* 부모 너비에 맞춤 */
         }
 
         .input-group label {
@@ -53,6 +54,7 @@
         }
 
         .input-group input {
+            width: 100%; /* 입력칸이 상자를 벗어나지 않도록 강제 */
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 6px;
@@ -93,7 +95,7 @@
         /* [4] 결과 출력 영역 스타일      */
         /* ============================ */
         #result-card {
-            display: none; /* 초기에는 숨김 */
+            display: none; 
             background: #fffafa;
             border: 2px solid #990000;
         }
@@ -106,18 +108,51 @@
             font-family: 'KBO_Dia', sans-serif;
         }
         
-        .stat-box {
+        /* 토글(Details/Summary) 스타일 */
+        details.stat-box {
             background: #f0f0f0;
             padding: 15px;
             border-radius: 8px;
             margin-top: 15px;
             font-size: 0.9rem;
             color: #666;
+            cursor: pointer;
+        }
+        
+        details.stat-box summary {
+            font-weight: bold;
+            outline: none;
+            list-style: none; /* 기본 화살표 숨김 */
+            font-size: 0.95rem;
+            color: #333;
+        }
+        
+        details.stat-box summary::-webkit-details-marker {
+            display: none; /* Safari 기본 화살표 숨김 */
+        }
+        
+        details.stat-box summary::before {
+            content: '▶ ';
+            display: inline-block;
+            transition: transform 0.2s ease;
+            margin-right: 5px;
+            font-size: 0.8rem;
+        }
+        
+        details.stat-box[open] summary::before {
+            transform: rotate(90deg);
+        }
+        
+        details.stat-box p {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+            line-height: 1.7;
         }
 
         @media (max-width: 600px) { 
             .input-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr; /* 모바일에서는 1열로 변경 */
             }
         }
     </style>
@@ -183,10 +218,11 @@
             <p class="content-text" id="result-desc" style="text-align: center; font-size: 1.1rem; font-weight: bold;">
                 </p>
             
-            <div class="stat-box">
-                <strong>통계적 분석 상세</strong><br>
-                <span id="result-stats"></span>
-            </div>
+            <details class="stat-box">
+                <summary>통계적 분석 상세 보기</summary>
+                <p id="result-stats">
+                    </p>
+            </details>
         </div>
 
     </div>
@@ -203,7 +239,7 @@
 
         // 카이제곱 계산 로직
         function calculateFairy() {
-            // 1. 값 가져오기
+            // 1. 값 가져오기 (입력이 없으면 빈 문자열 대신 0으로 처리)
             const tw = parseInt(document.getElementById('team_w').value) || 0;
             const td = parseInt(document.getElementById('team_d').value) || 0;
             const tl = parseInt(document.getElementById('team_l').value) || 0;
@@ -215,8 +251,15 @@
             const teamTotal = tw + td + tl;
             const attTotal = aw + ad + al;
 
+            // 예외 처리 1: 경기를 전혀 입력하지 않은 경우
             if(teamTotal === 0 || attTotal === 0) {
-                alert("팀 전체 성적과 직관 성적을 1경기 이상 올바르게 입력해주세요.");
+                alert("팀 전체 성적과 직관 성적을 1경기 이상 입력해주세요.");
+                return;
+            }
+
+            // 예외 처리 2: 직관 성적이 팀 성적을 초과한 경우
+            if(aw > tw || ad > td || al > tl) {
+                alert("입력 오류: 직관한 승/무/패 횟수가 팀 전체의 승/무/패 횟수보다 클 수 없습니다.\n입력하신 숫자를 다시 확인해주세요.");
                 return;
             }
 
@@ -236,17 +279,14 @@
                           Math.pow(al - safe_el, 2) / safe_el;
 
             // 4. p-value 계산 (자유도 df=2 인 카이제곱 분포의 CDF 활용)
-            // df=2 일 때 p-value 공식은 매우 간단하게 1 - (1 - e^(-x/2)) = e^(-x/2) 로 도출됩니다.
             const pValue = Math.exp(-chiSq / 2);
 
             // 5. 승리요정/패배요정 판별
-            // 승점 기준으로 기댓값보다 높은지 낮은지 판단 (승=3점, 무=1점)
             const actualPoints = (aw * 3) + (ad * 1);
             const expectedPoints = (ew * 3) + (ed * 1);
             
-            // 방향성이 있는 검정이므로 양측 검정의 p-value를 반으로 나누어 백분율 계산
             let percentile = (pValue / 2) * 100;
-            if(percentile < 0.01) percentile = 0.01; // 최솟값 처리
+            if(percentile < 0.01) percentile = 0.01; 
             
             const isVictoryFairy = actualPoints >= expectedPoints;
             const displayPercent = percentile.toFixed(2);
@@ -270,13 +310,13 @@
             }
 
             resultStats.innerHTML = `
-                • 직관 횟수: ${attTotal}전 ${aw}승 ${ad}무 ${al}패<br>
-                • 통계적 기대 승수: ${ew.toFixed(1)}승 ${ed.toFixed(1)}무 ${el.toFixed(1)}패<br>
-                • 카이제곱 통계량(χ²): ${chiSq.toFixed(3)}<br>
-                • 유의확률(p-value): ${pValue.toFixed(4)}
+                • <strong>직관 횟수</strong>: ${attTotal}전 ${aw}승 ${ad}무 ${al}패<br>
+                • <strong>통계적 기대 승수</strong>: ${ew.toFixed(1)}승 ${ed.toFixed(1)}무 ${el.toFixed(1)}패<br>
+                • <strong>카이제곱 통계량(χ²)</strong>: ${chiSq.toFixed(3)}<br>
+                • <strong>유의확률(p-value)</strong>: ${pValue.toFixed(4)}
             `;
 
-            // 스크롤을 결과창으로 부드럽게 이동
+            // 스크롤 이동
             resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     </script>
