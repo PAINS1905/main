@@ -97,6 +97,7 @@
             display: none; 
             background: #fffafa;
             border: 2px solid #990000;
+            padding-bottom: 30px; /* 상세내용이 빠진 만큼 하단 여백 추가 */
         }
         
         .result-highlight {
@@ -105,43 +106,6 @@
             margin: 20px 0;
             color: #333;
             font-family: 'KBO_Dia', sans-serif;
-        }
-        
-        details.stat-box {
-            background: #f0f0f0;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: #666;
-            cursor: pointer;
-        }
-        
-        details.stat-box summary {
-            font-weight: bold;
-            outline: none;
-            list-style: none;
-            font-size: 0.95rem;
-            color: #333;
-        }
-        
-        details.stat-box summary::-webkit-details-marker { display: none; }
-        
-        details.stat-box summary::before {
-            content: '▶ ';
-            display: inline-block;
-            transition: transform 0.2s ease;
-            margin-right: 5px;
-            font-size: 0.8rem;
-        }
-        
-        details.stat-box[open] summary::before { transform: rotate(90deg); }
-        
-        details.stat-box p {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px dashed #ccc;
-            line-height: 1.7;
         }
 
         @media (max-width: 600px) { 
@@ -208,11 +172,6 @@
             <h3>분석 결과 📊</h3>
             <div class="result-highlight" id="result-title"></div>
             <p class="content-text" id="result-desc" style="text-align: center; font-size: 1.1rem; font-weight: bold;"></p>
-            
-            <details class="stat-box">
-                <summary>통계적 분석 상세 보기</summary>
-                <p id="result-stats"></p>
-            </details>
         </div>
 
     </div>
@@ -299,7 +258,6 @@
             const resultCard = document.getElementById('result-card');
             const resultTitle = document.getElementById('result-title');
             const resultDesc = document.getElementById('result-desc');
-            const resultStats = document.getElementById('result-stats');
 
             resultCard.style.display = 'block';
 
@@ -312,14 +270,6 @@
                 resultTitle.innerHTML = `당신은 상위 <span style="color: #003399;">${displayPercent}%</span> 패배요정... 🌧️`;
                 resultDesc.innerHTML = "조금 슬프지만... 팀의 평균보다 직관 승률이 낮습니다. 다음엔 꼭 이길 거예요!";
             }
-
-            resultStats.innerHTML = `
-                • <strong>실제 직관 기록</strong>: ${attTotal}전 ${aw}승 ${ad}무 ${al}패<br>
-                • <strong>조정 직관 성적 (무승부 0.5 반영)</strong>: ${attAdjW}승 ${attAdjL}패<br>
-                • <strong>통계적 기대 성적</strong>: ${expW.toFixed(2)}승 ${expL.toFixed(2)}패<br>
-                • <strong>카이제곱 통계량(χ²)</strong>: ${chiSq.toFixed(3)} (자유도: 1)<br>
-                • <strong>유의확률(p-value)</strong>: ${pValue.toFixed(4)}
-            `;
 
             resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
