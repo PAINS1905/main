@@ -277,9 +277,10 @@ function initGlobalStyles() {
         }
 
         body.pains-theme .hero {
-            background: linear-gradient(135deg, var(--pains-accent-strong), var(--pains-accent)) !important;
+            background: linear-gradient(135deg, #0f2041, #1A365D) !important;
             border-radius: 30px;
-            box-shadow: 0 24px 60px rgba(127, 22, 33, 0.28);
+            /* 그림자도 붉은 톤(127, 22, 33)에서 푸른 톤(26, 54, 93)으로 변경 */
+            box-shadow: 0 24px 60px rgba(26, 54, 93, 0.28);
             overflow: hidden;
         }
 
