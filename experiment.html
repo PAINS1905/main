@@ -648,7 +648,10 @@
                 // 3. [저장 1] Firebase Firestore에 데이터 저장
                 // ==========================================
                 // 요구사항 반영: 학번_일정날짜 조합으로 커스텀 문서 ID 생성
-                const customDocumentId = `${id}_${dateStr}`; 
+
+                const eventName = eventName.replace(/\//g, ' ');
+                
+                const customDocumentId = `${id}_${eventName}(${dateStr})`;
                 
                 const firebaseSubmitData = {
                     studentId: id,
