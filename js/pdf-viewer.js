@@ -44,6 +44,47 @@
     if (file) els.download.setAttribute('download', file);
   }
 
+  // 폰트 동적 적용 함수 추가
+  function applyCustomFonts() {
+    if (document.getElementById('pdf-viewer-fonts')) return;
+
+    const style = document.createElement('style');
+    style.id = 'pdf-viewer-fonts';
+    style.innerHTML = `
+        /* 🎯 제목용 폰트 (ATOZ5) */
+        @font-face { 
+            font-family: 'ATOZ5'; 
+            src: url('fonts/ATOZ5.woff2') format('woff2'); 
+            font-weight: normal; 
+            font-style: normal; 
+        }
+
+        /* 📖 본문용 폰트 (ATOZ4) */
+        @font-face { 
+            font-family: 'ATOZ4'; 
+            src: url('fonts/ATOZ4.woff2') format('woff2'); 
+            font-weight: normal; 
+            font-style: normal; 
+        }
+
+        /* 기본적으로 전체 페이지에 ATOZ4 적용 */
+        body {
+            font-family: 'ATOZ4', sans-serif !important;
+        }
+
+        /* 문서 제목 및 기본 헤딩 요소들에 ATOZ5 적용 */
+        #doc-title, h1, h2, h3, .title {
+            font-family: 'ATOZ5', sans-serif !important;
+        }
+
+        /* 버튼, 입력창 등에도 일관되게 ATOZ4 적용 */
+        button, input, select, a {
+            font-family: 'ATOZ4', sans-serif !important;
+        }
+    `;
+    document.head.appendChild(style);
+  }
+
   // pdf.js 렌더링 상태
   let pdfDoc = null;
   let pageNum = 1;
@@ -246,7 +287,7 @@
     // ==========================================
     // 마우스 클릭-유지 후 드래그(팬) 이동 기능
     // ==========================================
-let isDragging = false;
+    let isDragging = false;
     let startX, startY;
 
     if (els.canvas) {
@@ -294,6 +335,7 @@ let isDragging = false;
   }
 
   async function init() {
+    applyCustomFonts(); // 폰트 적용 함수 실행
     attachEvents();
     setStatus();
     setNavDisabled();
@@ -322,20 +364,10 @@ let isDragging = false;
     } catch (err) {
       console.error(err);
 
-      const looksLikeRelease =
-        typeof direct === 'string' && direct.includes('/releases/') && direct.includes('/download/');
-
-      const extra =
-        looksLikeRelease
-          ? '<br /><br />' +
-            '원인이 <strong>GitHub Releases 자산(CORS 제한)</strong>일 가능성이 큽니다.<br />' +
-            '이 경우 pdf.js로는 직접 불러올 수 없고, <strong>프록시</strong>를 설정해야 미리보기가 됩니다.'
-          : '';
-
+      // CORS 경고문 제거, 깔끔한 기본 에러 문구만 출력
       showError(
         '<strong>PDF를 미리보기로 불러오지 못했습니다.</strong><br />' +
-        '대신 상단의 <strong>다운로드</strong> 버튼으로 파일을 저장해 열어보세요.' +
-        extra
+        '상단의 <strong>다운로드</strong> 버튼으로 파일을 저장해 열어주세요.'
       );
 
       setNavDisabled(); // 에러 시 모든 버튼/입력창 비활성화
