@@ -1,4 +1,4 @@
-/* menu.js - v4.3.1 (테마 색상 푸른색으로 변경 - PAINS Unified Blue Theme) */
+/* menu.js - v4.3 (너비 제어권 HTML로 위임, Sticky Footer, 글로벌 폰트 관리, 사이드바 스크롤 개선) */
 
 const PAINS_LAYOUT = {
     brandText: 'Providing Academic INsights for Sports.',
@@ -139,7 +139,7 @@ function ensureLayoutShell() {
 }
 
 function loadSidebar(currentPage) {
-    console.log('PAINS Menu v4.3.1 Loaded (Unified Blue Theme)');
+    console.log('PAINS Menu v4.3 Loaded (Width Control Delegated to HTML)');
 
     const { header, sidebar, overlay, footer } = ensureLayoutShell();
     if (!header || !sidebar || !overlay || !footer) return;
@@ -189,7 +189,7 @@ function initGlobalStyles() {
         /* 1. 글로벌 폰트 불러오기 (@font-face)       */
         /* ========================================== */
         
-        /* ATOZ5 */
+        /* 🎯 제목용 폰트 (ATOZ5) */
         @font-face { 
             font-family: 'ATOZ5'; 
             src: url('fonts/ATOZ5.woff2') format('woff2'); 
@@ -197,7 +197,7 @@ function initGlobalStyles() {
             font-style: normal; 
         }
 
-        /* ATOZ4 */
+        /* 📖 본문용 폰트 (ATOZ4) */
         @font-face { 
             font-family: 'ATOZ4'; 
             src: url('fonts/ATOZ4.woff2') format('woff2'); 
@@ -206,15 +206,9 @@ function initGlobalStyles() {
         }
 
         :root {
-            /* 🎯 붉은색(#ab3333) -> 로고와 동일한 진한 푸른색(#1A365D)으로 변경 */
-            --pains-accent: #1A365D;
-            
-            /* 🎯 짙은 붉은색(#8f2a2a) -> 더 짙은 남색(#0f2041)으로 변경 */
-            --pains-accent-strong: #0f2041;
-            
-            /* 🎯 연한 붉은색 워시(#f4e9eb) -> 연한 푸른색 워시(#e8eef5)로 변경 */
-            --pains-accent-soft: #e8eef5;
-            
+            --pains-accent: #ab3333;
+            --pains-accent-strong: #8f2a2a;
+            --pains-accent-soft: #f4e9eb;
             --pains-text: #18202a;
             --pains-muted: #647084;
             --pains-border: #d8dee8;
@@ -239,12 +233,12 @@ function initGlobalStyles() {
         body.pains-theme {
             font-family: 'ATOZ4', sans-serif !important;
             background:
-                /* 🎯 배경 좌상단 워시 효과: 연한 붉은색 -> 연한 푸른색(26, 54, 93)으로 변경 */
-                radial-gradient(circle at top left, rgba(26, 54, 93, 0.07), transparent 28%),
+                radial-gradient(circle at top left, rgba(171, 51, 51, 0.07), transparent 28%),
                 linear-gradient(180deg, #f8f9fb 0%, var(--pains-bg) 100%) !important;
             color: var(--pains-text) !important;
             padding-top: calc(var(--pains-header-height) + 18px) !important;
             
+            /* Sticky Footer를 위한 속성 */
             min-height: 100vh;
             display: flex !important;
             flex-direction: column !important;
@@ -283,11 +277,9 @@ function initGlobalStyles() {
         }
 
         body.pains-theme .hero {
-            /* 🎯 메인 상자 배경 그라데이션: 남색 -> 진한 파란색으로 변경 */
             background: linear-gradient(135deg, var(--pains-accent-strong), var(--pains-accent)) !important;
             border-radius: 30px;
-            /* 🎯 그림자도 푸른 톤(26, 54, 93)으로 변경 */
-            box-shadow: 0 24px 60px rgba(26, 54, 93, 0.28);
+            box-shadow: 0 24px 60px rgba(127, 22, 33, 0.28);
             overflow: hidden;
         }
 
@@ -411,18 +403,15 @@ function initGlobalStyles() {
 
         body.pains-theme .sidebar a:hover {
             background: #fff !important;
-            color: var(--pains-accent) !important; /* var 변수 사용으로 푸른색으로 자동 변경 */
-            /* 🎯 테두리 워시: 붉은색 -> 푸른색(26, 54, 93)으로 변경 */
-            border-color: rgba(26, 54, 93, 0.14) !important;
+            color: var(--pains-accent) !important;
+            border-color: rgba(171, 51, 51, 0.14) !important;
             transform: translateX(2px);
         }
 
         body.pains-theme .sidebar a.active-link {
-            /* 🎯 활성화 메뉴 배경: 붉은색 그라데이션 -> 푸른색(26, 54, 93) 그라데이션으로 변경 */
-            background: linear-gradient(135deg, rgba(26, 54, 93, 0.11), rgba(26, 54, 93, 0.04)) !important;
-            color: var(--pains-accent) !important; /* 푸른색 */
-            /* 🎯 테두리: 붉은색 -> 푸른색(26, 54, 93)으로 변경 */
-            border-color: rgba(26, 54, 93, 0.2) !important;
+            background: linear-gradient(135deg, rgba(171, 51, 51, 0.11), rgba(171, 51, 51, 0.04)) !important;
+            color: var(--pains-accent) !important;
+            border-color: rgba(171, 51, 51, 0.2) !important;
             font-weight: 800 !important;
         }
 
@@ -444,8 +433,7 @@ function initGlobalStyles() {
             opacity: 0;
             margin: -2px 0 2px;
             padding-left: 8px;
-            /* 🎯 서브메뉴 왼쪽 라인: 붉은색 -> 푸른색(26, 54, 93)으로 변경 */
-            border-left: 2px solid rgba(26, 54, 93, 0.09);
+            border-left: 2px solid rgba(171, 51, 51, 0.09);
             background: transparent !important;
             transition: max-height 0.28s ease, opacity 0.22s ease, margin 0.22s ease;
         }
@@ -466,9 +454,8 @@ function initGlobalStyles() {
 
         body.pains-theme .submenu a:hover,
         body.pains-theme .submenu a.active-link {
-            color: var(--pains-accent) !important; /* 푸른색 */
-            /* 🎯 서브메뉴 호버 배경: 붉은색 -> 푸른색(26, 54, 93) 워시로 변경 */
-            background: rgba(26, 54, 93, 0.06) !important;
+            color: var(--pains-accent) !important;
+            background: rgba(171, 51, 51, 0.06) !important;
         }
 
         body.pains-theme .overlay {
@@ -492,7 +479,7 @@ function initGlobalStyles() {
         body.pains-theme .pains-footer {
             width: 100%;
             max-width: none;
-            margin-top: auto !important;
+            margin-top: auto !important; /* 항상 화면 맨 아래로 푸시 */
             padding: 28px 24px !important;
             border-top: 1px solid rgba(216, 222, 232, 0.95);
             border-left: none;
@@ -528,10 +515,8 @@ function initGlobalStyles() {
 
         body.pains-theme .icon-btn:hover {
             transform: translateY(-2px);
-            /* 🎯 소셜 아이콘 호버 테두리: 붉은색 -> 푸른색(26, 54, 93)으로 변경 */
-            border-color: rgba(26, 54, 93, 0.28);
-            /* 🎯 호버 그림자: 붉은색 톤 -> 푸른색 톤으로 변경 */
-            box-shadow: 0 12px 26px rgba(26, 54, 93, 0.12);
+            border-color: rgba(171, 51, 51, 0.28);
+            box-shadow: 0 12px 26px rgba(171, 51, 51, 0.12);
             background: #fff !important;
         }
 
@@ -565,7 +550,7 @@ function initGlobalStyles() {
         body.pains-theme .calendar-title,
         body.pains-theme .calendar-nav-btn:hover,
         body.pains-theme .inline-link:hover {
-            color: var(--pains-accent) !important; /* var 변수 사용으로 푸른색으로 자동 변경 */
+            color: var(--pains-accent) !important;
         }
 
         body.pains-theme button,
@@ -583,12 +568,10 @@ function initGlobalStyles() {
         body.pains-theme .btn:not(.btn-today-reset),
         body.pains-theme button[type="submit"],
         body.pains-theme input[type="submit"] {
-            /* 🎯 제출 버튼 그라데이션: 남색 -> 진한 파란색 그라데이션으로 변경 (var 변수 자동 적용) */
             background: linear-gradient(135deg, var(--pains-accent), var(--pains-accent-strong)) !important;
             color: #fff !important;
             border: none !important;
-            /* 🎯 버튼 그림자: 붉은색 톤 -> 푸른색 톤(26, 54, 93)으로 변경 */
-            box-shadow: 0 14px 26px rgba(26, 54, 93, 0.22);
+            box-shadow: 0 14px 26px rgba(171, 51, 51, 0.22);
         }
 
         body.pains-theme .btn-today-reset {
