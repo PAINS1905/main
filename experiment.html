@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PAINS - 활동 및 결석 현황</title>
     <style>
+        /* (기존 CSS 스타일 그대로 유지) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'ATOZ4', sans-serif; background-color: #f3f5f8; }
         h1, h2, h3, .number { font-family: 'ATOZ5', sans-serif; }
@@ -167,67 +168,21 @@
         .no-event { text-align: center; color: #888; padding: 30px 20px; font-size: 0.95rem; }
 
         .status-modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.22);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.18s ease;
-            z-index: 9998;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.22); opacity: 0; pointer-events: none; transition: opacity 0.18s ease; z-index: 9998;
         }
 
-        .status-modal-overlay.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .status-modal-overlay.show { opacity: 1; pointer-events: auto; }
 
         .status-modal {
-            position: fixed;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%) scale(0.96);
-            width: min(420px, calc(100% - 40px));
-            background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 18px 40px rgba(0,0,0,0.20);
-            padding: 20px 18px;
-            z-index: 9999;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.18s ease, transform 0.18s ease;
-            text-align: left;
+            position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0.96); width: min(420px, calc(100% - 40px));
+            background: #fff; border-radius: 18px; box-shadow: 0 18px 40px rgba(0,0,0,0.20); padding: 20px 18px; z-index: 9999;
+            opacity: 0; pointer-events: none; transition: opacity 0.18s ease, transform 0.18s ease; text-align: left;
         }
 
-        .status-modal.show {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .status-modal-title {
-            font-size: 1rem;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .status-modal-desc {
-            font-size: 0.94rem;
-            color: #555;
-            line-height: 1.6;
-            word-break: keep-all;
-        }
-
-        .status-modal-close {
-            margin-top: 14px;
-            display: inline-block;
-            padding: 8px 14px;
-            border: none;
-            border-radius: 10px;
-            background: #444;
-            color: #fff;
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
+        .status-modal.show { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+        .status-modal-title { font-size: 1rem; font-weight: bold; margin-bottom: 8px; }
+        .status-modal-desc { font-size: 0.94rem; color: #555; line-height: 1.6; word-break: keep-all; }
+        .status-modal-close { margin-top: 14px; display: inline-block; padding: 8px 14px; border: none; border-radius: 10px; background: #444; color: #fff; font-size: 0.9rem; cursor: pointer; }
     </style>
 
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -383,10 +338,11 @@
     </script>
     
     <script>
-        loadSidebar('attendance');
-
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7shd9op70ZSSuEYe3Iod6wSoRfQ_UKLs7DU1TdOAWoFr1Xr-d8ZDzBBQ_Iq1kEivPg/exec";
+        // 전역 변수로 선언하여 모듈 스크립트에서도 쓸 수 있도록 합니다.
+        window.SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7shd9op70ZSSuEYe3Iod6wSoRfQ_UKLs7DU1TdOAWoFr1Xr-d8ZDzBBQ_Iq1kEivPg/exec";
         const SCHEDULE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBnuUvyE2CDV-hG26xCVdnt88JhQgtusdEndJwTzaI62TXPdWTNldVvua9RLkXj1s34qiM0CEcNvbr/pub?gid=305458048&single=true&output=csv";
+
+        loadSidebar('attendance');
 
         const STATUS_DESCRIPTIONS = {
             "출석": "활동에 정상적으로 참여하여 출석으로 처리된 상태입니다.",
@@ -404,66 +360,35 @@
 
         function getAttendanceStatusMeta(rawStatus, isIrregular = false) {
             const status = String(rawStatus || "").trim();
-
-            if (!status) {
-                return { text: "-", className: "status-default", hoverable: false };
-            }
-
-            if (status === "출석") {
-                return { text: status, className: "status-blue", hoverable: true };
-            }
-
-            if (isIrregular && status === "결석") {
-                return { text: status, className: "status-red", hoverable: true };
-            }
-
-            if (
-                status === "사전 통지 결석" ||
-                status === "사전 통지 지각" ||
-                status === "사전 통지 조퇴"
-            ) {
+            if (!status) return { text: "-", className: "status-default", hoverable: false };
+            if (status === "출석") return { text: status, className: "status-blue", hoverable: true };
+            if (isIrregular && status === "결석") return { text: status, className: "status-red", hoverable: true };
+            
+            if (["사전 통지 결석", "사전 통지 지각", "사전 통지 조퇴"].includes(status)) {
                 return { text: status, className: "status-green", hoverable: true };
             }
-
-            if (
-                status === "무단 지각" ||
-                status === "무단 조퇴" ||
-                status === "무단 결석"
-            ) {
+            if (["무단 지각", "무단 조퇴", "무단 결석"].includes(status)) {
                 return { text: status, className: "status-red", hoverable: true };
             }
-
-            if (
-                status === "인정 지각" ||
-                status === "인정 결석" ||
-                status === "인정 조퇴"
-            ) {
+            if (["인정 지각", "인정 결석", "인정 조퇴"].includes(status)) {
                 return { text: status, className: "status-yellow", hoverable: true };
             }
-
             return { text: "-", className: "status-default", hoverable: false };
         }
 
         function renderAttendanceTable(containerId, items, isIrregular = false) {
             const tbody = document.getElementById(containerId);
-
             if (!Array.isArray(items) || items.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td class="activity-name">-</td>
-                        <td class="activity-status status-default">-</td>
-                    </tr>
-                `;
+                tbody.innerHTML = `<tr><td class="activity-name">-</td><td class="activity-status status-default">-</td></tr>`;
                 return;
             }
 
             let html = "";
-
             items.forEach(item => {
                 const title = String(item.title || "").trim() || "-";
                 const meta = getAttendanceStatusMeta(item.status, isIrregular);
-
                 let statusHtml = escapeHtml(meta.text);
+                
                 if (meta.hoverable && meta.text !== "-") {
                     statusHtml = `<span class="status-hoverable" data-status="${escapeHtml(meta.text)}">${escapeHtml(meta.text)}</span>`;
                 }
@@ -475,29 +400,19 @@
                     </tr>
                 `;
             });
-
             tbody.innerHTML = html;
             bindStatusModalEvents();
         }
 
         function escapeHtml(str) {
-            return String(str)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+            return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
 
         function showStatusModal(statusText) {
             const overlay = document.getElementById("status-modal-overlay");
             const modal = document.getElementById("status-modal");
-            const title = document.getElementById("status-modal-title");
-            const desc = document.getElementById("status-modal-desc");
-
-            title.textContent = statusText;
-            desc.textContent = STATUS_DESCRIPTIONS[statusText] || "출석 상태에 대한 설명입니다.";
-
+            document.getElementById("status-modal-title").textContent = statusText;
+            document.getElementById("status-modal-desc").textContent = STATUS_DESCRIPTIONS[statusText] || "출석 상태에 대한 설명입니다.";
             overlay.classList.add("show");
             modal.classList.add("show");
         }
@@ -508,27 +423,18 @@
         }
 
         function bindStatusModalEvents() {
-            const clickableStatuses = document.querySelectorAll(".status-hoverable");
-
-            clickableStatuses.forEach(el => {
+            document.querySelectorAll(".status-hoverable").forEach(el => {
                 el.onclick = (e) => {
                     e.stopPropagation();
-                    const status = el.getAttribute("data-status");
-                    showStatusModal(status);
+                    showStatusModal(el.getAttribute("data-status"));
                 };
             });
         }
 
         document.getElementById("status-modal-overlay").addEventListener("click", hideStatusModal);
         document.getElementById("status-modal-close").addEventListener("click", hideStatusModal);
-
-        document.getElementById("status-modal").addEventListener("click", function(e) {
-            e.stopPropagation();
-        });
-
-        document.addEventListener("keydown", function(e) {
-            if (e.key === "Escape") hideStatusModal();
-        });
+        document.getElementById("status-modal").addEventListener("click", e => e.stopPropagation());
+        document.addEventListener("keydown", e => { if (e.key === "Escape") hideStatusModal(); });
 
         async function checkUsedCount() {
             document.getElementById('check-id').blur();
@@ -536,7 +442,6 @@
             
             const id = document.getElementById('check-id').value.trim();
             const name = document.getElementById('check-name').value.trim();
-            
             if (!id || !name) { alert("학번과 이름을 입력해주세요."); return; }
 
             const btn = document.getElementById('btn-check-submit');
@@ -546,7 +451,7 @@
             btn.innerText = "조회 중...";
             
             try {
-                const response = await fetch(`${SCRIPT_URL}?type=attendance&id=${encodeURIComponent(id)}&name=${encodeURIComponent(name)}`);
+                const response = await fetch(`${window.SCRIPT_URL}?type=attendance&id=${encodeURIComponent(id)}&name=${encodeURIComponent(name)}`);
                 const data = await response.json();
 
                 if (data.result === "success") {
@@ -556,7 +461,6 @@
                     
                     let rawRate = String(data.attendanceRate).replace('%', '').trim();
                     let rateNum = parseFloat(rawRate);
-
                     if (isNaN(rateNum)) rateNum = 0;
                     if (rateNum < 0) rateNum = 0;
                     if (rateNum > 100) rateNum = 100;
@@ -571,23 +475,11 @@
                     const statusText = document.getElementById('member-status');
                     const statusLabel = document.getElementById('status-label');
 
-                    let bgColor = "#f5f5f5";
-                    let textColor = "#333";
-                    let hasCustomColor = false;
+                    let bgColor = "#f5f5f5", textColor = "#333", hasCustomColor = false;
 
-                    if (statusName.includes('준회원')) {
-                        bgColor = '#c4eed0';
-                        textColor = '#0a6442';
-                        hasCustomColor = true;
-                    } else if (statusName.includes('정회원')) {
-                        bgColor = '#d3e3fd';
-                        textColor = '#0c579b';
-                        hasCustomColor = true;
-                    } else if (statusName.includes('활동OB')) {
-                        bgColor = '#eaddff';
-                        textColor = '#52217c';
-                        hasCustomColor = true;
-                    }
+                    if (statusName.includes('준회원')) { bgColor = '#c4eed0'; textColor = '#0a6442'; hasCustomColor = true; } 
+                    else if (statusName.includes('정회원')) { bgColor = '#d3e3fd'; textColor = '#0c579b'; hasCustomColor = true; } 
+                    else if (statusName.includes('활동OB')) { bgColor = '#eaddff'; textColor = '#52217c'; hasCustomColor = true; }
 
                     if (hasCustomColor) {
                         statusBadge.style.backgroundColor = bgColor;
@@ -624,7 +516,6 @@
 
         async function loadUpcomingEvents() {
             const container = document.getElementById('event-list-container');
-            
             try {
                 const response = await fetch(SCHEDULE_CSV_URL);
                 const data = await response.text();
@@ -681,7 +572,31 @@
             }
         }
 
-        async function submitAbsence() {
+        loadUpcomingEvents();
+    </script>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+        // doc과 setDoc 함수가 추가되었습니다.
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_NFkxSRQ9hkxuSdiwtqpBhhP0mN5jUTg",
+            authDomain: "attendance-6ee39.firebaseapp.com",
+            projectId: "attendance-6ee39",
+            storageBucket: "attendance-6ee39.firebasestorage.app",
+            messagingSenderId: "604064062511",
+            appId: "1:604064062511:web:80fade1c35157b688efada",
+            measurementId: "G-7J2BLPRPNN"
+        };
+    
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+
+        // window.submitAbsence 함수 재정의 (GAS 검증 + Firebase 커스텀 ID 저장 + GAS 이중 저장)
+        window.submitAbsence = async function() {
             const id = document.getElementById('submit-id').value.trim();
             const name = document.getElementById('submit-name').value.trim();
             const selected = document.querySelector('input[name="selected_event"]:checked');
@@ -701,8 +616,9 @@
             btn.innerText = "정보 확인 중...";
 
             try {
+                // 1. [유효성 & 중복 검사] 구글 시트(GAS)를 통한 검증
                 const encodedEventName = encodeURIComponent(eventName);
-                const checkResponse = await fetch(`${SCRIPT_URL}?type=attendance&id=${encodeURIComponent(id)}&name=${encodeURIComponent(name)}&eventName=${encodedEventName}`);
+                const checkResponse = await fetch(`${window.SCRIPT_URL}?type=attendance&id=${encodeURIComponent(id)}&name=${encodeURIComponent(name)}&eventName=${encodedEventName}`);
                 const checkData = await checkResponse.json();
 
                 if (checkData.result === 'duplicate') {
@@ -712,110 +628,73 @@
                     return; 
                 }
 
-                if (checkData.result === 'fail') {
+                if (checkData.result === 'fail' || checkData.result === 'invalid_member') {
                     alert("일치하는 부원 정보가 없습니다.\n학번과 이름을 다시 확인해주세요.");
                     btn.disabled = false;
                     btn.innerText = originalBtnText;
                     return; 
                 }
 
-            } catch (e) {
-                console.error(e);
-                alert("서버 연결 중 오류가 발생했습니다.");
-                btn.disabled = false;
-                btn.innerText = originalBtnText;
-                return;
-            }
+                // 2. 제출 확인 알림창
+                if (!confirm(`[${eventName}] 활동에 대해\n[${absenceType}] 결석계를 제출하시겠습니까?`)) {
+                    btn.disabled = false;
+                    btn.innerText = originalBtnText;
+                    return;
+                }
 
-            if (!confirm(`[${eventName}] 활동에 대해\n[${absenceType}] 결석계를 제출하시겠습니까?`)) {
-                btn.disabled = false;
-                btn.innerText = originalBtnText;
-                return;
-            }
+                btn.innerText = "데이터 저장 중...";
 
-            btn.innerText = "제출 중...";
-
-            fetch(SCRIPT_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    id: id,
+                // ==========================================
+                // 3. [저장 1] Firebase Firestore에 데이터 저장
+                // ==========================================
+                // 요구사항 반영: 학번_일정날짜 조합으로 커스텀 문서 ID 생성
+                const customDocumentId = `${id}_${dateStr}`; 
+                
+                const firebaseSubmitData = {
+                    studentId: id,
                     name: name,
                     eventName: eventName,
                     date: dateStr,
-                    absenceType: absenceType 
-                })
-            })
-            .then(() => {
-                alert("결석계가 제출되었습니다.");
-                const checkedRadio = document.querySelector('input[name="selected_event"]:checked');
-                if (checkedRadio) checkedRadio.checked = false;
+                    absenceType: absenceType,
+                    timestamp: new Date()
+                };
+
+                // setDoc을 사용하여 문서 이름 직접 지정
+                await setDoc(doc(db, "attendance", customDocumentId), firebaseSubmitData);
+
+                // ==========================================
+                // 4. [저장 2] Google Sheet(GAS)에 기존 방식 이중 저장
+                // ==========================================
+                await fetch(window.SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        id: id,
+                        name: name,
+                        eventName: eventName,
+                        date: dateStr,
+                        absenceType: absenceType 
+                    })
+                });
+
+                // 최종 완료 알림 및 입력 폼 초기화
+                alert("결석계가 성공적으로 제출 및 이중 저장되었습니다.");
+                selected.checked = false;
                 document.getElementById('submit-type').value = "결석";
-            })
-            .catch(err => {
-                console.error(err);
-                alert("제출 중 오류가 발생했습니다.");
-            })
-            .finally(() => {
+                
+                // 원하신다면 제출 후 학번과 이름을 비울 수도 있습니다.
+                // document.getElementById('submit-id').value = "";
+                // document.getElementById('submit-name').value = "";
+
+            } catch (err) {
+                console.error("데이터 처리 중 오류 발생:", err);
+                alert("제출 중 서버 연결 오류가 발생했습니다. 다시 시도해주세요.");
+            } finally {
                 btn.disabled = false;
-                btn.innerText = "제출하기";
-            });
-        }
-
-        loadUpcomingEvents();
-    </script>
-    
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
-        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
-        
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-    
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-            apiKey: "AIzaSyD_NFkxSRQ9hkxuSdiwtqpBhhP0mN5jUTg",
-            authDomain: "attendance-6ee39.firebaseapp.com",
-            projectId: "attendance-6ee39",
-            storageBucket: "attendance-6ee39.firebasestorage.app",
-            messagingSenderId: "604064062511",
-            appId: "1:604064062511:web:80fade1c35157b688efada",
-            measurementId: "G-7J2BLPRPNN"
-        };
-    
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-
-        // 🔥 추가된 부분: 데이터베이스(db) 연결
-        const db = getFirestore(app);
-
-        console.log("🔥 Firebase 및 Firestore 데이터베이스 연결 성공!", db);
-
-        window.submitAbsence = async function() {
-            const testData = {
-                studentId: "2020123456",
-                name: "홍길동",
-                status: "결석",
-                timestamp: new Date()
-            };
-
-            try {
-                const docRef = await addDoc(collection(db, "attendance"), testData);
-
-                console.log("저장 성공! 문서 ID: ", docRef.id);
-                alert("성공적으로 제출되었습니다!");
-            } catch (e) {
-                console.error("오류 발생: ", e);
-                alert("제출에 실패했습니다.");
+                btn.innerText = originalBtnText;
             }
-        };
-        
+        }
     </script>
-
 </body>
 </html>
