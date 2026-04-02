@@ -8,14 +8,21 @@
         /* ============================ */
         /* [1] 폰트 및 공통 스타일        */
         /* ============================ */
-        @font-face { font-family: 'KBO_Dia'; src: url('KBO_medium.woff') format('woff'); font-weight: normal; font-style: normal; }
-        @font-face { font-family: 'SCDream'; src: url('SCDream5.otf'); font-weight: normal; font-style: normal; }
+        @font-face { 
+            font-family: 'ATOZ4'; 
+            /* 가지고 계신 폰트 파일 확장자(.woff, .ttf, .otf 등)에 맞게 로드되도록 다중 지정해 두었습니다 */
+            src: url('fonts/ATOZ4.woff') format('woff'), 
+                 url('fonts/ATOZ4.ttf') format('truetype'),
+                 url('fonts/ATOZ4.otf') format('opentype');
+            font-weight: normal; 
+            font-style: normal; 
+        }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            font-family: 'SCDream', sans-serif; 
+            font-family: 'ATOZ4', sans-serif; 
             line-height: 1.6; 
-            background-color: #f9f9f9; /* 기존 HTML 배경색 */
+            background-color: #f9f9f9; 
             display: flex;
             justify-content: center;
         }
@@ -42,7 +49,7 @@
             flex-grow: 1;
         }
 
-        h2, h3 { font-family: 'KBO_Dia', sans-serif; color: #333; }
+        h2, h3 { font-family: 'ATOZ4', sans-serif; color: #333; }
 
         /* ============================ */
         /* [3] 진행도 (Progress Bar)    */
@@ -64,7 +71,7 @@
         }
         .progress-bar-fill {
             height: 100%;
-            background-color: #990000; /* 기존 HTML 포인트 컬러 */
+            background-color: #990000; 
             width: 0%;
             transition: width 0.3s ease;
         }
@@ -92,7 +99,6 @@
             gap: 15px;
         }
 
-        /* 기존 HTML의 ci-btn 스타일 응용 */
         .ci-btn {
             display: flex;
             align-items: center;
@@ -103,8 +109,8 @@
             background-color: #990000; 
             color: white;
             border: none;
-            border-radius: 4px;
-            font-family: 'SCDream', sans-serif;
+            border-radius: 12px; /* 약간 둥근 모서리로 수정 */
+            font-family: 'ATOZ4', sans-serif;
             font-size: 1rem;
             cursor: pointer;
             word-break: keep-all;
@@ -146,7 +152,7 @@
             <div id="quiz-screen" style="display: flex; flex-direction: column; flex-grow: 1;">
                 
                 <div class="progress-info">
-                    <span>ⓒ 망이_wmntk</span>
+                    <span>Providing Academic INsights for Sports.</span>
                     <span id="step-counter">1/12</span>
                 </div>
                 <div class="progress-bar-bg">
@@ -174,7 +180,6 @@
     </div>
 
     <script>
-        // 12개의 임의 문제 데이터 배열
         const qnaList = [
             { q: "친구가 갑자기 오늘 저녁에 만나자고 한다. 당신의 반응은?", a: "완전 좋아! 어디서 만날까?", b: "아... 오늘은 집에서 쉬고 싶은데..." },
             { q: "새로운 모임에 나갔을 때 나는?", a: "먼저 사람들에게 다가가 대화를 주도한다.", b: "누군가 내게 말을 걸어주기를 기다린다." },
@@ -193,7 +198,6 @@
         const totalSteps = qnaList.length;
         let currentStep = 0;
         
-        // 사용자의 선택을 저장할 객체
         let scores = { A: 0, B: 0 };
 
         const stepCounter = document.getElementById("step-counter");
@@ -219,7 +223,6 @@
         }
 
         function nextQuestion(choice) {
-            // 선택한 버튼에 따라 점수 누적
             if (choice === 'A') {
                 scores.A += 1;
             } else if (choice === 'B') {
@@ -230,18 +233,16 @@
             
             if (currentStep >= totalSteps) {
                 progressFill.style.width = "100%";
-                setTimeout(showResult, 300); // 0.3초 대기 후 결과 화면 표시 (애니메이션 완료 대기)
+                setTimeout(showResult, 300); 
             } else {
                 renderQuestion();
             }
         }
 
-        // 결과 화면 출력 로직
         function showResult() {
             quizScreen.style.display = "none";
             resultScreen.style.display = "flex";
 
-            // 임시 결과 도출 (A를 많이 골랐는지, B를 많이 골랐는지 판별)
             if (scores.A > scores.B) {
                 resultTitle.innerText = "당신은 열정적인 행동파!";
                 resultDesc.innerText = "생각보다 행동이 앞서는 타입이시군요. 계획보다는 본능과 직관에 이끌려 움직일 때 더 큰 에너지를 얻는 편입니다. 붉은색과 잘 어울리는 역동적인 성향을 가지고 계시네요!";
@@ -251,7 +252,6 @@
             }
         }
 
-        // 초기 화면 렌더링
         renderQuestion();
     </script>
 </body>
