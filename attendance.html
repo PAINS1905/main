@@ -546,7 +546,7 @@
             btn.innerText = "조회 중...";
             
             try {
-                const response = await fetch(`${SCRIPT_URL}?type=attendance&id=${encodeURIComponent(id)}&name=${encodeURIComponent(name)}`);
+                const response = await fetch(`${SCRIPT_URL}?type=attendance&id=${encodeURIComponent(id)}&name=${encodeURIComponent(name)}&token=PAINS_2026_CUSTOM_KEY`);
                 const data = await response.json();
 
                 if (data.result === "success") {
