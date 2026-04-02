@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>심리테스트</title>
+    <title>PAINS 심리테스트</title>
     <style>
         /* ============================ */
         /* [1] 폰트 및 공통 스타일        */
@@ -15,46 +15,43 @@
         body { 
             font-family: 'SCDream', sans-serif; 
             line-height: 1.6; 
-            background-color: #f9f9f9; 
+            background-color: #f9f9f9; /* 기존 HTML 배경색 */
             display: flex;
-            justify-content: center; /* 화면 중앙 배치 (PC 환경 고려) */
+            justify-content: center;
         }
 
         /* ============================ */
-        /* [2] 테스트 UI 메인 컨테이너    */
+        /* [2] 메인 컨테이너 및 카드      */
         /* ============================ */
-        .app-container {
-            width: 100%;
-            max-width: 480px; /* 모바일 화면 크기에 맞춤 */
-            min-height: 100vh;
-            background-color: #ffffff;
+        .container { 
+            width: 100%; 
+            max-width: 480px; 
+            min-height: 100vh; 
+            padding: 2rem 1.5rem; 
             display: flex;
             flex-direction: column;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.05);
         }
 
-        /* 상단 네비게이션 바 (가짜 UI) */
-        .top-nav {
+        .section-card {
+            background: white; 
+            border-radius: 12px; 
+            padding: 2rem; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid #f0f0f0;
+            flex-direction: column;
+            flex-grow: 1;
         }
-        .top-nav .menu-icon, .top-nav .right-icons { font-size: 20px; font-weight: bold; color: #333; }
-        .top-nav .logo { font-family: 'KBO_Dia', sans-serif; font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
-        .top-nav .logo-icon { width: 20px; height: 15px; background: #4a6ee0; border-radius: 10px; }
 
-        /* 진행도 영역 */
-        .progress-section {
-            padding: 20px 20px 10px;
-        }
+        h2, h3 { font-family: 'KBO_Dia', sans-serif; color: #333; }
+
+        /* ============================ */
+        /* [3] 진행도 (Progress Bar)    */
+        /* ============================ */
         .progress-info {
             display: flex;
             justify-content: space-between;
             font-size: 0.85rem;
-            color: #666;
+            color: #555;
             margin-bottom: 8px;
         }
         .progress-bar-bg {
@@ -63,79 +60,91 @@
             background-color: #e0e0e0;
             border-radius: 3px;
             overflow: hidden;
+            margin-bottom: 40px;
         }
         .progress-bar-fill {
             height: 100%;
-            background-color: #c4b5fd; /* 연보라색 */
+            background-color: #990000; /* 기존 HTML 포인트 컬러 */
             width: 0%;
             transition: width 0.3s ease;
         }
 
-        /* 문제 영역 */
+        /* ============================ */
+        /* [4] 질문 및 버튼 영역          */
+        /* ============================ */
         .question-section {
             flex-grow: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 30px;
             text-align: center;
+            margin-bottom: 40px;
         }
         .question-text {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             word-break: keep-all;
-            color: #222;
+            line-height: 1.5;
         }
 
-        /* 선택지 버튼 영역 */
         .answer-section {
-            padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            margin-bottom: 30px;
         }
-        .answer-btn {
+
+        /* 기존 HTML의 ci-btn 스타일 응용 */
+        .ci-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             width: 100%;
-            min-height: 80px;
+            min-height: 70px;
             padding: 15px 20px;
-            background-color: #cba6f7; /* 사진과 유사한 연보라색 */
+            background-color: #990000; 
             color: white;
             border: none;
-            border-radius: 0; /* 사진처럼 각진 형태 */
+            border-radius: 4px;
             font-family: 'SCDream', sans-serif;
             font-size: 1rem;
             cursor: pointer;
             word-break: keep-all;
-            transition: background-color 0.2s, transform 0.1s;
+            transition: background-color 0.2s ease;
         }
-        .answer-btn:hover, .answer-btn:active {
-            background-color: #b48eea;
+        .ci-btn:hover {
+            background-color: #6b0d0d;
         }
 
-        /* 결과 화면 (임시) */
+        /* ============================ */
+        /* [5] 결과 화면                  */
+        /* ============================ */
         .result-section {
             display: none;
-            flex-grow: 1;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
+            flex-grow: 1;
+        }
+        .result-title {
+            color: #990000;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        .result-desc {
+            color: #555;
+            font-size: 1rem;
+            line-height: 1.7;
+            word-break: keep-all;
         }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <div class="top-nav">
-            <div class="menu-icon">≡</div>
-            <div class="logo">
-                <div class="logo-icon"></div> poomang
-            </div>
-            <div class="right-icons">🔍 👤</div>
-        </div>
-
-        <div id="quiz-screen" style="display: flex; flex-direction: column; flex-grow: 1;">
-            <div class="progress-section">
+    <div class="container">
+        <div class="section-card">
+            
+            <div id="quiz-screen" style="display: flex; flex-direction: column; flex-grow: 1;">
+                
                 <div class="progress-info">
                     <span>ⓒ 망이_wmntk</span>
                     <span id="step-counter">1/12</span>
@@ -143,21 +152,24 @@
                 <div class="progress-bar-bg">
                     <div class="progress-bar-fill" id="progress-fill"></div>
                 </div>
+
+                <div class="question-section">
+                    <h2 class="question-text" id="q-text">질문 불러오는 중...</h2>
+                </div>
+
+                <div class="answer-section">
+                    <button class="ci-btn" id="btn-a" onclick="nextQuestion('A')">A</button>
+                    <button class="ci-btn" id="btn-b" onclick="nextQuestion('B')">B</button>
+                </div>
             </div>
 
-            <div class="question-section">
-                <h2 class="question-text" id="q-text">질문 불러오는 중...</h2>
+            <div id="result-screen" class="result-section">
+                <h2 class="result-title" id="result-title">결과 타이틀</h2>
+                <p class="result-desc" id="result-desc">결과 설명이 이곳에 표시됩니다.</p>
+                
+                <button class="ci-btn" style="margin-top: 30px; background-color: #333;" onclick="location.reload()">테스트 다시하기</button>
             </div>
 
-            <div class="answer-section">
-                <button class="answer-btn" id="btn-a" onclick="nextQuestion(1)">A</button>
-                <button class="answer-btn" id="btn-b" onclick="nextQuestion(2)">B</button>
-            </div>
-        </div>
-
-        <div id="result-screen" class="result-section">
-            <h2 style="font-family: 'KBO_Dia', sans-serif; margin-bottom: 20px;">테스트 완료!</h2>
-            <p>결과를 계산하고 있습니다...</p>
         </div>
     </div>
 
@@ -180,8 +192,10 @@
 
         const totalSteps = qnaList.length;
         let currentStep = 0;
+        
+        // 사용자의 선택을 저장할 객체
+        let scores = { A: 0, B: 0 };
 
-        // UI 요소 가져오기
         const stepCounter = document.getElementById("step-counter");
         const progressFill = document.getElementById("progress-fill");
         const qText = document.getElementById("q-text");
@@ -189,46 +203,55 @@
         const btnB = document.getElementById("btn-b");
         const quizScreen = document.getElementById("quiz-screen");
         const resultScreen = document.getElementById("result-screen");
+        const resultTitle = document.getElementById("result-title");
+        const resultDesc = document.getElementById("result-desc");
 
-        // 문제 화면 렌더링 함수
         function renderQuestion() {
-            if (currentStep >= totalSteps) {
-                // 모든 문제를 다 풀었을 때 결과 화면으로 전환
-                quizScreen.style.display = "none";
-                resultScreen.style.display = "flex";
-                return;
-            }
-
-            // 현재 문제 데이터 가져오기
             const currentData = qnaList[currentStep];
 
-            // 텍스트 업데이트
             qText.innerText = currentData.q;
             btnA.innerText = currentData.a;
             btnB.innerText = currentData.b;
 
-            // 상단 진행바 및 숫자 업데이트
             stepCounter.innerText = `${currentStep + 1}/${totalSteps}`;
-            const progressPercent = ((currentStep) / totalSteps) * 100; 
-            // 0문제 풀었을 때 0%, 1문제 풀면 약간 차오르는 형태
+            const progressPercent = (currentStep / totalSteps) * 100; 
             progressFill.style.width = progressPercent + "%";
         }
 
-        // 버튼 클릭 시 다음 문제로 넘어가는 함수
         function nextQuestion(choice) {
-            // choice 매개변수 (1 또는 2)를 활용하여 추후 결과 계산 로직에 사용할 수 있습니다.
-            // 예: if (choice === 1) scoreA++; else scoreB++;
+            // 선택한 버튼에 따라 점수 누적
+            if (choice === 'A') {
+                scores.A += 1;
+            } else if (choice === 'B') {
+                scores.B += 1;
+            }
             
             currentStep++;
-            renderQuestion();
-
-            // 진행바가 마지막 문제를 풀 때 100% 꽉 차도록 추가 처리
-            if(currentStep === totalSteps){
-                 progressFill.style.width = "100%";
+            
+            if (currentStep >= totalSteps) {
+                progressFill.style.width = "100%";
+                setTimeout(showResult, 300); // 0.3초 대기 후 결과 화면 표시 (애니메이션 완료 대기)
+            } else {
+                renderQuestion();
             }
         }
 
-        // 초기 화면 세팅
+        // 결과 화면 출력 로직
+        function showResult() {
+            quizScreen.style.display = "none";
+            resultScreen.style.display = "flex";
+
+            // 임시 결과 도출 (A를 많이 골랐는지, B를 많이 골랐는지 판별)
+            if (scores.A > scores.B) {
+                resultTitle.innerText = "당신은 열정적인 행동파!";
+                resultDesc.innerText = "생각보다 행동이 앞서는 타입이시군요. 계획보다는 본능과 직관에 이끌려 움직일 때 더 큰 에너지를 얻는 편입니다. 붉은색과 잘 어울리는 역동적인 성향을 가지고 계시네요!";
+            } else {
+                resultTitle.innerText = "당신은 차분한 사색가!";
+                resultDesc.innerText = "주어진 상황을 논리적으로 분석하고 여유를 즐길 줄 아는 타입이시군요. 외부의 자극보다는 내면의 평화를 중요하게 생각하며, 안정적이고 꼼꼼한 성향을 가지고 계시네요!";
+            }
+        }
+
+        // 초기 화면 렌더링
         renderQuestion();
     </script>
 </body>
