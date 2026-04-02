@@ -140,7 +140,7 @@
 
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL7shd9op70ZSSuEYe3Iod6wSoRfQ_UKLs7DU1TdOAWoFr1Xr-d8ZDzBBQ_Iq1kEivPg/exec";
 
-        async function checkMemberAndFees() {
+async function checkMemberAndFees() {
             const idInput = document.getElementById('check-id');
             const nameInput = document.getElementById('check-name');
             const id = idInput.value.trim();
@@ -155,10 +155,12 @@
             btn.innerText = "확인 중...";
             
             try {
-                const response = await fetch(`${SCRIPT_URL}?id=${id}&name=${name}&type=fee`);
+                // 👇 [수정 1] URL 끝에 보안 토큰(&token=PAINS_2026_CUSTOM_KEY) 추가
+                const response = await fetch(`${SCRIPT_URL}?id=${id}&name=${name}&type=fee&token=PAINS_2026_CUSTOM_KEY`);
                 const data = await response.json();
 
-                if (data.result === "success") {
+                // 👇 [수정 2] data.isMember === true 조건 추가
+                if (data.result === "success" && data.isMember === true) {
                     document.getElementById('user-name-display').innerHTML = `<strong>${name}</strong>`;
                     document.getElementById('auth-section').style.display = 'none'; 
                     document.getElementById('fee-area').style.display = 'block';    
@@ -175,7 +177,7 @@
                 btn.innerText = originalText;
             }
         }
-
+        
         function renderFeeTable(feeData) {
             const tbody = document.getElementById('fee-tbody');
             
