@@ -404,14 +404,14 @@
         function shareKakao() {
             const resultType = resultTitle.innerText;
             // 배포된 웹사이트 주소로 아래 URL들을 변경해야 공유받은 사람이 새 테스트를 할 수 있습니다.
-            const siteUrl = 'https://YOUR_WEBSITE_URL.com'; 
+            const siteUrl = 'https://pains1905.github.io/main/try'; 
             
             Kakao.Share.sendDefault({
                 objectType: 'feed',
                 content: {
                     title: 'PAINS 스포츠 응원 유형 테스트',
                     description: `나의 응원 스타일은 [${resultType}]! 너의 스타일도 확인해봐!`,
-                    imageUrl: 'https://images.unsplash.com/photo-1504450758481-7338eba7524a?auto=format&fit=crop&q=80', // 메인 이미지 주소 (원하는 썸네일 이미지 링크로 교체하세요)
+                    imageUrl: 'images/logo_white_bg', // 메인 이미지 주소 (원하는 썸네일 이미지 링크로 교체하세요)
                     link: {
                         mobileWebUrl: siteUrl,
                         webUrl: siteUrl,
