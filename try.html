@@ -142,7 +142,6 @@
         }
         .question-text {
             font-size: 1.3rem;
-            word-break: keep-all;
             line-height: 1.5;
         }
 
@@ -165,8 +164,8 @@
             border-radius: 12px;
             font-size: 1rem;
             cursor: pointer;
-            word-break: keep-all;
             transition: background-color 0.2s ease;
+            line-height: 1.4;
         }
         .ci-btn:hover {
             background-color: #6b0d0d;
@@ -351,27 +350,26 @@
             const progressPercent = (currentStep / totalSteps) * 100; 
             progressFill.style.width = progressPercent + "%";
             
-            // 텍스트 너비에 맞춰 폰트 사이즈 동적 조절 (기본 크기 지정: 질문 21px, 버튼 16px)
+            // 질문과 선택지의 폰트 크기를 조절
             adjustFontSize(qText, 21);
             adjustFontSize(btnA, 16);
             adjustFontSize(btnB, 16);
         }
 
-        // 컨테이너 너비를 넘어가면 글자 크기를 줄여서 의도치 않은 줄바꿈을 방지하는 함수
         function adjustFontSize(element, maxFontSize) {
             element.style.fontSize = maxFontSize + 'px';
-            element.style.whiteSpace = 'pre'; // 코드 상의 명시적인 \n 외에 임의 줄바꿈 방지
-            element.style.wordBreak = 'keep-all';
+            
+            // 의도한 \n 외에는 절대 줄바꿈이 일어나지 않도록 강제 고정
+            element.style.whiteSpace = 'pre'; 
             
             let currentSize = maxFontSize;
             
-            // 스크롤 너비(내용물 전체 너비)가 요소의 표시 너비보다 크면 폰트 크기 축소
-            while (element.scrollWidth > element.clientWidth && currentSize > 10) {
+            // 약간의 픽셀 오차(패딩 등)를 대비해 안전 여백(buffer) 4px 추가
+            while (element.scrollWidth > element.clientWidth - 4 && currentSize > 10) {
                 currentSize -= 0.5;
                 element.style.fontSize = currentSize + 'px';
             }
-            
-            element.style.whiteSpace = 'pre-wrap'; // 원래 상태로 복구
+            // 여기서 다시 pre-wrap이나 normal로 돌리지 않고 'pre' 상태를 그대로 둡니다!
         }
 
         function nextQuestion(selectedVal) {
@@ -413,13 +411,12 @@
             }
         }
 
-        // 일반 공유 기능 (자신의 정보 포함)
         function shareResult() {
-            const resultType = resultTitle.innerText; // 도출된 결과값
+            const resultType = resultTitle.innerText; 
             const siteUrl = 'https://pains1905.github.io/main/try'; 
             
             const shareTitle = 'PAINS 스포츠 응원 유형 테스트';
-            const shareText = `내 응원 스타일은 [${resultType}]! 너는 어떤 유형이야?`;
+            const shareText = `내 응원 스타일은 ${resultType}야! 너의 응원 유형은 뭐야?`;
 
             if (navigator.share) {
                 navigator.share({
