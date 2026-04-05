@@ -350,26 +350,25 @@
             const progressPercent = (currentStep / totalSteps) * 100; 
             progressFill.style.width = progressPercent + "%";
             
-            // 질문과 선택지의 폰트 크기를 조절
-            adjustFontSize(qText, 21);
-            adjustFontSize(btnA, 16);
-            adjustFontSize(btnB, 16);
+            // 화면에 요소가 확실히 렌더링된 후(너비값이 생긴 후)에 폰트 사이즈를 조절
+            setTimeout(() => {
+                adjustFontSize(qText, 24); // 질문은 최대 24px
+                adjustFontSize(btnA, 20);  // 선택지는 최대 20px
+                adjustFontSize(btnB, 20);
+            }, 0);
         }
 
         function adjustFontSize(element, maxFontSize) {
             element.style.fontSize = maxFontSize + 'px';
-            
-            // 의도한 \n 외에는 절대 줄바꿈이 일어나지 않도록 강제 고정
             element.style.whiteSpace = 'pre'; 
             
             let currentSize = maxFontSize;
             
-            // 약간의 픽셀 오차(패딩 등)를 대비해 안전 여백(buffer) 4px 추가
-            while (element.scrollWidth > element.clientWidth - 4 && currentSize > 10) {
+            // 버튼 내부 패딩 여유분을 넉넉히 고려 (안전 여백 10px)
+            while (element.scrollWidth > element.clientWidth - 10 && currentSize > 10) {
                 currentSize -= 0.5;
                 element.style.fontSize = currentSize + 'px';
             }
-            // 여기서 다시 pre-wrap이나 normal로 돌리지 않고 'pre' 상태를 그대로 둡니다!
         }
 
         function nextQuestion(selectedVal) {
@@ -416,7 +415,7 @@
             const siteUrl = 'https://pains1905.github.io/main/try'; 
             
             const shareTitle = 'PAINS 스포츠 응원 유형 테스트';
-            const shareText = `내 응원 스타일은 ${resultType}야! 너의 응원 유형은 뭐야?`;
+            const shareText = `내 응원 스타일은 ${resultType}! 너의 응원 유형은 뭐야?`;
 
             if (navigator.share) {
                 navigator.share({
