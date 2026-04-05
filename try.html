@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PAINS 스포츠 응원 유형 테스트</title>
-    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCmbV6AUnzrwE00zQ/0Z7//O03348H4eCtL1h2eFEr1hF0kL12uRfwA/00fQkpe" crossorigin="anonymous"></script>
 
     <style>
         /* ============================ */
@@ -167,13 +166,12 @@
             background-color: #6b0d0d;
         }
         
-        /* 카카오톡 공유 버튼 스타일 */
-        .kakao-btn {
-            background-color: #FEE500;
-            color: #000000;
+        /* 일반 공유 버튼 스타일 */
+        .share-btn {
+            background-color: #0056b3;
         }
-        .kakao-btn:hover {
-            background-color: #e6ce00;
+        .share-btn:hover {
+            background-color: #004494;
         }
 
         /* ============================ */
@@ -272,7 +270,7 @@
                 <div class="grid-2x2" id="result-grid"></div>
                 
                 <div class="btn-group">
-                    <button class="ci-btn kakao-btn" onclick="shareKakao()">카카오톡 공유하기</button>
+                    <button class="ci-btn share-btn" onclick="shareResult()">내 결과 공유하기</button>
                     <button class="ci-btn" style="background-color: #333;" onclick="location.reload()">테스트 다시하기</button>
                 </div>
             </div>
@@ -281,10 +279,6 @@
     </div>
 
     <script>
-        // --- (설정 필요) 카카오 API 초기화 ---
-        // 카카오 디벨로퍼스(https://developers.kakao.com)에서 발급받은 'JavaScript 키'를 입력하세요.
-        // Kakao.init('e18b1295b1825d5d0d02c88b4cd9666e'); 
-
         // 1. 질문 리스트 (12문항)
         const originalQnaList = [
             { q: "나는 경기를 예매할 때...", opt1: { text: "예매 시간도 캘린더에 기록해\n항상 정시에 예매한다", val: "J" }, opt2: { text: "오늘 좀 끌리는데?\n오랜만에 한 번 가 볼까?", val: "P" } },
@@ -336,7 +330,6 @@
         const resultTitle = document.getElementById("result-title");
         const resultGrid = document.getElementById("result-grid");
 
-        // 시작하기 버튼 클릭 시 퀴즈 화면으로 전환
         function startTest() {
             startScreen.classList.remove('active');
             quizScreen.classList.add('active');
@@ -400,33 +393,32 @@
             }
         }
 
-        // --- (설정 필요) 카카오톡 결과 공유하기 로직 ---
-        function shareKakao() {
-            const resultType = resultTitle.innerText;
-            // 배포된 웹사이트 주소로 아래 URL들을 변경해야 공유받은 사람이 새 테스트를 할 수 있습니다.
+        // 일반 공유 기능 (자신의 정보 포함)
+        function shareResult() {
+            const resultType = resultTitle.innerText; // 도출된 결과값 (예: ASNJ)
             const siteUrl = 'https://pains1905.github.io/main/try'; 
             
-            Kakao.Share.sendDefault({
-                objectType: 'feed',
-                content: {
-                    title: 'PAINS 스포츠 응원 유형 테스트',
-                    description: `나의 응원 스타일은 [${resultType}]! 너의 스타일도 확인해봐!`,
-                    imageUrl: 'images/logo_white_bg.png', // 메인 이미지 주소 (원하는 썸네일 이미지 링크로 교체하세요)
-                    link: {
-                        mobileWebUrl: siteUrl,
-                        webUrl: siteUrl,
-                    },
-                },
-                buttons: [
-                    {
-                        title: '테스트 하러 가기',
-                        link: {
-                            mobileWebUrl: siteUrl,
-                            webUrl: siteUrl,
-                        },
-                    },
-                ],
-            });
+            const shareTitle = 'PAINS 스포츠 응원 유형 테스트';
+            // 텍스트에 결과값 포함
+            const shareText = `나의 응원 스타일은 [${resultType}]! 너의 스타일도 확인해봐!`;
+
+            // 브라우저가 Web Share API를 지원하는 경우 (모바일 기기 등)
+            if (navigator.share) {
+                navigator.share({
+                    title: shareTitle,
+                    text: shareText,
+                    url: siteUrl
+                }).catch(console.error);
+            } else {
+                // Web Share API를 지원하지 않는 경우 (PC 브라우저 등) 임시 복사 기능
+                const fallbackText = `${shareTitle}\n${shareText}\n${siteUrl}`;
+                
+                navigator.clipboard.writeText(fallbackText).then(() => {
+                    alert('결과가 클립보드에 복사되었습니다! 원하는 곳에 붙여넣기 해주세요.');
+                }).catch(() => {
+                    alert('공유 기능을 지원하지 않는 환경입니다.');
+                });
+            }
         }
     </script>
 </body>
