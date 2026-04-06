@@ -27,7 +27,7 @@ const PAINS_LAYOUT = {
                 { href: 'activity', id: 'activity', label: '프로젝트 아카이브' },
                 { href: 'study', id: 'study', label: '신입부원 스터디' },
                 { href : 'society', id: 'society', label: '소모임' },
-                { href : 'notice', id: 'notice', label: '공지사항' }
+                { href : 'event', id: 'event', label: '이벤트' }
                 /* { href: 'javascript:void(0)', id: 'society', label: '소모임', onclick: "alert('작업 중인 페이지입니다. 추후 개시될 예정이오니 잠시만 기다려주시면 감사하겠습니다.'); return false;" } */
             ]
         },
@@ -36,6 +36,7 @@ const PAINS_LAYOUT = {
             id: 'operating',
             label: '운영',
             items: [
+                { href : 'notice', id: 'notice', label: '공지사항' },
                 { href: 'attendance', id: 'attendance', label: '회원 정보 / 결석계' },
                 { href: 'fee', id: 'fee', label: '회비 내역 조회' }
             ]
