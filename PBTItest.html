@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PAINS 스포츠 응원 유형 테스트</title>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <style>
         /* ============================ */
         /* [1] 폰트 및 공통 스타일        */
@@ -227,6 +229,17 @@
             width: 100%;
         }
 
+        /* 50:50 버튼 정렬용 클래스 추가 */
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+        .btn-row .ci-btn {
+            flex: 1; /* 동일한 비율로 영역 차지 */
+            padding: 15px 10px;
+        }
+
         /* ============================ */
         /* [7] 모달 및 모바일 반응형      */
         /* ============================ */
@@ -272,11 +285,11 @@
             .trait-card {
                 cursor: pointer; 
                 text-align: center; 
-                overflow: hidden; /* 영역 밖으로 텍스트가 삐져나오는 것을 방지 */
+                overflow: hidden; 
             }
             .trait-card .trait-title {
                 margin-bottom: 0; 
-                white-space: nowrap; /* JS가 너비를 측정할 수 있게 줄바꿈 완전 차단 */
+                white-space: nowrap; 
             }
         }
     </style>
@@ -320,7 +333,10 @@
                 <div class="grid-2x2" id="result-grid"></div>
                 
                 <div class="btn-group">
-                    <button class="ci-btn" onclick="shareResult()">내 결과 공유하기</button>
+                    <div class="btn-row">
+                        <button class="ci-btn" onclick="shareResult()">결과 공유하기</button>
+                        <button class="ci-btn" onclick="saveResult()">결과 저장하기</button>
+                    </div>
                     <button class="ci-btn" style="background-color: #333;" onclick="location.reload()">테스트 다시하기</button>
                 </div>
             </div>
@@ -334,6 +350,14 @@
             <h3 id="modal-title" class="trait-title" style="margin-bottom: 10px;"></h3>
             <p id="modal-desc" class="trait-desc" style="display: block;"></p>
         </div>
+    </div>
+
+    <div id="capture-area" style="position: fixed; top: -9999px; left: -9999px; width: 600px; background-color: #ffffff; padding: 40px; box-sizing: border-box; text-align: center; font-family: 'ATOZ4', sans-serif;">
+        <h3 style="color: #555; font-size: 1.5rem; margin-top: 10px; margin-bottom: 2rem; font-weight: normal;">당신의 응원 스타일은</h3>
+        <h2 id="capture-title" style="color: #990000; font-size: 4rem; margin-bottom: 2.5rem; letter-spacing: 2px;">AAAA</h2>
+        
+        <div id="capture-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left;">
+            </div>
     </div>
 
     <script>
@@ -387,7 +411,7 @@
         const resultTitle = document.getElementById("result-title");
         const resultGrid = document.getElementById("result-grid");
 
-        // 모달 요소 가져오기
+        // 모달 요소
         const descModal = document.getElementById('desc-modal');
         const modalTitle = document.getElementById('modal-title');
         const modalDesc = document.getElementById('modal-desc');
@@ -439,13 +463,12 @@
             resultType += (scores.J >= scores.P) ? "J" : "P";
 
             resultTitle.innerText = resultType;
-
             resultGrid.innerHTML = "";
+            
             for (let i = 0; i < resultType.length; i++) {
                 const char = resultType[i];
                 const info = traitDesc[char];
                 
-                // 더 이상 특정 유형에 얽매이지 않고 모두 동일한 양식으로 찍습니다.
                 const cardHtml = `
                     <div class="trait-card" onclick="openModal('${char}')">
                         <div class="trait-title">${info.title}</div>
@@ -455,27 +478,22 @@
                 resultGrid.innerHTML += cardHtml;
             }
 
-            // 카드가 DOM에 그려진 직후에 글자 크기 동적 최적화 함수 실행
+            // 카드가 DOM에 그려진 직후 폰트 크기 조절
             setTimeout(adjustGridTitles, 0);
         }
 
-        // [핵심 로직] 각 박스의 텍스트가 넘치지 않는 선에서 폰트 크기 최적화
         function adjustGridTitles() {
             const titles = document.querySelectorAll('#result-grid .trait-title');
             
             titles.forEach(title => {
-                // PC 화면이거나 모바일 분기(480px 이하)가 아닐 경우 기본 크기로 되돌림
                 if (window.innerWidth > 480) {
                     title.style.fontSize = '1.1rem';
                     return;
                 }
                 
-                // 모바일 환경일 때: 일단 최대 폰트(1.1rem)로 리셋
                 title.style.fontSize = '1.1rem';
                 let currentSize = 1.1; 
                 
-                // scrollWidth(실제 내용이 차지하는 길이)가 clientWidth(부모 박스의 길이)를 초과하면
-                // 글자가 딱 맞을 때까지 0.05rem씩 계속 줄입니다.
                 while (title.scrollWidth > title.clientWidth && currentSize > 0.5) {
                     currentSize -= 0.05;
                     title.style.fontSize = currentSize + 'rem';
@@ -483,14 +501,13 @@
             });
         }
 
-        // 화면 방향이 전환되거나 크기가 바뀔 때도 크기를 다시 계산하도록 이벤트 추가
         window.addEventListener('resize', () => {
             if (resultScreen.classList.contains('active')) {
                 adjustGridTitles();
             }
         });
 
-        // 모달 열기 함수
+        // 모달 열기/닫기
         function openModal(char) {
             if (window.innerWidth <= 480) {
                 const info = traitDesc[char];
@@ -500,12 +517,10 @@
             }
         }
 
-        // 모달 닫기 함수
         function closeModal() {
             descModal.classList.remove('active');
         }
 
-        // 모달 바깥 영역 클릭 시 닫기
         window.addEventListener('click', (e) => {
             if (e.target === descModal) {
                 closeModal();
@@ -527,13 +542,52 @@
                 }).catch(console.error);
             } else {
                 const fallbackText = `${shareTitle}\n${shareText}\n${siteUrl}`;
-                
                 navigator.clipboard.writeText(fallbackText).then(() => {
                     alert('결과가 클립보드에 복사되었습니다! 원하는 곳에 붙여넣기 해주세요.');
                 }).catch(() => {
                     alert('공유 기능을 지원하지 않는 환경입니다.');
                 });
             }
+        }
+
+        // ==========================================
+        // 이미지 저장하기 기능 추가
+        // ==========================================
+        function saveResult() {
+            const resultType = resultTitle.innerText;
+            
+            // 1. 숨겨진 캡처 영역에 결과값 채워넣기
+            document.getElementById('capture-title').innerText = resultType;
+            
+            const captureGrid = document.getElementById('capture-grid');
+            captureGrid.innerHTML = ""; // 기존 내용 비우기
+            
+            // 사진과 동일한 디자인을 위해 캡처 영역의 카드 디자인을 하드코딩으로 고정
+            for (let i = 0; i < resultType.length; i++) {
+                const char = resultType[i];
+                const info = traitDesc[char];
+                const cardHtml = `
+                    <div style="background: #fff; border: 1px solid #eaeaea; border-radius: 12px; padding: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                        <div style="color: #990000; font-size: 1.3rem; font-weight: bold; margin-bottom: 15px;">${info.title}</div>
+                        <div style="color: #444; font-size: 1rem; line-height: 1.55; word-break: keep-all;">${info.desc}</div>
+                    </div>
+                `;
+                captureGrid.innerHTML += cardHtml;
+            }
+
+            // 2. html2canvas를 이용해 이미지로 변환 후 다운로드
+            const captureArea = document.getElementById('capture-area');
+            
+            html2canvas(captureArea, {
+                scale: 2, // 이미지가 흐려지지 않도록 해상도 2배 뻥튀기
+                useCORS: true, 
+                backgroundColor: "#ffffff"
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `PAINS_응원유형_${resultType}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
         }
     </script>
 </body>
