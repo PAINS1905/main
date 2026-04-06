@@ -193,7 +193,6 @@
         
         .grid-2x2 {
             display: grid;
-            /* 텍스트 길이에 영향받지 않고 완벽하게 50:50을 유지하도록 minmax 적용 */
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 15px;
             width: 100%;
@@ -268,14 +267,16 @@
         /* 모바일 환경일 때의 처리 */
         @media (max-width: 480px) {
             .trait-card .trait-desc {
-                display: none; /* 상세 설명 숨김 */
+                display: none; 
             }
             .trait-card {
-                cursor: pointer; /* 클릭 가능함을 시각적으로 안내 */
-                text-align: center; /* 모바일에서는 제목을 가운데 정렬해 깔끔하게 */
+                cursor: pointer; 
+                text-align: center; 
+                overflow: hidden; /* 영역 밖으로 텍스트가 삐져나오는 것을 방지 */
             }
             .trait-card .trait-title {
-                margin-bottom: 0; /* 설명이 없으므로 마진 제거 */
+                margin-bottom: 0; 
+                white-space: nowrap; /* JS가 너비를 측정할 수 있게 줄바꿈 완전 차단 */
             }
         }
     </style>
@@ -444,22 +445,57 @@
                 const char = resultType[i];
                 const info = traitDesc[char];
                 
-                // 모바일 환경을 대비해 onclick 이벤트에 openModal 함수 연결
+                // 더 이상 특정 유형에 얽매이지 않고 모두 동일한 양식으로 찍습니다.
                 const cardHtml = `
-                    <div class="trait-card" onclick="openModal('${info.title}', '${info.desc}')">
+                    <div class="trait-card" onclick="openModal('${char}')">
                         <div class="trait-title">${info.title}</div>
                         <div class="trait-desc">${info.desc}</div>
                     </div>
                 `;
                 resultGrid.innerHTML += cardHtml;
             }
+
+            // 카드가 DOM에 그려진 직후에 글자 크기 동적 최적화 함수 실행
+            setTimeout(adjustGridTitles, 0);
         }
 
-        // 모달 열기 함수 (모바일 화면폭 480px 이하일 때만 동작하도록 설정)
-        function openModal(title, desc) {
+        // [핵심 로직] 각 박스의 텍스트가 넘치지 않는 선에서 폰트 크기 최적화
+        function adjustGridTitles() {
+            const titles = document.querySelectorAll('#result-grid .trait-title');
+            
+            titles.forEach(title => {
+                // PC 화면이거나 모바일 분기(480px 이하)가 아닐 경우 기본 크기로 되돌림
+                if (window.innerWidth > 480) {
+                    title.style.fontSize = '1.1rem';
+                    return;
+                }
+                
+                // 모바일 환경일 때: 일단 최대 폰트(1.1rem)로 리셋
+                title.style.fontSize = '1.1rem';
+                let currentSize = 1.1; 
+                
+                // scrollWidth(실제 내용이 차지하는 길이)가 clientWidth(부모 박스의 길이)를 초과하면
+                // 글자가 딱 맞을 때까지 0.05rem씩 계속 줄입니다.
+                while (title.scrollWidth > title.clientWidth && currentSize > 0.5) {
+                    currentSize -= 0.05;
+                    title.style.fontSize = currentSize + 'rem';
+                }
+            });
+        }
+
+        // 화면 방향이 전환되거나 크기가 바뀔 때도 크기를 다시 계산하도록 이벤트 추가
+        window.addEventListener('resize', () => {
+            if (resultScreen.classList.contains('active')) {
+                adjustGridTitles();
+            }
+        });
+
+        // 모달 열기 함수
+        function openModal(char) {
             if (window.innerWidth <= 480) {
-                modalTitle.innerText = title;
-                modalDesc.innerText = desc;
+                const info = traitDesc[char];
+                modalTitle.innerText = info.title;
+                modalDesc.innerText = info.desc;
                 descModal.classList.add('active');
             }
         }
