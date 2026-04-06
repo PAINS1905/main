@@ -20,7 +20,6 @@
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* 폰트를 모든 텍스트, 인풋, 버튼에 확실하게 적용 */
         body, button, input, textarea { 
             font-family: 'ATOZ4', sans-serif !important; 
         }
@@ -57,7 +56,6 @@
 
         h1, h2, h3 { color: #333; }
 
-        /* 화면 전환용 클래스 */
         .screen {
             display: none;
             flex-direction: column;
@@ -68,7 +66,6 @@
             display: flex;
         }
         
-        /* 모바일 전용 줄바꿈 클래스 */
         .mobile-break { display: none; }
         @media (max-width: 480px) {
             .mobile-break { display: initial; }
@@ -143,7 +140,7 @@
         .question-text {
             font-size: 1.3rem;
             line-height: 1.5;
-            white-space: pre-wrap; /* 명시적 줄바꿈 유지 */
+            white-space: pre-wrap; 
         }
 
         .answer-section {
@@ -163,11 +160,11 @@
             color: white;
             border: none;
             border-radius: 12px;
-            font-size: 0.95rem; /* 선택지 기본 글자 크기 복구/조정 */
+            font-size: 0.95rem; 
             cursor: pointer;
             transition: background-color 0.2s ease;
             line-height: 1.4;
-            white-space: pre-wrap; /* 명시적 줄바꿈 유지 및 자동 줄바꿈 허용 */
+            white-space: pre-wrap; 
         }
         .ci-btn:hover {
             background-color: #6b0d0d;
@@ -196,7 +193,8 @@
         
         .grid-2x2 {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            /* 텍스트 길이에 영향받지 않고 완벽하게 50:50을 유지하도록 minmax 적용 */
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 15px;
             width: 100%;
             margin-bottom: 30px;
@@ -208,6 +206,7 @@
             padding: 15px;
             text-align: left;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: background-color 0.2s ease;
         }
         .trait-title {
             color: #990000;
@@ -227,6 +226,57 @@
             flex-direction: column;
             gap: 10px;
             width: 100%;
+        }
+
+        /* ============================ */
+        /* [7] 모달 및 모바일 반응형      */
+        /* ============================ */
+        .modal-overlay {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-align: left;
+        }
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+            line-height: 1;
+            font-weight: bold;
+        }
+
+        /* 모바일 환경일 때의 처리 */
+        @media (max-width: 480px) {
+            .trait-card .trait-desc {
+                display: none; /* 상세 설명 숨김 */
+            }
+            .trait-card {
+                cursor: pointer; /* 클릭 가능함을 시각적으로 안내 */
+                text-align: center; /* 모바일에서는 제목을 가운데 정렬해 깔끔하게 */
+            }
+            .trait-card .trait-title {
+                margin-bottom: 0; /* 설명이 없으므로 마진 제거 */
+            }
         }
     </style>
 </head>
@@ -277,8 +327,15 @@
         </div>
     </div>
 
+    <div id="desc-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <h3 id="modal-title" class="trait-title" style="margin-bottom: 10px;"></h3>
+            <p id="modal-desc" class="trait-desc" style="display: block;"></p>
+        </div>
+    </div>
+
     <script>
-        // 1. 질문 리스트 (12문항)
         const originalQnaList = [
             { q: "나는 경기를 예매할 때...", opt1: { text: "예매 시간도 캘린더에 기록해\n항상 정시에 예매한다", val: "J" }, opt2: { text: "오늘 좀 끌리는데?\n오랜만에 한 번 가 볼까?", val: "P" } },
             { q: "저 선수가 오늘 좀 잘 할 것 같네.. 이유는", opt1: { text: "이전 경기 스탯을 봤을 때\n꾸준히 상승곡선이었어", val: "A" }, opt2: { text: "나도 몰라... 그냥 느낌이 그래", val: "I" } },
@@ -328,6 +385,11 @@
         const resultScreen = document.getElementById("result-screen");
         const resultTitle = document.getElementById("result-title");
         const resultGrid = document.getElementById("result-grid");
+
+        // 모달 요소 가져오기
+        const descModal = document.getElementById('desc-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDesc = document.getElementById('modal-desc');
 
         function startTest() {
             startScreen.classList.remove('active');
@@ -382,8 +444,9 @@
                 const char = resultType[i];
                 const info = traitDesc[char];
                 
+                // 모바일 환경을 대비해 onclick 이벤트에 openModal 함수 연결
                 const cardHtml = `
-                    <div class="trait-card">
+                    <div class="trait-card" onclick="openModal('${info.title}', '${info.desc}')">
                         <div class="trait-title">${info.title}</div>
                         <div class="trait-desc">${info.desc}</div>
                     </div>
@@ -391,6 +454,27 @@
                 resultGrid.innerHTML += cardHtml;
             }
         }
+
+        // 모달 열기 함수 (모바일 화면폭 480px 이하일 때만 동작하도록 설정)
+        function openModal(title, desc) {
+            if (window.innerWidth <= 480) {
+                modalTitle.innerText = title;
+                modalDesc.innerText = desc;
+                descModal.classList.add('active');
+            }
+        }
+
+        // 모달 닫기 함수
+        function closeModal() {
+            descModal.classList.remove('active');
+        }
+
+        // 모달 바깥 영역 클릭 시 닫기
+        window.addEventListener('click', (e) => {
+            if (e.target === descModal) {
+                closeModal();
+            }
+        });
 
         function shareResult() {
             const resultType = resultTitle.innerText; 
