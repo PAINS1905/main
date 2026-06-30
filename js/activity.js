@@ -1,199 +1,138 @@
-// PAINS 활동 아카이브 (GitHub Pages용)
-// - 구글 앱스 스크립트 API에서 프로젝트 목록을 불러와 필터/검색 후 렌더링합니다.
-// - 다중 선택 필터 지원 (전체 선택 / 전체 해제 포함)
-
+// PAINS 프로젝트 아카이브 — Google Drive 연동
 (() => {
   'use strict';
 
-  // 구글 앱스 스크립트 웹 앱 URL
-  const API_URL = "https://script.google.com/macros/s/AKfycbwuNda5HuzwNhp7ecL0BTMt4eCgE8z9y1F8_kDR-ZaEp72mYngLp0DQ4ibWcKDEZyg/exec";
+  const API_URL = window.PAINS_CONTENT_API_URL || '';
   const VIEWER_PAGE = 'pdf-viewer.html';
 
   const $ = (id) => document.getElementById(id);
 
   const els = {
-    yearWrap: $('filter-year'),
-    genWrap: $('filter-generation'),
+    yearWrap:   $('filter-year'),
+    genWrap:    $('filter-generation'),
     periodWrap: $('filter-period'),
-    sportWrap: $('filter-sport'),
-
-    year: $('filter-year-options'),
-    gen: $('filter-generation-options'),
-    period: $('filter-period-options'),
-    sport: $('filter-sport-options'),
-
-    q: $('filter-q'),
-    reset: $('btn-reset'),
-    list: $('project-list'),
-    count: $('results-count'),
-    empty: $('empty'),
+    sportWrap:  $('filter-sport'),
+    year:       $('filter-year-options'),
+    gen:        $('filter-generation-options'),
+    period:     $('filter-period-options'),
+    sport:      $('filter-sport-options'),
+    q:          $('filter-q'),
+    reset:      $('btn-reset'),
+    list:       $('project-list'),
+    count:      $('results-count'),
+    empty:      $('empty'),
   };
 
   let allProjects = [];
-  let releaseCfg = null;
+  let pdfProxyUrl = '';
 
-  const selected = {
-    year: new Set(),
-    gen: new Set(),
-    period: new Set(),
-    sport: new Set(),
-  };
+  const selected     = { year: new Set(), gen: new Set(), period: new Set(), sport: new Set() };
+  const filterValues = { year: [],        gen: [],        period: [],        sport: [] };
 
-  const filterValues = {
-    year: [],
-    gen: [],
-    period: [],
-    sport: [],
-  };
+  const norm = (v) => (v ?? '').toString().trim();
 
-  function norm(v) {
-    return (v ?? '').toString().trim();
+  // ─── Drive 헬퍼 ──────────────────────────────────────────────
+  function getDriveId(item) {
+    if (norm(item.driveId)) return norm(item.driveId);
+    const m = norm(item.driveUrl).match(/\/d\/([a-zA-Z0-9_-]+)/);
+    return m ? m[1] : '';
   }
 
-  function isPdfFile(name) {
-    return /\.pdf$/i.test(norm(name));
+  function driveDownloadUrl(driveId) {
+    return `https://drive.google.com/uc?export=download&id=${driveId}`;
   }
 
-  function coerceProjects(json) {
-    if (Array.isArray(json)) {
-      if (json.every((x) => typeof x === 'string')) {
-        return json
-          .filter(isPdfFile)
-          .map((file) => ({
-            title: file.replace(/\.pdf$/i, ''),
-            file,
-          }));
-      }
-      return json;
-    }
-    if (json && Array.isArray(json.projects)) return json.projects;
-    return [];
+  function driveSrcUrl(driveId) {
+    const direct = driveDownloadUrl(driveId);
+    return pdfProxyUrl ? pdfProxyUrl + encodeURIComponent(direct) : direct;
   }
 
+  function buildViewerUrl(title, fileName, driveId) {
+    const downloadUrl = driveDownloadUrl(driveId);
+    const p = new URLSearchParams({
+      src:      driveSrcUrl(driveId),
+      direct:   downloadUrl,
+      download: downloadUrl,
+      from:     'activity',
+    });
+    if (title)    p.set('title', title);
+    if (fileName) p.set('file',  fileName);
+    return `${VIEWER_PAGE}?${p}`;
+  }
+
+  // ─── 필터 UI ─────────────────────────────────────────────────
   function byNumberPrefix(a, b) {
-    const na = parseInt(a, 10);
-    const nb = parseInt(b, 10);
-    const aIsNum = !Number.isNaN(na);
-    const bIsNum = !Number.isNaN(nb);
-    if (aIsNum && bIsNum) return na - nb;
-    if (aIsNum && !bIsNum) return -1;
-    if (!aIsNum && bIsNum) return 1;
-    return a.localeCompare(b, 'ko');
+    const na = parseInt(a, 10), nb = parseInt(b, 10);
+    const an = !isNaN(na), bn = !isNaN(nb);
+    if (an && bn) return na - nb;
+    return an ? -1 : bn ? 1 : a.localeCompare(b, 'ko');
   }
 
-  function unique(values) {
-    return Array.from(new Set(values.filter((v) => norm(v) !== '').map((v) => norm(v))));
+  function unique(arr) {
+    return [...new Set(arr.map(norm).filter(Boolean))];
   }
+
+  const WRAPS = () => ({ year: els.yearWrap, gen: els.genWrap, period: els.periodWrap, sport: els.sportWrap });
+  const CONTAINERS = () => ({ year: els.year, gen: els.gen, period: els.period, sport: els.sport });
 
   function buildCheckboxOptions(container, values, key) {
     if (!container) return;
     container.innerHTML = '';
-
     values.forEach((value, idx) => {
       const label = document.createElement('label');
       label.className = 'check-option';
-
       const input = document.createElement('input');
-      input.type = 'checkbox';
-      input.value = value;
-      input.dataset.filterKey = key;
-      input.id = `${key}-${idx}`;
-
+      input.type = 'checkbox'; input.value = value;
+      input.dataset.filterKey = key; input.id = `${key}-${idx}`;
       const span = document.createElement('span');
       span.textContent = value;
-
-      label.appendChild(input);
-      label.appendChild(span);
+      label.append(input, span);
       container.appendChild(label);
     });
   }
 
   function updateSummaryText(key) {
-    const wrapMap = {
-      year: els.yearWrap,
-      gen: els.genWrap,
-      period: els.periodWrap,
-      sport: els.sportWrap,
-    };
-
-    const wrap = wrapMap[key];
-    if (!wrap) return;
-
-    const summaryText = wrap.querySelector('.multi-filter-summary-text');
-    if (!summaryText) return;
-
-    const total = filterValues[key].length;
-    const checked = selected[key].size;
-
-    if (checked === 0 || checked === total) {
-      summaryText.textContent = '전체';
-      return;
-    }
-
-    if (checked === 1) {
-      summaryText.textContent = Array.from(selected[key])[0];
-      return;
-    }
-
-    const first = Array.from(selected[key])[0];
-    summaryText.textContent = `${first} 외 ${checked - 1}개`;
+    const el = WRAPS()[key]?.querySelector('.multi-filter-summary-text');
+    if (!el) return;
+    const total = filterValues[key].length, checked = selected[key].size;
+    if (checked === 0 || checked === total) { el.textContent = '전체'; return; }
+    const first = [...selected[key]][0];
+    el.textContent = checked === 1 ? first : `${first} 외 ${checked - 1}개`;
   }
 
   function syncCheckboxes(key) {
-    const containerMap = {
-      year: els.year,
-      gen: els.gen,
-      period: els.period,
-      sport: els.sport,
-    };
-
-    const container = containerMap[key];
+    const container = CONTAINERS()[key];
     if (!container) return;
-
-    const boxes = container.querySelectorAll('input[type="checkbox"]');
-    const isAllSelected = selected[key].size === filterValues[key].length;
-
-    boxes.forEach((box) => {
-      box.checked = isAllSelected || selected[key].has(box.value);
+    const isAll = selected[key].size === filterValues[key].length;
+    container.querySelectorAll('input[type="checkbox"]').forEach(box => {
+      box.checked = isAll || selected[key].has(box.value);
     });
-
     updateSummaryText(key);
   }
 
   function selectAll(key) {
     selected[key].clear();
-    filterValues[key].forEach((v) => selected[key].add(v));
-    syncCheckboxes(key);
-    applyFilters();
+    filterValues[key].forEach(v => selected[key].add(v));
+    syncCheckboxes(key); applyFilters();
   }
 
-  function clearAll(key) {
-    selected[key].clear();
-    syncCheckboxes(key);
-    applyFilters();
-  }
+  function clearAll(key) { selected[key].clear(); syncCheckboxes(key); applyFilters(); }
 
   function buildFilters(projects) {
-    filterValues.year = unique(projects.map((p) => p.year))
+    filterValues.year = unique(projects.map(p => p.year))
       .sort((a, b) => {
-        const na = parseInt(a, 10);
-        const nb = parseInt(b, 10);
-        const aIsNum = !Number.isNaN(na);
-        const bIsNum = !Number.isNaN(nb);
-        if (aIsNum && bIsNum) return nb - na;
-        return b.localeCompare(a, 'ko');
+        const na = parseInt(a), nb = parseInt(b);
+        return (!isNaN(na) && !isNaN(nb)) ? nb - na : b.localeCompare(a, 'ko');
       });
+    filterValues.gen    = unique(projects.map(p => p.generation)).sort(byNumberPrefix);
+    filterValues.period = unique(projects.map(p => p.period)).sort((a, b) => a.localeCompare(b, 'ko'));
+    filterValues.sport  = unique(projects.map(p => p.sport)).sort((a, b) => a.localeCompare(b, 'ko'));
 
-    filterValues.gen = unique(projects.map((p) => p.generation)).sort(byNumberPrefix);
-    filterValues.period = unique(projects.map((p) => p.period)).sort((a, b) => a.localeCompare(b, 'ko'));
-    filterValues.sport = unique(projects.map((p) => p.sport)).sort((a, b) => a.localeCompare(b, 'ko'));
-
-    buildCheckboxOptions(els.year, filterValues.year, 'year');
-    buildCheckboxOptions(els.gen, filterValues.gen, 'gen');
+    buildCheckboxOptions(els.year,   filterValues.year,   'year');
+    buildCheckboxOptions(els.gen,    filterValues.gen,    'gen');
     buildCheckboxOptions(els.period, filterValues.period, 'period');
-    buildCheckboxOptions(els.sport, filterValues.sport, 'sport');
+    buildCheckboxOptions(els.sport,  filterValues.sport,  'sport');
 
-    // 기본 상태는 "전체" (모든 항목 체크)
     ['year', 'gen', 'period', 'sport'].forEach(key => {
       selected[key].clear();
       filterValues[key].forEach(v => selected[key].add(v));
@@ -202,105 +141,23 @@
   }
 
   function projectMeta(p) {
-    const parts = [];
-    if (norm(p.year)) parts.push(norm(p.year));
-    if (norm(p.generation)) parts.push(norm(p.generation));
-    if (norm(p.period)) parts.push(norm(p.period));
-    if (norm(p.sport)) parts.push(norm(p.sport));
-    return parts.join(' · ');
+    return [p.year, p.generation, p.period, p.sport].map(norm).filter(Boolean).join(' · ');
   }
 
-  function localPdfUrl(file) {
-    const f = norm(file);
-    return encodeURI(`pdfs/${f}`);
-  }
-
-  function parseReleaseCfg(json) {
-    const rel = json?.release;
-    if (!rel) return null;
-
-    const owner = norm(rel.owner);
-    const repo = norm(rel.repo);
-    const tag = norm(rel.tag);
-    const useLatest = !!(rel.useLatest ?? rel.use_latest);
-    const proxy = norm(rel.proxy);
-
-    if (!owner || !repo) return null;
-    if (!useLatest && !tag) return null;
-
-    return { owner, repo, tag, useLatest, proxy };
-  }
-
-  function releaseDownloadUrl(file, projectTag) {
-    if (!releaseCfg) return null;
-    const f = norm(file);
-    if (!f) return null;
-
-    if (releaseCfg.useLatest) {
-      return `https://github.com/${releaseCfg.owner}/${releaseCfg.repo}/releases/latest/download/${encodeURIComponent(f)}`;
-    }
-
-    const tag = norm(projectTag) || releaseCfg.tag;
-    return `https://github.com/${releaseCfg.owner}/${releaseCfg.repo}/releases/download/${encodeURIComponent(tag)}/${encodeURIComponent(f)}`;
-  }
-
-  function maybeProxyUrl(directUrl) {
-    if (!releaseCfg) return null;
-    const base = norm(releaseCfg.proxy);
-    if (!base) return null;
-
-    if (base.includes('{url}')) {
-      return base.replace('{url}', encodeURIComponent(directUrl));
-    }
-    return base + encodeURIComponent(directUrl);
-  }
-
-  function buildViewerUrl({ title, file, srcUrl, directUrl, downloadUrl }) {
-    const params = new URLSearchParams();
-    if (title) params.set('title', title);
-    if (file) params.set('file', file);
-    if (srcUrl) params.set('src', srcUrl);
-    if (directUrl) params.set('direct', directUrl);
-    if (downloadUrl) params.set('download', downloadUrl);
-    params.set('from', 'activity');
-    return `${VIEWER_PAGE}?${params.toString()}`;
-  }
-
-  function pdfLinksForProject(p) {
-    const file = norm(p.file);
-    const title = norm(p.title) || file || '제목 없음';
-
-    const origin = norm(p.origin).toLowerCase();
-    const local = localPdfUrl(file);
-    const release = releaseDownloadUrl(file, p.tag);
-
-    const directUrl = (origin === 'local') ? local : (origin === 'release' ? release : (releaseCfg ? release : local));
-    const downloadUrl = directUrl;
-
-    const srcUrl = (directUrl && releaseCfg && directUrl.startsWith('https://github.com/'))
-      ? (maybeProxyUrl(directUrl) || directUrl)
-      : directUrl;
-
-    const previewUrl = buildViewerUrl({ title, file, srcUrl, directUrl, downloadUrl });
-
-    return { previewUrl, downloadUrl, directUrl, srcUrl };
-  }
-
+  // ─── 렌더링 ──────────────────────────────────────────────────
   function render(projects) {
     if (!els.list) return;
-
     els.list.innerHTML = '';
-
     if (els.count) els.count.textContent = `${projects.length}개 프로젝트`;
     if (els.empty) els.empty.style.display = projects.length ? 'none' : 'block';
 
-    projects.forEach((p) => {
-      const title = norm(p.title) || norm(p.file) || '제목 없음';
-      const file = norm(p.file);
-
-      if (!file) return;
-
-      const { previewUrl, downloadUrl } = pdfLinksForProject(p);
+    projects.forEach(p => {
+      const driveId = getDriveId(p);
+      if (!driveId) return;
+      const title       = norm(p.title) || norm(p.file) || '제목 없음';
+      const fileName    = norm(p.file);
+      const previewUrl  = buildViewerUrl(title, fileName, driveId);
+      const downloadUrl = driveDownloadUrl(driveId);
 
       const li = document.createElement('li');
       li.className = 'project-card';
@@ -310,168 +167,121 @@
 
       const aTitle = document.createElement('a');
       aTitle.className = 'project-title';
-      aTitle.href = previewUrl;
-      aTitle.target = '_blank';
-      aTitle.rel = 'noopener';
+      aTitle.href = previewUrl; aTitle.target = '_blank'; aTitle.rel = 'noopener';
       aTitle.textContent = title;
 
       const meta = document.createElement('div');
       meta.className = 'project-meta';
       meta.textContent = projectMeta(p);
 
-      main.appendChild(aTitle);
-      if (meta.textContent) main.appendChild(meta);
+      main.append(aTitle);
+      if (meta.textContent) main.append(meta);
 
       const actions = document.createElement('div');
       actions.className = 'project-actions';
 
-      const btnViewer = document.createElement('a');
-      btnViewer.className = 'btn';
-      btnViewer.href = previewUrl;
-      btnViewer.target = '_blank';
-      btnViewer.rel = 'noopener';
-      btnViewer.textContent = '열기';
+      const btnView = document.createElement('a');
+      btnView.className = 'btn'; btnView.href = previewUrl;
+      btnView.target = '_blank'; btnView.rel = 'noopener';
+      btnView.textContent = '열기';
 
-      const btnDownload = document.createElement('a');
-      btnDownload.className = 'btn btn-download';
-      btnDownload.href = downloadUrl;
-      btnDownload.target = '_blank';
-      btnDownload.rel = 'noopener';
-      btnDownload.setAttribute('download', '');
-      btnDownload.textContent = '다운로드';
+      const btnDl = document.createElement('a');
+      btnDl.className = 'btn btn-download'; btnDl.href = downloadUrl;
+      btnDl.target = '_blank'; btnDl.rel = 'noopener';
+      if (fileName) btnDl.setAttribute('download', fileName);
+      btnDl.textContent = '다운로드';
 
-      actions.appendChild(btnViewer);
-      actions.appendChild(btnDownload);
-
-      li.appendChild(main);
-      li.appendChild(actions);
-
+      actions.append(btnView, btnDl);
+      li.append(main, actions);
       els.list.appendChild(li);
     });
   }
 
-  function matchMulti(selectedSet, value, allCount) {
-    const v = norm(value);
-    if (selectedSet.size === 0) return true;           // 아무것도 선택 안 했으면 전체
-    if (selectedSet.size === allCount) return true;    // 전부 선택한 상태도 전체와 동일
-    return selectedSet.has(v);
+  // ─── 필터 적용 ───────────────────────────────────────────────
+  function matchMulti(set, value, total) {
+    return set.size === 0 || set.size === total || set.has(norm(value));
   }
 
   function applyFilters() {
     const q = norm(els.q?.value).toLowerCase();
-
-    const filtered = allProjects.filter((proj) => {
-      if (!matchMulti(selected.year, proj.year, filterValues.year.length)) return false;
-      if (!matchMulti(selected.gen, proj.generation, filterValues.gen.length)) return false;
-      if (!matchMulti(selected.period, proj.period, filterValues.period.length)) return false;
-      if (!matchMulti(selected.sport, proj.sport, filterValues.sport.length)) return false;
-
-      if (q) {
-        const t = norm(proj.title).toLowerCase();
-        if (!t.includes(q)) return false;
-      }
-
-      return true;
-    });
-
+    const filtered = allProjects.filter(p =>
+      matchMulti(selected.year,   p.year,       filterValues.year.length)   &&
+      matchMulti(selected.gen,    p.generation, filterValues.gen.length)    &&
+      matchMulti(selected.period, p.period,     filterValues.period.length) &&
+      matchMulti(selected.sport,  p.sport,      filterValues.sport.length)  &&
+      (!q || norm(p.title).toLowerCase().includes(q))
+    );
     render(filtered);
   }
 
-  function attachFilterCheckboxEvents(container, key) {
+  // ─── 이벤트 연결 ─────────────────────────────────────────────
+  function attachCheckboxEvents(container, key) {
     if (!container) return;
-
-    container.addEventListener('change', (e) => {
-      const target = e.target;
-      if (!(target instanceof HTMLInputElement) || target.type !== 'checkbox') return;
-
-      if (target.checked) {
-        selected[key].add(target.value);
-      } else {
-        selected[key].delete(target.value);
-      }
-
+    container.addEventListener('change', e => {
+      if (e.target.type !== 'checkbox') return;
+      e.target.checked ? selected[key].add(e.target.value) : selected[key].delete(e.target.value);
       updateSummaryText(key);
       applyFilters();
     });
   }
 
   function attachEvents() {
-    attachFilterCheckboxEvents(els.year, 'year');
-    attachFilterCheckboxEvents(els.gen, 'gen');
-    attachFilterCheckboxEvents(els.period, 'period');
-    attachFilterCheckboxEvents(els.sport, 'sport');
+    attachCheckboxEvents(els.year,   'year');
+    attachCheckboxEvents(els.gen,    'gen');
+    attachCheckboxEvents(els.period, 'period');
+    attachCheckboxEvents(els.sport,  'sport');
 
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', e => {
       const btn = e.target.closest('.mini-btn');
-      if (!btn) return;
-
-      const action = btn.dataset.action;
-      const target = btn.dataset.target;
-
-      if (!action || !target || !selected[target]) return;
-
-      if (action === 'select-all') {
-        selectAll(target);
-      } else if (action === 'clear-all') {
-        clearAll(target);
+      if (btn) {
+        const { action, target } = btn.dataset;
+        if (action === 'select-all') selectAll(target);
+        else if (action === 'clear-all') clearAll(target);
+        return;
       }
+      document.querySelectorAll('.multi-filter').forEach(d => {
+        if (!d.contains(e.target)) d.removeAttribute('open');
+      });
     });
 
-    if (els.q) {
-      els.q.addEventListener('input', applyFilters);
-    }
-
-    if (els.reset) {
-      els.reset.addEventListener('click', () => {
-        ['year', 'gen', 'period', 'sport'].forEach(key => {
-          selected[key].clear();
-          filterValues[key].forEach(v => selected[key].add(v));
-          syncCheckboxes(key);
-        });
-
-        if (els.q) els.q.value = '';
-        applyFilters();
+    els.q?.addEventListener('input', applyFilters);
+    els.reset?.addEventListener('click', () => {
+      ['year', 'gen', 'period', 'sport'].forEach(key => {
+        selected[key].clear();
+        filterValues[key].forEach(v => selected[key].add(v));
+        syncCheckboxes(key);
       });
-    }
-
-    // 다른 곳 클릭 시 열린 details 닫기
-    document.addEventListener('click', (e) => {
-      const detailsList = document.querySelectorAll('.multi-filter');
-      detailsList.forEach((details) => {
-        if (!details.contains(e.target)) {
-          details.removeAttribute('open');
-        }
-      });
+      if (els.q) els.q.value = '';
+      applyFilters();
     });
   }
 
+  // ─── 초기화 ──────────────────────────────────────────────────
   async function init() {
+    if (!API_URL) {
+      if (els.count) els.count.textContent = 'API URL이 설정되지 않았습니다';
+      return;
+    }
     if (els.count) els.count.textContent = '로딩 중…';
-
     try {
       const res = await fetch(API_URL, { redirect: 'follow' });
-      if (!res.ok) throw new Error(`Google Apps Script fetch failed: ${res.status}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
 
-      releaseCfg = parseReleaseCfg(json);
+      pdfProxyUrl = json.pdfProxyUrl || '';
 
-      const projects = coerceProjects(json)
-        .filter((p) => p && typeof p === 'object')
-        .filter((p) => norm(p.file) && isPdfFile(p.file));
-
-      allProjects = projects;
+      allProjects = (json.projects || [])
+        .filter(p => p && typeof p === 'object' && getDriveId(p));
 
       buildFilters(allProjects);
       attachEvents();
       applyFilters();
     } catch (err) {
-      console.error(err);
+      console.error('[activity.js]', err);
       if (els.count) els.count.textContent = '데이터를 불러오지 못했습니다';
       if (els.empty) {
         els.empty.style.display = 'block';
-        els.empty.innerHTML =
-          '데이터 목록을 불러오지 못했습니다.<br />' +
-          '스프레드시트의 배포 URL이나 네트워크 상태를 확인해 주세요.';
+        els.empty.innerHTML = '데이터 목록을 불러오지 못했습니다.<br>스프레드시트 배포 URL이나 네트워크 상태를 확인해주세요.';
       }
     }
   }
